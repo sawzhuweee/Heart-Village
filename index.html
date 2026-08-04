@@ -345,16 +345,20 @@ html[data-standalone] #installBtn{display:none !important} /* 已經是 App 就�
 /* ============================ 資料 ============================ */
 var CDN = 'https://res.cloudinary.com/dbiirpmpy/image/upload/';
 function cld(ver, tr){ return CDN + tr + '/' + ver; }
+/* 在 Cloudinary 換過圖之後，把 IMGV 改成新的數字（例如當天日期 v20260901），
+   網址一變，所有人的瀏覽器／App 快取就會自動失效，馬上看到新圖。
+   同時也要把 sw.js 的 VERSION 加一。 */
+var IMGV = 'v20260804';
 var V = {
-  main:'v1785829921/Buddhism/main.jpg',
-  moon:'v1785829664/Buddhism/month_after_month.png',
-  sun:'v1785829664/Buddhism/warm_sun.png',
-  star:'v1785829663/Buddhism/star.png',
-  fog:'v1785829663/Buddhism/fog.png',
-  rain:'v1785829663/Buddhism/water.png',
-  thunder:'v1785829663/Buddhism/thunder.png',
-  breeze:'v1785829662/Buddhism/wind.png',
-  earth:'v1785829662/Buddhism/dust.png'
+  main:   IMGV + '/Buddhism/main.jpg',
+  moon:   IMGV + '/Buddhism/month_after_month.png',
+  sun:    IMGV + '/Buddhism/warm_sun.png',
+  star:   IMGV + '/Buddhism/star.png',
+  fog:    IMGV + '/Buddhism/fog.png',
+  rain:   IMGV + '/Buddhism/water.png',
+  thunder:IMGV + '/Buddhism/thunder.png',
+  breeze: IMGV + '/Buddhism/wind.png',
+  earth:  IMGV + '/Buddhism/dust.png'
 };
 function charImg(k, w){ return cld(V[k], 'f_auto,q_auto,w_' + w); }
 
