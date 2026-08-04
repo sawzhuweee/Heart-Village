@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta charset="utf-8" />
+<title>心之村｜情緒村地圖</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<style>
+  body { margin: 0; background: #f3ece0; font-family: "Noto Sans TC", sans-serif; }
+  a { color: #7a5a2e; text-decoration: none; }
+  a:hover { color: #c08a3e; }
+  @keyframes pulseRing { 0% { transform: scale(0.7); opacity: 0.9; } 70% { transform: scale(1.9); opacity: 0; } 100% { transform: scale(1.9); opacity: 0; } }
+  @keyframes softIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes flyAway { 0% { transform: translate(0,0) rotate(0deg); opacity: 1; } 100% { transform: translate(220px,-160px) rotate(-18deg); opacity: 0; } }
+</style>
+</helmet>
+
+<div style="min-height: 100vh; background: radial-gradient(circle at 50% 0%, #fbf6ec 0%, #efe5d4 60%, #e6d9c3 100%); color: #3a2f22;">
+
+  <header style="display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 20px 40px; border-bottom: 1px solid rgba(122,90,46,0.2); position: sticky; top: 0; background: rgba(251,246,236,0.92); backdrop-filter: blur(8px); z-index: 40;">
+    <div style="display: flex; align-items: baseline; gap: 12px;">
+      <span style="font-family: 'Noto Serif TC', serif; font-size: 24px; font-weight: 700; letter-spacing: 2px; color: #4a3a26;">心之村</span>
+      <span style="font-size: 13px; letter-spacing: 3px; color: #8a7457;">EMOTION VILLAGE</span>
+    </div>
+    <nav style="display: flex; align-items: center; gap: 28px; font-size: 15px;">
+      <a href="#map" style="color: #5c4a33;">村莊地圖</a>
+      <a href="#friends" style="color: #5c4a33;">八位夥伴</a>
+      <a href="#post" style="color: #5c4a33;">飛鴿驛站</a>
+      <a href="#about" style="color: #5c4a33;">關於小參室</a>
+      <button onClick="{{ openAdmin }}" style="border: 1px solid rgba(122,90,46,0.4); background: transparent; color: #7a5a2e; font-family: inherit; font-size: 13px; padding: 7px 14px; border-radius: 999px; cursor: pointer;" style-hover="background:#7a5a2e;color:#fbf6ec;">管理後台</button>
+    </nav>
+  </header>
+
+  <section id="map" style="max-width: 1240px; margin: 0 auto; padding: 56px 40px 24px;">
+    <div style="text-align: center; margin-bottom: 34px;">
+      <h1 style="font-family: 'Noto Serif TC', serif; font-size: 46px; font-weight: 700; letter-spacing: 6px; margin: 0 0 14px;">歡迎來到心之村</h1>
+      <p style="font-size: 17px; line-height: 2; color: #6b5940; margin: 0; text-wrap: pretty;">這裡住著八位陪伴情緒的夥伴。<br />點一個地方，就會有人走出來，跟你說說話。</p>
+    </div>
+
+    <div style="position: relative; border-radius: 18px; overflow: hidden; box-shadow: 0 24px 60px rgba(60,42,20,0.28); border: 8px solid #f7f1e5;">
+      <img src="https://res.cloudinary.com/dbiirpmpy/image/upload/v1785829921/Buddhism/main.jpg" alt="心之村地圖" style="display: block; width: 100%; height: auto;" />
+
+      <button onClick="{{ open.thunder }}" title="雷鳴山 · 雷雷" style="position: absolute; left: 28%; top: 19.6%; width: 3.2%; aspect-ratio: 1; transform: translate(-50%,-50%); border: 0; border-radius: 50%; background: rgba(255,232,150,0.9); box-shadow: 0 0 14px 4px rgba(255,214,110,0.75); cursor: pointer; padding: 0;" style-hover="transform:translate(-50%,-50%) scale(1.5);"><span style="position: absolute; inset: 0; border-radius: 50%; border: 2px solid rgba(255,226,140,0.9); animation: pulseRing 2.4s ease-out infinite;"></span></button>
+      <button onClick="{{ open.fog }}" title="迷霧谷 · 霧霧" style="position: absolute; left: 64.5%; top: 15.3%; width: 3.2%; aspect-ratio: 1; transform: translate(-50%,-50%); border: 0; border-radius: 50%; background: rgba(255,232,150,0.9); box-shadow: 0 0 14px 4px rgba(255,214,110,0.75); cursor: pointer; padding: 0;" style-hover="transform:translate(-50%,-50%) scale(1.5);"><span style="position: absolute; inset: 0; border-radius: 50%; border: 2px solid rgba(255,226,140,0.9); animation: pulseRing 2.4s ease-out 0.3s infinite;"></span></button>
+      <button onClick="{{ open.rain }}" title="雨之湖 · 雨滴" style="position: absolute; left: 83.2%; top: 24.6%; width: 3.2%; aspect-ratio: 1; transform: translate(-50%,-50%); border: 0; border-radius: 50%; background: rgba(255,232,150,0.9); box-shadow: 0 0 14px 4px rgba(255,214,110,0.75); cursor: pointer; padding: 0;" style-hover="transform:translate(-50%,-50%) scale(1.5);"><span style="position: absolute; inset: 0; border-radius: 50%; border: 2px solid rgba(255,226,140,0.9); animation: pulseRing 2.4s ease-out 0.6s infinite;"></span></button>
+      <button onClick="{{ open.moon }}" title="月眠林 · 月月" style="position: absolute; left: 51.7%; top: 39.5%; width: 3.2%; aspect-ratio: 1; transform: translate(-50%,-50%); border: 0; border-radius: 50%; background: rgba(255,232,150,0.9); box-shadow: 0 0 14px 4px rgba(255,214,110,0.75); cursor: pointer; padding: 0;" style-hover="transform:translate(-50%,-50%) scale(1.5);"><span style="position: absolute; inset: 0; border-radius: 50%; border: 2px solid rgba(255,226,140,0.9); animation: pulseRing 2.4s ease-out 0.9s infinite;"></span></button>
+      <button onClick="{{ open.star }}" title="星光丘 · 星星" style="position: absolute; left: 80.8%; top: 53.1%; width: 3.2%; aspect-ratio: 1; transform: translate(-50%,-50%); border: 0; border-radius: 50%; background: rgba(255,232,150,0.9); box-shadow: 0 0 14px 4px rgba(255,214,110,0.75); cursor: pointer; padding: 0;" style-hover="transform:translate(-50%,-50%) scale(1.5);"><span style="position: absolute; inset: 0; border-radius: 50%; border: 2px solid rgba(255,226,140,0.9); animation: pulseRing 2.4s ease-out 1.2s infinite;"></span></button>
+      <button onClick="{{ open.sun }}" title="晨曦原 · 暖陽" style="position: absolute; left: 43.6%; top: 77.9%; width: 3.2%; aspect-ratio: 1; transform: translate(-50%,-50%); border: 0; border-radius: 50%; background: rgba(255,232,150,0.9); box-shadow: 0 0 14px 4px rgba(255,214,110,0.75); cursor: pointer; padding: 0;" style-hover="transform:translate(-50%,-50%) scale(1.5);"><span style="position: absolute; inset: 0; border-radius: 50%; border: 2px solid rgba(255,226,140,0.9); animation: pulseRing 2.4s ease-out 1.5s infinite;"></span></button>
+      <button onClick="{{ open.earth }}" title="大地嶺 · 土土" style="position: absolute; left: 59.5%; top: 84.6%; width: 3.2%; aspect-ratio: 1; transform: translate(-50%,-50%); border: 0; border-radius: 50%; background: rgba(255,232,150,0.9); box-shadow: 0 0 14px 4px rgba(255,214,110,0.75); cursor: pointer; padding: 0;" style-hover="transform:translate(-50%,-50%) scale(1.5);"><span style="position: absolute; inset: 0; border-radius: 50%; border: 2px solid rgba(255,226,140,0.9); animation: pulseRing 2.4s ease-out 1.8s infinite;"></span></button>
+      <button onClick="{{ open.breeze }}" title="微風草原 · 微風" style="position: absolute; left: 13%; top: 79.6%; width: 3.2%; aspect-ratio: 1; transform: translate(-50%,-50%); border: 0; border-radius: 50%; background: rgba(255,232,150,0.9); box-shadow: 0 0 14px 4px rgba(255,214,110,0.75); cursor: pointer; padding: 0;" style-hover="transform:translate(-50%,-50%) scale(1.5);"><span style="position: absolute; inset: 0; border-radius: 50%; border: 2px solid rgba(255,226,140,0.9); animation: pulseRing 2.4s ease-out 2.1s infinite;"></span></button>
+
+      <button onClick="{{ goPost }}" title="飛鴿驛站 · 留言" style="position: absolute; left: 35.2%; top: 50.7%; width: 4.4%; aspect-ratio: 1; transform: translate(-50%,-50%); border: 2px solid rgba(255,248,222,0.95); border-radius: 50%; background: rgba(255,255,255,0.35); box-shadow: 0 0 20px 6px rgba(255,246,205,0.7); cursor: pointer; padding: 0;" style-hover="transform:translate(-50%,-50%) scale(1.35);"><span style="position: absolute; inset: -2px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.85); animation: pulseRing 2.8s ease-out infinite;"></span></button>
+
+      <button onClick="{{ open.clinic }}" title="情緒小參室" style="position: absolute; left: 10.6%; top: 50.7%; width: 2.6%; aspect-ratio: 1; transform: translate(-50%,-50%); border: 0; border-radius: 50%; background: rgba(232,240,255,0.85); box-shadow: 0 0 12px 3px rgba(200,220,255,0.6); cursor: pointer; padding: 0;" style-hover="transform:translate(-50%,-50%) scale(1.5);"></button>
+      <button onClick="{{ open.weather }}" title="觀心氣象站" style="position: absolute; left: 36.4%; top: 3%; width: 2.6%; aspect-ratio: 1; transform: translate(-50%,-50%); border: 0; border-radius: 50%; background: rgba(232,240,255,0.85); box-shadow: 0 0 12px 3px rgba(200,220,255,0.6); cursor: pointer; padding: 0;" style-hover="transform:translate(-50%,-50%) scale(1.5);"></button>
+      <button onClick="{{ open.okcave }}" title="OK洞" style="position: absolute; left: 86.4%; top: 74%; width: 2.6%; aspect-ratio: 1; transform: translate(-50%,-50%); border: 0; border-radius: 50%; background: rgba(232,240,255,0.85); box-shadow: 0 0 12px 3px rgba(200,220,255,0.6); cursor: pointer; padding: 0;" style-hover="transform:translate(-50%,-50%) scale(1.5);"></button>
+    </div>
+
+    <p style="text-align: center; font-size: 14px; color: #8a7457; margin: 18px 0 0; letter-spacing: 1px;">✦ 點亮的光點，是可以走進去的地方 ✦</p>
+  </section>
+
+  <section id="friends" style="max-width: 1240px; margin: 0 auto; padding: 64px 40px;">
+    <h2 style="font-family: 'Noto Serif TC', serif; font-size: 32px; letter-spacing: 4px; text-align: center; margin: 0 0 10px;">八位夥伴</h2>
+    <p style="text-align: center; color: #6b5940; margin: 0 0 40px; font-size: 15px;">每一種情緒，都有人在等你。</p>
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px;">
+      <sc-for list="{{ characters }}" as="c" hint-placeholder-count="8">
+        <button onClick="{{ c.onOpen }}" style="border: 0; padding: 0; cursor: pointer; border-radius: 16px; overflow: hidden; background: #fff; box-shadow: 0 10px 26px rgba(70,50,25,0.14); text-align: left; font-family: inherit; transition: transform 0.25s ease, box-shadow 0.25s ease;" style-hover="transform:translateY(-6px);box-shadow:0 18px 38px rgba(70,50,25,0.24);">
+          <div style="height: 180px; display: grid; place-items: center; background: {{ c.bg }};">
+            <img src="{{ c.img }}" alt="{{ c.name }}" style="max-height: 150px; max-width: 80%; object-fit: contain;" />
+          </div>
+          <div style="padding: 16px 18px 20px; background: #fffdf8;">
+            <div style="font-family: 'Noto Serif TC', serif; font-size: 20px; font-weight: 600; color: #3a2f22;">{{ c.name }}</div>
+            <div style="font-size: 13px; color: #8a7457; margin-top: 4px; letter-spacing: 1px;">{{ c.title }}｜{{ c.place }}</div>
+            <div style="font-size: 14px; color: #5c4a33; margin-top: 10px; line-height: 1.8;">{{ c.lead }}</div>
+          </div>
+        </button>
+      </sc-for>
+    </div>
+  </section>
+
+  <section id="post" style="background: #efe4d0; border-top: 1px solid rgba(122,90,46,0.18); border-bottom: 1px solid rgba(122,90,46,0.18);">
+    <div style="max-width: 1000px; margin: 0 auto; padding: 66px 40px;">
+      <h2 style="font-family: 'Noto Serif TC', serif; font-size: 32px; letter-spacing: 4px; text-align: center; margin: 0 0 10px;">飛鴿驛站</h2>
+      <p style="text-align: center; color: #6b5940; margin: 0 0 38px; font-size: 15px; line-height: 2;">把煩惱寫下來，交給鴿子。<br />牠會替你送到村子裡，最適合陪你的那位夥伴手上。</p>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: start;">
+        <div style="background: #fffdf8; border-radius: 16px; padding: 28px 26px; box-shadow: 0 12px 30px rgba(70,50,25,0.14);">
+          <label style="display: block; font-size: 13px; color: #8a7457; margin-bottom: 6px; letter-spacing: 1px;">你想怎麼被稱呼</label>
+          <input value="{{ form.nick }}" onChange="{{ setNick }}" placeholder="旅人" style="width: 100%; box-sizing: border-box; border: 1px solid rgba(122,90,46,0.3); border-radius: 9px; padding: 11px 13px; font-family: inherit; font-size: 15px; background: #fff; color: #3a2f22; margin-bottom: 18px;" />
+          <label style="display: block; font-size: 13px; color: #8a7457; margin-bottom: 8px; letter-spacing: 1px;">今天的心情</label>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px;">
+            <sc-for list="{{ moods }}" as="m" hint-placeholder-count="6">
+              <button onClick="{{ m.onPick }}" style="border: 1px solid {{ m.border }}; background: {{ m.bg }}; color: {{ m.fg }}; font-family: inherit; font-size: 14px; padding: 7px 14px; border-radius: 999px; cursor: pointer;">{{ m.label }}</button>
+            </sc-for>
+          </div>
+          <label style="display: block; font-size: 13px; color: #8a7457; margin-bottom: 6px; letter-spacing: 1px;">想說的話</label>
+          <textarea value="{{ form.text }}" onChange="{{ setText }}" placeholder="這裡不需要說得漂亮，想到什麼就寫什麼。" style="width: 100%; box-sizing: border-box; height: 128px; resize: vertical; border: 1px solid rgba(122,90,46,0.3); border-radius: 9px; padding: 12px 13px; font-family: inherit; font-size: 15px; line-height: 1.9; background: #fff; color: #3a2f22;"></textarea>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #6b5940; margin: 14px 0 18px; cursor: pointer;">
+            <input type="checkbox" checked="{{ form.priv }}" onChange="{{ setPriv }}" style="width: 16px; height: 16px; accent-color: #7a5a2e;" />
+            只給村長看，不要公開在留言牆
+          </label>
+          <button onClick="{{ send }}" style="width: 100%; border: 0; background: #7a5a2e; color: #fdf7ea; font-family: inherit; font-size: 16px; letter-spacing: 3px; padding: 14px; border-radius: 10px; cursor: pointer;" style-hover="background:#5f4522;">{{ sendLabel }}</button>
+        </div>
+
+        <div>
+          <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px;">
+            <h3 style="font-family: 'Noto Serif TC', serif; font-size: 20px; margin: 0; letter-spacing: 2px;">留言牆</h3>
+            <span style="font-size: 13px; color: #8a7457;">共 {{ wallCount }} 則</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 12px; max-height: 460px; overflow-y: auto; padding-right: 4px;">
+            <sc-for list="{{ wall }}" as="w" hint-placeholder-count="3">
+              <div style="background: #fffdf8; border-radius: 13px; padding: 16px 18px; box-shadow: 0 6px 16px rgba(70,50,25,0.1); animation: softIn 0.4s ease both;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                  <span style="font-size: 15px; font-weight: 500; color: #3a2f22;">{{ w.nick }}</span>
+                  <span style="font-size: 12px; background: {{ w.moodBg }}; color: {{ w.moodFg }}; padding: 3px 9px; border-radius: 999px;">{{ w.mood }}</span>
+                  <span style="font-size: 12px; color: #a3906f; margin-left: auto;">{{ w.date }}</span>
+                </div>
+                <div style="font-size: 14px; line-height: 1.95; color: #5c4a33; text-wrap: pretty;">{{ w.text }}</div>
+                <div style="font-size: 13px; color: #8a7457; margin-top: 10px; padding-top: 10px; border-top: 1px dashed rgba(122,90,46,0.25);">🕊 {{ w.reply }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" style="max-width: 1000px; margin: 0 auto; padding: 66px 40px 80px; text-align: center;">
+    <h2 style="font-family: 'Noto Serif TC', serif; font-size: 32px; letter-spacing: 4px; margin: 0 0 18px;">關於情緒小參室</h2>
+    <p style="font-size: 16px; line-height: 2.2; color: #5c4a33; margin: 0 auto; max-width: 720px; text-wrap: pretty;">{{ aboutText }}</p>
+    <div style="display: flex; justify-content: center; gap: 40px; margin-top: 40px; flex-wrap: wrap;">
+      <div style="background: #fffdf8; border-radius: 14px; padding: 22px 34px; box-shadow: 0 8px 22px rgba(70,50,25,0.12);">
+        <div style="font-family: 'Noto Serif TC', serif; font-size: 30px; color: #7a5a2e;">{{ views }}</div>
+        <div style="font-size: 13px; color: #8a7457; letter-spacing: 2px; margin-top: 4px;">瀏覽人次</div>
+      </div>
+      <div style="background: #fffdf8; border-radius: 14px; padding: 22px 34px; box-shadow: 0 8px 22px rgba(70,50,25,0.12);">
+        <div style="font-family: 'Noto Serif TC', serif; font-size: 30px; color: #7a5a2e;">{{ msgCount }}</div>
+        <div style="font-size: 13px; color: #8a7457; letter-spacing: 2px; margin-top: 4px;">收到的信</div>
+      </div>
+      <div style="background: #fffdf8; border-radius: 14px; padding: 22px 34px; box-shadow: 0 8px 22px rgba(70,50,25,0.12);">
+        <div style="font-family: 'Noto Serif TC', serif; font-size: 30px; color: #7a5a2e;">8</div>
+        <div style="font-size: 13px; color: #8a7457; letter-spacing: 2px; margin-top: 4px;">位陪伴夥伴</div>
+      </div>
+    </div>
+  </section>
+
+  <footer style="border-top: 1px solid rgba(122,90,46,0.2); padding: 26px 40px; text-align: center; font-size: 13px; color: #8a7457;">心之村 Emotion Village　·　喬安老師 情緒小參室</footer>
+
+  <sc-if value="{{ modal }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeModal }}" style="position: fixed; inset: 0; background: rgba(40,30,18,0.62); backdrop-filter: blur(4px); z-index: 60; display: grid; place-items: center; padding: 40px;">
+      <div onClick="{{ stop }}" style="width: min(940px, 100%); max-height: 86vh; overflow-y: auto; border-radius: 20px; background: {{ modal.bg }}; color: {{ modal.fg }}; box-shadow: 0 30px 80px rgba(0,0,0,0.4); animation: softIn 0.35s ease both; position: relative;">
+        <button onClick="{{ closeModal }}" style="position: absolute; right: 18px; top: 16px; border: 0; background: rgba(0,0,0,0.12); color: inherit; width: 34px; height: 34px; border-radius: 50%; font-size: 18px; cursor: pointer;">×</button>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: center; padding: 46px 48px;">
+          <div>
+            <div style="font-size: 13px; letter-spacing: 4px; opacity: 0.72; margin-bottom: 10px;">{{ modal.place }}</div>
+            <h3 style="font-family: 'Noto Serif TC', serif; font-size: 38px; font-weight: 600; margin: 0 0 22px; letter-spacing: 3px;">{{ modal.heading }}</h3>
+            <sc-for list="{{ modal.blocks }}" as="b" hint-placeholder-count="3">
+              <div style="margin-bottom: 20px;">
+                <div style="font-size: 19px; font-weight: 500; margin-bottom: 6px; letter-spacing: 2px;">{{ b.label }}</div>
+                <sc-for list="{{ b.lines }}" as="l" hint-placeholder-count="3">
+                  <div style="font-size: 15px; line-height: 1.95; opacity: 0.9;">{{ l }}</div>
+                </sc-for>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display: grid; place-items: center;">
+            <img src="{{ modal.img }}" alt="{{ modal.heading }}" style="max-width: 100%; max-height: 380px; object-fit: contain;" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ admin }}" hint-placeholder-val="{{ false }}">
+    <div style="position: fixed; inset: 0; background: rgba(30,22,12,0.7); backdrop-filter: blur(6px); z-index: 70; display: grid; place-items: center; padding: 32px;">
+      <div style="width: min(1000px, 100%); max-height: 88vh; overflow-y: auto; background: #fdfaf3; border-radius: 18px; box-shadow: 0 30px 80px rgba(0,0,0,0.4); padding: 34px 36px 40px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px;">
+          <h3 style="font-family: 'Noto Serif TC', serif; font-size: 26px; margin: 0; letter-spacing: 3px;">村長後台</h3>
+          <button onClick="{{ closeAdmin }}" style="border: 1px solid rgba(122,90,46,0.35); background: transparent; color: #7a5a2e; font-family: inherit; font-size: 14px; padding: 8px 16px; border-radius: 999px; cursor: pointer;">關閉</button>
+        </div>
+
+        <sc-if value="{{ locked }}" hint-placeholder-val="{{ false }}">
+          <div style="padding: 30px 0 10px;">
+            <p style="font-size: 14px; color: #6b5940; margin: 0 0 12px;">請輸入密碼（示範密碼：village）</p>
+            <div style="display: flex; gap: 10px;">
+              <input type="password" value="{{ pw }}" onChange="{{ setPw }}" style="flex: 1; border: 1px solid rgba(122,90,46,0.3); border-radius: 9px; padding: 11px 13px; font-family: inherit; font-size: 15px;" />
+              <button onClick="{{ unlock }}" style="border: 0; background: #7a5a2e; color: #fdf7ea; font-family: inherit; font-size: 15px; padding: 11px 24px; border-radius: 9px; cursor: pointer;">進入</button>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ unlocked }}" hint-placeholder-val="{{ true }}">
+          <div>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 26px;">
+              <div style="background: #f3ebdb; border-radius: 12px; padding: 18px 20px;">
+                <div style="font-size: 12px; color: #8a7457; letter-spacing: 2px;">總瀏覽人次</div>
+                <div style="font-family: 'Noto Serif TC', serif; font-size: 28px; color: #5f4522; margin-top: 4px;">{{ views }}</div>
+              </div>
+              <div style="background: #f3ebdb; border-radius: 12px; padding: 18px 20px;">
+                <div style="font-size: 12px; color: #8a7457; letter-spacing: 2px;">今日瀏覽</div>
+                <div style="font-family: 'Noto Serif TC', serif; font-size: 28px; color: #5f4522; margin-top: 4px;">{{ todayViews }}</div>
+              </div>
+              <div style="background: #f3ebdb; border-radius: 12px; padding: 18px 20px;">
+                <div style="font-size: 12px; color: #8a7457; letter-spacing: 2px;">留言總數</div>
+                <div style="font-family: 'Noto Serif TC', serif; font-size: 28px; color: #5f4522; margin-top: 4px;">{{ msgCount }}</div>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-bottom: 18px;">
+              <button onClick="{{ tabMsg }}" style="border: 0; background: {{ tabMsgBg }}; color: {{ tabMsgFg }}; font-family: inherit; font-size: 14px; padding: 9px 20px; border-radius: 999px; cursor: pointer;">留言管理</button>
+              <button onClick="{{ tabEdit }}" style="border: 0; background: {{ tabEditBg }}; color: {{ tabEditFg }}; font-family: inherit; font-size: 14px; padding: 9px 20px; border-radius: 999px; cursor: pointer;">內容編輯</button>
+            </div>
+
+            <sc-if value="{{ showMsgs }}" hint-placeholder-val="{{ true }}">
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <sc-for list="{{ adminMsgs }}" as="m" hint-placeholder-count="3">
+                  <div style="background: #fff; border: 1px solid rgba(122,90,46,0.16); border-radius: 12px; padding: 14px 16px;">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+                      <span style="font-size: 15px; font-weight: 500;">{{ m.nick }}</span>
+                      <span style="font-size: 12px; color: #8a7457;">{{ m.mood }}　{{ m.date }}</span>
+                      <span style="font-size: 12px; color: {{ m.stateFg }}; margin-left: auto;">{{ m.stateLabel }}</span>
+                    </div>
+                    <div style="font-size: 14px; line-height: 1.9; color: #5c4a33;">{{ m.text }}</div>
+                    <div style="display: flex; gap: 8px; margin-top: 10px;">
+                      <button onClick="{{ m.onToggle }}" style="border: 1px solid rgba(122,90,46,0.3); background: transparent; color: #7a5a2e; font-family: inherit; font-size: 13px; padding: 6px 14px; border-radius: 999px; cursor: pointer;">{{ m.toggleLabel }}</button>
+                      <button onClick="{{ m.onDelete }}" style="border: 1px solid rgba(160,60,50,0.35); background: transparent; color: #a04236; font-family: inherit; font-size: 13px; padding: 6px 14px; border-radius: 999px; cursor: pointer;">刪除</button>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ showEdit }}" hint-placeholder-val="{{ false }}">
+              <div>
+                <p style="font-size: 13px; color: #8a7457; margin: 0 0 14px; line-height: 1.9;">直接修改文字後按「儲存」，網站內容立刻更新，不需要改任何程式碼。</p>
+                <div style="margin-bottom: 20px;">
+                  <div style="font-size: 14px; font-weight: 500; margin-bottom: 6px;">關於情緒小參室（首頁介紹）</div>
+                  <textarea value="{{ draft.about }}" onChange="{{ editAbout }}" style="width: 100%; box-sizing: border-box; height: 90px; border: 1px solid rgba(122,90,46,0.3); border-radius: 9px; padding: 11px 13px; font-family: inherit; font-size: 14px; line-height: 1.9;"></textarea>
+                </div>
+                <sc-for list="{{ editChars }}" as="c" hint-placeholder-count="8">
+                  <div style="border: 1px solid rgba(122,90,46,0.16); border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; background: #fff;">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                      <span style="width: 12px; height: 12px; border-radius: 50%; background: {{ c.bg }}; border: 1px solid rgba(0,0,0,0.15);"></span>
+                      <span style="font-size: 15px; font-weight: 500;">{{ c.name }}｜{{ c.title }}</span>
+                      <span style="font-size: 12px; color: #8a7457;">{{ c.place }}</span>
+                    </div>
+                    <textarea value="{{ c.value }}" onChange="{{ c.onChange }}" style="width: 100%; box-sizing: border-box; height: 130px; border: 1px solid rgba(122,90,46,0.25); border-radius: 9px; padding: 11px 13px; font-family: inherit; font-size: 13px; line-height: 1.85;"></textarea>
+                  </div>
+                </sc-for>
+                <div style="display: flex; gap: 10px; margin-top: 16px;">
+                  <button onClick="{{ saveEdits }}" style="border: 0; background: #7a5a2e; color: #fdf7ea; font-family: inherit; font-size: 15px; padding: 11px 26px; border-radius: 9px; cursor: pointer;">{{ saveLabel }}</button>
+                  <button onClick="{{ resetEdits }}" style="border: 1px solid rgba(122,90,46,0.3); background: transparent; color: #7a5a2e; font-family: inherit; font-size: 15px; padding: 11px 22px; border-radius: 9px; cursor: pointer;">還原成預設</button>
+                </div>
+              </div>
+            </sc-if>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900}}">
+const CDN = 'https://res.cloudinary.com/dbiirpmpy/image/upload/';
+const IMG = {
+  moon: CDN + 'v1785829664/Buddhism/month_after_month.png',
+  sun: CDN + 'v1785829664/Buddhism/warm_sun.png',
+  star: CDN + 'v1785829663/Buddhism/star.png',
+  fog: CDN + 'v1785829663/Buddhism/fog.png',
+  rain: CDN + 'v1785829663/Buddhism/water.png',
+  thunder: CDN + 'v1785829663/Buddhism/thunder.png',
+  breeze: CDN + 'v1785829662/Buddhism/wind.png',
+  earth: CDN + 'v1785829662/Buddhism/dust.png',
+};
+
+const BASE = [
+  {key:'moon', name:'月月', title:'夜晚守護者', place:'月眠林', bg:'#2b303b', fg:'#f4f2ee', img:IMG.moon,
+   companion:['焦慮。','失眠。','胡思亂想。'], personality:['成熟。','謹慎。'],
+   work:['晚上巡夜。','拿著鐮刀。','不是攻擊。','而是，剪掉那些一直纏住人的念頭。']},
+  {key:'thunder', name:'雷雷', title:'界線守護者', place:'雷鳴山', bg:'#d6d6d6', fg:'#1d232b', img:IMG.thunder,
+   companion:['憤怒。','害怕。','沒有勇氣拒絕別人。'], personality:['看起來兇。','其實超暖。','最討厭別人欺負弱小。'],
+   work:['巡邏並修補壞掉的圍欄。','因為：健康的界線，可以保護心。']},
+  {key:'sun', name:'暖陽', title:'曬心人', place:'晨曦原', bg:'#fbdd76', fg:'#7a3d10', img:IMG.sun,
+   companion:['沒有自信。','自我懷疑。','否定自己。'], personality:['永遠笑笑的。','不是因為沒有煩惱。','而是，知道每一天都會過去。'],
+   work:['把大家潮濕的心，拿去曬曬太陽。']},
+  {key:'breeze', name:'微風', title:'改變旅人', place:'微風草原', bg:'#e3eed4', fg:'#4a5c39', img:IMG.breeze,
+   companion:['離別。','新開始。','轉變。'], personality:['最自由。','想到哪就去哪。','大家都不知道他今天在哪。'],
+   work:['把風送到需要的人身邊。','例如：把花香，送去難過的人窗前。']},
+  {key:'fog', name:'霧霧', title:'迷途引路人', place:'迷霧谷', bg:'#e5dcf0', fg:'#46375c', img:IMG.fog,
+   companion:['迷惘。','選擇。','不知道怎麼辦。'], personality:['慢。','非常慢。','從來不催促任何人。','總是笑笑地說：「慢慢來。」'],
+   work:['每天背著羅盤。','不是帶路，而是陪別人走。']},
+  {key:'earth', name:'土土', title:'種子照顧員', place:'大地嶺', bg:'#ddccb0', fg:'#6b3a1e', img:IMG.earth,
+   companion:['自我接納。','等待。','耐心。'], personality:['只傾聽，不評判。','一天講不到十句話。','可是，跟他待在一起很舒服。'],
+   work:['包容所有情緒，就像大地接納一切種子。']},
+  {key:'star', name:'星星', title:'幸福收藏家', place:'星光丘', bg:'#23386b', fg:'#f6f1e2', img:IMG.star,
+   companion:['感恩。','快樂。','小確幸。'], personality:['最活潑。','最好奇。','每天都在到處跑。'],
+   work:['拿著玻璃瓶，收集今天的小確幸。']},
+  {key:'rain', name:'雨滴', title:'眼淚收藏員', place:'雨之湖', bg:'#dbe4f5', fg:'#16324f', img:IMG.rain,
+   companion:['悲傷、委屈、失落、離別。'], personality:['最溫柔。','也是最會傾聽的人。','很少主動說話。','喜歡坐在屋簷下陪別人聽雨。','大家哭的時候都會來找她。'],
+   work:['把眼淚變成露珠。','澆灌小參室裡的植物。']},
+];
+
+const PLACES = {
+  clinic: {place:'村子入口', heading:'情緒小參室', bg:'#efe4d0', fg:'#4a3a26', img:IMG.earth,
+    blocks:[{label:'這是什麼地方', lines:['一間開在大樹裡的小屋。','門永遠是開的。']},
+            {label:'誰可以進來', lines:['所有帶著情緒來的人。','不用先整理好自己。']}]},
+  weather: {place:'雷鳴山頂', heading:'觀心氣象站', bg:'#dfe3ec', fg:'#2b3345', img:IMG.thunder,
+    blocks:[{label:'做什麼', lines:['每天量一次心裡的天氣。','晴、陰、雨，都是正常的。']},
+            {label:'怎麼用', lines:['寫下今天的天氣。','久了會看見自己的季節。']}]},
+  okcave: {place:'山的另一邊', heading:'OK洞', bg:'#3a2f26', fg:'#f4ead8', img:IMG.star,
+    blocks:[{label:'洞裡有什麼', lines:['什麼都沒有。','只有回音。']},
+            {label:'為什麼要來', lines:['對著洞口喊一聲「我沒事」，','洞會回你一句「你可以不用沒事」。']}]},
+};
+
+const MOODS = [
+  {label:'開心', bg:'#fbdd76', fg:'#7a3d10', border:'#e9c655'},
+  {label:'難過', bg:'#dbe4f5', fg:'#16324f', border:'#b9c9e6'},
+  {label:'生氣', bg:'#e6d6d2', fg:'#7a3226', border:'#d3b8b1'},
+  {label:'焦慮', bg:'#e5dcf0', fg:'#46375c', border:'#cfc0e2'},
+  {label:'迷惘', bg:'#e3eed4', fg:'#4a5c39', border:'#cbdcb6'},
+  {label:'說不出來', bg:'#e9e2d5', fg:'#5c4a33', border:'#d6cbb8'},
+];
+
+const REPLIES = {
+  '開心':'星星把這件事收進玻璃瓶了。','難過':'雨滴坐在你旁邊，陪你聽雨。','生氣':'雷雷說：你的界線值得被守住。',
+  '焦慮':'月月今晚會替你巡夜。','迷惘':'霧霧說：慢慢來，沒關係。','說不出來':'土土只是坐著，不問你為什麼。'
+};
+
+const KEY = 'emotion-village-v1';
+
+class Component extends DCLogic {
+  state = {
+    modalKey: null, adminOpen: false, unlocked: false, pw: '', tab: 'msgs',
+    nick: '', mood: '說不出來', text: '', priv: false, sent: false, saved: false,
+    views: 0, todayViews: 0, msgs: [], overrides: {}, about: '', draft: null,
+  };
+
+  defaultAbout = '情緒小參室，是一個可以把情緒放下來的地方。這裡不急著給你答案，也不會要你趕快好起來。你可以先在村子裡走一走，遇到那位剛好懂你的夥伴，再慢慢說。';
+
+  load() {
+    try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; }
+  }
+  persist(patch) {
+    const data = Object.assign(this.load(), patch);
+    try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) {}
+  }
+
+  componentDidMount() {
+    const d = this.load();
+    const today = new Date().toISOString().slice(0, 10);
+    const views = (d.views || 1280) + 1;
+    const daily = Object.assign({}, d.daily || {});
+    daily[today] = (daily[today] || 0) + 1;
+    const msgs = d.msgs || [
+      {id: 1, nick: '小魚', mood: '焦慮', text: '最近晚上都睡不著，一直在想白天講錯的話。', date: '2026/07/28', pub: true, priv: false},
+      {id: 2, nick: '匿名旅人', mood: '迷惘', text: '要不要換工作，想了三個月還是決定不了。', date: '2026/07/30', pub: true, priv: false},
+    ];
+    this.persist({views, daily, msgs});
+    this.setState({
+      views, todayViews: daily[today], msgs,
+      overrides: d.overrides || {}, about: d.about || this.defaultAbout,
+    });
+  }
+
+  chars() {
+    return BASE.map(c => {
+      const o = this.state.overrides[c.key];
+      if (!o) return c;
+      const lines = o.split('\n').map(s => s.trim());
+      const out = Object.assign({}, c);
+      const secs = {'負責陪伴':'companion', '個性':'personality', '工作':'work'};
+      let cur = null; const buf = {companion: [], personality: [], work: []};
+      lines.forEach(l => {
+        if (!l) return;
+        if (secs[l]) { cur = secs[l]; return; }
+        if (cur) buf[cur].push(l);
+        else if (l.indexOf('｜') > -1) { const p = l.split('｜'); out.name = p[0].trim(); out.title = p[1].trim(); }
+      });
+      ['companion','personality','work'].forEach(k => { if (buf[k].length) out[k] = buf[k]; });
+      return out;
+    });
+  }
+
+  toText(c) {
+    return c.name + '｜' + c.title + '\n負責陪伴\n' + c.companion.join('\n') +
+      '\n個性\n' + c.personality.join('\n') + '\n工作\n' + c.work.join('\n');
+  }
+
+  send = () => {
+    const t = this.state.text.trim();
+    if (!t) return;
+    const now = new Date();
+    const msg = {
+      id: Date.now(), nick: this.state.nick.trim() || '匿名旅人', mood: this.state.mood, text: t,
+      date: now.getFullYear() + '/' + String(now.getMonth()+1).padStart(2,'0') + '/' + String(now.getDate()).padStart(2,'0'),
+      pub: !this.state.priv, priv: this.state.priv,
+    };
+    const msgs = [msg].concat(this.state.msgs);
+    this.persist({msgs});
+    this.setState({msgs, text: '', sent: true});
+    setTimeout(() => this.setState({sent: false}), 2600);
+  };
+
+  renderVals() {
+    const s = this.state;
+    const chars = this.chars();
+    const open = {};
+    chars.forEach(c => { open[c.key] = () => this.setState({modalKey: c.key}); });
+    Object.keys(PLACES).forEach(k => { open[k] = () => this.setState({modalKey: k}); });
+
+    let modal = null;
+    if (s.modalKey) {
+      const c = chars.find(x => x.key === s.modalKey);
+      if (c) modal = {bg: c.bg, fg: c.fg, img: c.img, place: c.place, heading: c.name + '｜' + c.title,
+        blocks: [{label:'負責陪伴', lines: c.companion}, {label:'個性', lines: c.personality}, {label:'工作', lines: c.work}]};
+      else modal = PLACES[s.modalKey];
+    }
+
+    const moodMeta = l => MOODS.find(m => m.label === l) || MOODS[5];
+    const wall = s.msgs.filter(m => m.pub).map(m => {
+      const mm = moodMeta(m.mood);
+      return Object.assign({}, m, {moodBg: mm.bg, moodFg: mm.fg, reply: REPLIES[m.mood] || '鴿子已經把信送到了。'});
+    });
+
+    const adminMsgs = s.msgs.map(m => Object.assign({}, m, {
+      stateLabel: m.priv ? '私訊' : (m.pub ? '已公開' : '已隱藏'),
+      stateFg: m.priv ? '#8a7457' : (m.pub ? '#5b7a4a' : '#a04236'),
+      toggleLabel: m.pub ? '隱藏' : '公開',
+      onToggle: () => { const msgs = s.msgs.map(x => x.id === m.id ? Object.assign({}, x, {pub: !x.pub}) : x); this.persist({msgs}); this.setState({msgs}); },
+      onDelete: () => { const msgs = s.msgs.filter(x => x.id !== m.id); this.persist({msgs}); this.setState({msgs}); },
+    }));
+
+    const draft = s.draft || {about: s.about, chars: Object.fromEntries(chars.map(c => [c.key, s.overrides[c.key] || this.toText(c)]))};
+    const setDraft = patch => this.setState({draft: Object.assign({}, draft, patch), saved: false});
+
+    return {
+      characters: chars.map(c => Object.assign({}, c, {lead: c.companion.join(''), onOpen: open[c.key]})),
+      open,
+      goPost: () => { const el = document.getElementById('post'); if (el) window.scrollTo({top: el.offsetTop - 70, behavior: 'smooth'}); },
+      openAdmin: () => this.setState({adminOpen: true}),
+      closeAdmin: () => this.setState({adminOpen: false}),
+      admin: s.adminOpen, locked: s.adminOpen && !s.unlocked, unlocked: s.adminOpen && s.unlocked,
+      pw: s.pw, setPw: e => this.setState({pw: e.target.value}),
+      unlock: () => this.setState({unlocked: s.pw === 'village', pw: s.pw === 'village' ? '' : s.pw}),
+      modal, closeModal: () => this.setState({modalKey: null}), stop: e => e.stopPropagation(),
+      moods: MOODS.map(m => Object.assign({}, m, {
+        bg: s.mood === m.label ? m.bg : 'transparent',
+        fg: s.mood === m.label ? m.fg : '#6b5940',
+        border: s.mood === m.label ? m.border : 'rgba(122,90,46,0.3)',
+        onPick: () => this.setState({mood: m.label}),
+      })),
+      form: {nick: s.nick, text: s.text, priv: s.priv},
+      setNick: e => this.setState({nick: e.target.value}),
+      setText: e => this.setState({text: e.target.value}),
+      setPriv: e => this.setState({priv: e.target.checked}),
+      send: this.send,
+      sendLabel: s.sent ? '🕊 鴿子已經飛走了' : '交給鴿子',
+      wall, wallCount: wall.length, msgCount: s.msgs.length,
+      views: s.views.toLocaleString(), todayViews: s.todayViews,
+      aboutText: s.about,
+      showMsgs: s.tab === 'msgs', showEdit: s.tab === 'edit',
+      tabMsg: () => this.setState({tab: 'msgs'}), tabEdit: () => this.setState({tab: 'edit'}),
+      tabMsgBg: s.tab === 'msgs' ? '#7a5a2e' : '#efe4d0', tabMsgFg: s.tab === 'msgs' ? '#fdf7ea' : '#6b5940',
+      tabEditBg: s.tab === 'edit' ? '#7a5a2e' : '#efe4d0', tabEditFg: s.tab === 'edit' ? '#fdf7ea' : '#6b5940',
+      adminMsgs, draft,
+      editAbout: e => setDraft({about: e.target.value}),
+      editChars: chars.map(c => ({name: c.name, title: c.title, place: c.place, bg: c.bg,
+        value: draft.chars[c.key],
+        onChange: e => setDraft({chars: Object.assign({}, draft.chars, {[c.key]: e.target.value})}),
+      })),
+      saveLabel: s.saved ? '已儲存 ✓' : '儲存修改',
+      saveEdits: () => {
+        this.persist({about: draft.about, overrides: draft.chars});
+        this.setState({about: draft.about, overrides: draft.chars, saved: true});
+        setTimeout(() => this.setState({saved: false}), 2000);
+      },
+      resetEdits: () => {
+        this.persist({about: this.defaultAbout, overrides: {}});
+        this.setState({about: this.defaultAbout, overrides: {}, draft: null, saved: false});
+      },
+    };
+  }
+}
+
+</script>
+</body>
+</html>

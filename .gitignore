@@ -1,0 +1,9 @@
+# 這是公開的 repo，不需要上傳的檔案放這裡
+*.pptm
+*.pptx
+*.ppt
+
+# 系統／OneDrive 產生的雜檔
+Thumbs.db
+desktop.ini
+.DS_Store

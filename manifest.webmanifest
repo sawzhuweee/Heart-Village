@@ -1,0 +1,25 @@
+{
+  "name": "心之村｜情緒村地圖",
+  "short_name": "心之村",
+  "description": "心之村 Emotion Village — 八位陪伴情緒的夥伴，和一間永遠開著門的情緒小參室。",
+  "lang": "zh-Hant",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "id": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
+  "orientation": "any",
+  "background_color": "#f3ece0",
+  "theme_color": "#fbf6ec",
+  "categories": ["education", "lifestyle", "health"],
+  "icons": [
+    { "src": "./icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "./icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "飛鴿驛站", "short_name": "寫信", "description": "把煩惱寫下來交給鴿子", "url": "./#post", "icons": [{ "src": "./icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "八位夥伴", "short_name": "夥伴", "description": "認識村子裡的八位夥伴", "url": "./#friends", "icons": [{ "src": "./icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}
