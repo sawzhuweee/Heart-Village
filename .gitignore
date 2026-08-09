@@ -2,6 +2,8 @@
 *.pptm
 *.pptx
 *.ppt
+*.docx
+*.doc
 
 # 系統／OneDrive 產生的雜檔
 Thumbs.db
