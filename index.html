@@ -1081,12 +1081,10 @@ document.addEventListener('click', function(e){
   var today = new Date().toISOString().slice(0,10);
   var daily = Object.assign({}, d.daily || {});
   daily[today] = (daily[today] || 0) + 1;
-  S.views = (d.views || 1280) + 1;
+  /* 瀏覽人次與留言都從 0 開始，只記錄真實發生的次數，不放任何示範數字 */
+  S.views = (d.views || 0) + 1;
   S.todayViews = daily[today];
-  S.msgs = d.msgs || [
-    {id:1, nick:'小魚', mood:'焦慮', text:'最近晚上都睡不著，一直在想白天講錯的話。', date:'2026/07/28', pub:true, priv:false},
-    {id:2, nick:'匿名旅人', mood:'迷惘', text:'要不要換工作，想了三個月還是決定不了。', date:'2026/07/30', pub:true, priv:false}
-  ];
+  S.msgs = d.msgs || [];
   S.overrides = d.overrides || {};
   S.about = d.about || DEFAULT_ABOUT;
   persist({views:S.views, daily:daily, msgs:S.msgs});
@@ -1232,15 +1230,6 @@ var BANDAIDS = [
    q:'你說你想改變。你連那張椅子都還沒離開過。'},
   {n:'長老', e:'🫖', bg:'#efe4d0', fg:'#5f4522',
    q:'老衲看了三十年，最難撕的不是傷口上的貼布，是「我沒事」這三個字。斯啦。'}
-];
-
-/* ---------- 飛鴿：後台沒接時的備用信件 ---------- */
-var SEED_LETTERS = [
-  {nick:'匿名旅人', mood:'焦慮', text:'最近每天早上醒來第一件事就是胃痛。我知道是工作，但我不敢辭。', date:'2026/07/12'},
-  {nick:'路過的人', mood:'難過', text:'和最好的朋友走散了，沒有吵架，就是慢慢不聯絡了。這種難過好像連生氣的資格都沒有。', date:'2026/07/19'},
-  {nick:'小豆', mood:'迷惘', text:'大家都好像知道自己要什麼，只有我到現在還在原地。我是不是很沒用。', date:'2026/07/23'},
-  {nick:'匿名旅人', mood:'說不出來', text:'我沒有什麼特別的事，就是很累。累到不知道要跟誰說，說了也怕被覺得在討拍。', date:'2026/08/01'},
-  {nick:'阿海', mood:'生氣', text:'我幫他做了三個月，最後被說是應該的。我不知道我在氣他還是氣我自己。', date:'2026/08/03'}
 ];
 
 /* ---------- 狀態 ---------- */
@@ -1570,6 +1559,17 @@ function catchDove(btn){
   ST.sent = false;
   pickLetter(function(m){
     ST.letter = m;
+    if (!m) {                      /* 還沒有任何村民投遞過，就不要生一封假的給人看 */
+      slot.innerHTML =
+        '<div class="letter">' +
+          '<div class="letter-top">🕊️ 這隻鴿子的信袋是空的</div>' +
+          '<div class="letter-body">今天天空上還沒有信。\n村子剛開，還沒有村民把心事交給鴿子。\n\n' +
+          '長老說：「那就由你先寫一封吧。你寫的那封，之後會被別人攔下來，換他來安慰你。」</div>' +
+          '<button class="btn-main" style="margin-top:16px;letter-spacing:2px" data-act="goPost" type="button">去飛鴿驛站寫一封 🕊️</button>' +
+        '</div>';
+      slot.scrollIntoView({behavior:'smooth', block:'nearest'});
+      return;
+    }
     slot.innerHTML =
       '<div class="letter">' +
         '<div class="letter-top">🕊️ 來自村子裡的匿名心事　·　' + esc(m.mood || '說不出來') + '　·　' + esc(m.date || '') + '</div>' +
@@ -1651,31 +1651,37 @@ function gasSend(payload){
     }).catch(function(){});
   } catch(e){}
 }
-/* 讀回其他村民的匿名心事（JSONP，避開跨網域限制） */
+/* 向試算表要資料（JSONP，避開跨網域限制）；沒接後台或失敗時回 null */
 var jsonpN = 0;
-function pickLetter(cb){
-  if (!STATION.GAS_URL) { cb(localLetter()); return; }
+function stJsonp(action, cb){
+  if (!STATION.GAS_URL) { cb(null); return; }
   var name = '__stcb' + (jsonpN++), s = document.createElement('script'), done = false, timer;
   function cleanup(){
     clearTimeout(timer);
     try { delete window[name]; } catch(e){ window[name] = undefined; }
     if (s.parentNode) s.parentNode.removeChild(s);
   }
-  window[name] = function(d){
-    done = true; cleanup();
-    var arr = (d && d.letters) || [];
-    cb(arr.length ? arr[Math.floor(Math.random()*arr.length)] : localLetter());
-  };
-  s.onerror = function(){ if (!done) { cleanup(); cb(localLetter()); } };
-  timer = setTimeout(function(){ if (!done) { cleanup(); cb(localLetter()); } }, 6000);
-  s.src = STATION.GAS_URL + (STATION.GAS_URL.indexOf('?') > -1 ? '&' : '?') + 'action=letters&callback=' + name;
+  window[name] = function(d){ done = true; cleanup(); cb(d); };
+  s.onerror = function(){ if (!done) { cleanup(); cb(null); } };
+  timer = setTimeout(function(){ if (!done) { cleanup(); cb(null); } }, 6000);
+  s.src = STATION.GAS_URL + (STATION.GAS_URL.indexOf('?') > -1 ? '&' : '?') + 'action=' + action + '&callback=' + name;
   document.head.appendChild(s);
+}
+/* 抽一封真實的匿名心事：先問試算表，沒有就用留言牆上村民真的寫過的信。
+   一封真信都沒有時，就老實說沒有，不編故事給村民看。 */
+function pickLetter(cb){
+  stJsonp('letters', function(d){
+    var arr = (d && d.letters) || [];
+    arr = arr.filter(function(m){ return m && m.text; });
+    if (arr.length) { cb(arr[Math.floor(Math.random()*arr.length)]); return; }
+    cb(localLetter());
+  });
 }
 function localLetter(){
   var pool = S.msgs.filter(function(m){ return m.text && !m.priv; }).map(function(m){
     return {nick:m.nick, mood:m.mood, text:m.text, date:m.date};
-  }).concat(SEED_LETTERS);
-  return pool[Math.floor(Math.random()*pool.length)];
+  });
+  return pool.length ? pool[Math.floor(Math.random()*pool.length)] : null;
 }
 
 /* ---------- 後台：氣象站數據 ---------- */
@@ -1722,6 +1728,18 @@ $('stSound').addEventListener('click', function(){
   persist({stSound:ST.sound});
   if (ST.sound) sfx('tick');
 });
+
+/* ---------- 瀏覽人次：只記錄真實發生的次數 ----------
+   沒接試算表：算這台裝置真的開過幾次（從 0 開始）。
+   接了試算表：每次開站免登入、非同步送一筆 view 進試算表，
+   再把全站的真實總數讀回來顯示，不放任何預設數字。 */
+(function(){
+  if (!STATION.GAS_URL) return;
+  gasSend({type:'view'});
+  stJsonp('stats', function(d){
+    if (d && typeof d.views === 'number') { S.views = d.views; renderStats(); }
+  });
+})();
 
 /* ---------- 隱形暗門：底部版權文字連點 5 下 ---------- */
 (function(){

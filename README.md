@@ -85,31 +85,46 @@ var STATION = {
 };
 ```
 
-**沒填也能用**：測驗趨勢與飛鴿回信會存在本機，村長後台的「氣象站數據」分頁照樣看得到，
-飛鴿讀到的信會從留言牆＋內建的幾封範例信裡抽。
+**沒填也能用**：測驗趨勢、飛鴿回信、瀏覽次數都先記在本機，村長後台的「氣象站數據」分頁照樣看得到。
 
 要真的連到試算表時，在試算表按 **擴充功能 → Apps Script**，貼上：
 
 ```js
+function sheet_(name, header){
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sh = ss.getSheetByName(name);
+  if (!sh) { sh = ss.insertSheet(name); sh.appendRow(header); }
+  return sh;
+}
+
 function doPost(e){
   var d = JSON.parse(e.postData.contents);
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var name = d.type === 'reply' ? '飛鴿回信' : '觀測趨勢';
-  var sh = ss.getSheetByName(name) || ss.insertSheet(name);
-  if (d.type === 'reply') sh.appendRow([new Date(), d.from, d.letter, d.reply]);
-  else sh.appendRow([new Date(), d.code, d.name, JSON.stringify(d.scores)]);
+  if (d.type === 'view')
+    sheet_('瀏覽紀錄', ['時間']).appendRow([new Date()]);
+  else if (d.type === 'reply')
+    sheet_('飛鴿回信', ['時間','回給誰','原信','回信']).appendRow([new Date(), d.from, d.letter, d.reply]);
+  else
+    sheet_('觀測趨勢', ['時間','代碼','心靈氣候','分數']).appendRow([new Date(), d.code, d.name, JSON.stringify(d.scores)]);
   return ContentService.createTextOutput('ok');
 }
+
 function doGet(e){
-  // 回傳「飛鴿驛站」工作表裡可以公開流傳的匿名心事
-  var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('飛鴿驛站');
-  var rows = sh ? sh.getDataRange().getValues().slice(1) : [];
-  var letters = rows.map(function(r){
-    return {nick:String(r[1]||'匿名旅人'), mood:String(r[2]||''), text:String(r[3]||''),
-            date:Utilities.formatDate(new Date(r[0]), 'Asia/Taipei', 'yyyy/MM/dd')};
-  }).filter(function(x){ return x.text; });
-  var body = JSON.stringify({letters:letters});
-  var cb = e && e.parameter && e.parameter.callback;
+  var action = (e && e.parameter && e.parameter.action) || 'letters';
+  var out;
+  if (action === 'stats') {
+    // 真實瀏覽人次 = 瀏覽紀錄的筆數（扣掉標題列）
+    var v = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('瀏覽紀錄');
+    out = {views: v ? Math.max(0, v.getLastRow() - 1) : 0};
+  } else {
+    // 回傳「飛鴿驛站」工作表裡可以流傳的匿名心事
+    var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('飛鴿驛站');
+    var rows = sh ? sh.getDataRange().getValues().slice(1) : [];
+    out = {letters: rows.map(function(r){
+      return {nick:String(r[1]||'匿名旅人'), mood:String(r[2]||''), text:String(r[3]||''),
+              date:Utilities.formatDate(new Date(r[0]), 'Asia/Taipei', 'yyyy/MM/dd')};
+    }).filter(function(x){ return x.text; })};
+  }
+  var body = JSON.stringify(out), cb = e && e.parameter && e.parameter.callback;
   return cb
     ? ContentService.createTextOutput(cb + '(' + body + ')').setMimeType(ContentService.MimeType.JAVASCRIPT)
     : ContentService.createTextOutput(body).setMimeType(ContentService.MimeType.JSON);
@@ -141,3 +156,20 @@ function doGet(e){
 
 > 注意：留言與編輯內容存在瀏覽器的 `localStorage`，只存在該裝置上，換手機或清除瀏覽資料就會不見。
 > 若要多人共用同一份留言，需要接後端（例如 Firebase）。
+
+## 首頁的三個數字
+
+全部都是真的，**沒有任何預設或示範數字**：
+
+| 數字 | 怎麼算 |
+| --- | --- |
+| 瀏覽人次 | 沒接試算表：這台裝置真的開過幾次，從 **0** 開始。<br />接了試算表：每次開站免登入送一筆進「瀏覽紀錄」，顯示全站真實總數。 |
+| 收到的信 | 真的被寫出來的留言數，一開始是 **0**。 |
+| 位陪伴夥伴 | 固定 8 位。 |
+
+飛鴿攔截戰也一樣：一封真的信都還沒有時，鴿子會老實說「信袋是空的」並請村民先寫一封，
+不會生一封假的心事給人讀。
+
+> 已經開過網站的手機，`localStorage` 裡還留著舊的數字。
+> 想歸零：後台 →「內容編輯」→「還原成預設」不會清數字，
+> 要清請在手機瀏覽器清除該網站的資料，或無痕視窗開一次確認。
