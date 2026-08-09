@@ -973,6 +973,8 @@ function send(){
   };
   S.msgs = [msg].concat(S.msgs);
   persist({msgs:S.msgs});
+  /* 同步進村長的試算表：公開的那些之後會被飛鴿攔截戰抽出來讀 */
+  gasSend({type:'letter', nick:msg.nick, mood:msg.mood, text:msg.text, pub:msg.pub});
   $('text').value = '';
   renderWall(); renderStats();
   var btn = $('sendBtn'); btn.textContent = '🕊 鴿子已經飛走了';
@@ -1102,12 +1104,9 @@ document.addEventListener('click', function(e){
 
 /* ---------- 村長設定區（只要改這三行） ---------- */
 var STATION = {
-  /* Google Apps Script 網頁應用程式網址；留空＝資料先存在手機本機，後台照樣看得到 */
-  GAS_URL:   '',
-  /* 村長私人的 Google 試算表網址；留空＝暗門改為打開本機後台 */
-  SHEET_URL: '',
-  /* 底部暗門的暗號 */
-  ADMIN_PASS:'joan888'
+  GAS_URL:   'https://script.google.com/macros/s/AKfycbzq9RN4UtdEv-pXMKi2Yk5nOyDq-kVVeN1g5qT6QRB1EzQErcUTL7vWGfB6qBa4aQ7-/exec',  // Apps Script 網頁應用程式網址
+  SHEET_URL: 'https://docs.google.com/spreadsheets/d/1CpqT6jwV2WfCk0LBF9AgzWfNDUt-6RFso9EQc5SR8KE/edit',  // 村長私人的 Google 試算表網址
+  ADMIN_PASS:'joan888'    // 底部暗門的暗號
 };
 
 /* ---------- 12 道題庫（左A／上B／右C／下D，括號內為加分代碼） ---------- */

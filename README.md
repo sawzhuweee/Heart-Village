@@ -4,14 +4,14 @@
 
 ## 檔案
 
-| 檔案 | 用途 |
-| --- | --- |
-| `index.html` | 網站本體（含樣式與程式，純前端、不需要後端） |
-| `manifest.webmanifest` | PWA 設定（App 名稱、圖示、開啟方式） |
-| `sw.js` | Service Worker：離線快取 |
-| `icons/` | App 圖示（192 / 512 / maskable / apple-touch） |
-| `情緒村.dc.html` | 原始的 DC 預覽檔（保留，不會被使用） |
-| `picture/` | 圖片原稿（線上圖走 Cloudinary） |
+| 檔案                     | 用途                                           |
+| ------------------------ | ---------------------------------------------- |
+| `index.html`           | 網站本體（含樣式與程式，純前端、不需要後端）   |
+| `manifest.webmanifest` | PWA 設定（App 名稱、圖示、開啟方式）           |
+| `sw.js`                | Service Worker：離線快取                       |
+| `icons/`               | App 圖示（192 / 512 / maskable / apple-touch） |
+| `情緒村.dc.html`       | 原始的 DC 預覽檔（保留，不會被使用）           |
+| `picture/`             | 圖片原稿（線上圖走 Cloudinary）                |
 
 ## 本機測試
 
@@ -60,12 +60,12 @@ Android 主畫面上會用 `icons/icon-maskable-512.png`（配合各家圓形／
 點地圖最上方的光點、上方選單的「觀心氣象站」，或村莊圖例的「觀心氣象站」，
 會用整頁蓋住的方式打開氣象站，頂部有 4 個分頁鈕：
 
-| 分頁 | 內容 | 計分 |
-| --- | --- | --- |
-| 🌤 觀測站 | 12 題題庫**每次隨機盲抽 4 題**；撥動銅製指針作答（左 A／上 B／右 C／下 D），放開手指即選定，最後判定八種心靈氣候之一 | 有 |
-| 🩹 OK蹦撕撕樂 | 9 款 OK 繃，往右滑「斯啦」一聲撕開，露出長老的一句話 | 無 |
-| 🕊 飛鴿攔截戰 | 點正在飛的鴿子，抽讀一封匿名心事，寫回信送進村長信箱 | 無 |
-| 🤫 長老的秘密 | 施工中彩蛋，之後要加新遊戲就寫在 `renderSecret()` 裡 | 無 |
+| 分頁          | 內容                                                                                                                       | 計分 |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------- | ---- |
+| 🌤 觀測站     | 12 題題庫**每次隨機盲抽 4 題**；撥動銅製指針作答（左 A／上 B／右 C／下 D），放開手指即選定，最後判定八種心靈氣候之一 | 有   |
+| 🩹 OK蹦撕撕樂 | 9 款 OK 繃，往右滑「斯啦」一聲撕開，露出長老的一句話                                                                       | 無   |
+| 🕊 飛鴿攔截戰 | 點正在飛的鴿子，抽讀一封匿名心事，寫回信送進村長信箱                                                                       | 無   |
+| 🤫 長老的秘密 | 施工中彩蛋，之後要加新遊戲就寫在`renderSecret()` 裡                                                                      | 無   |
 
 - 音效（齒輪喀喀聲、撕貼紙、鴿子咕咕、打雷）都是用 Web Audio **即時合成**的，不需要音檔；
   右上角 🔊 可以關掉，設定會記住。
@@ -90,10 +90,16 @@ var STATION = {
 要真的連到試算表時，在試算表按 **擴充功能 → Apps Script**，貼上：
 
 ```js
+/* 心之村 · 觀心氣象站 後台
+   用 openById 指定試算表，所以「獨立的 Apps Script 專案」也能用，
+   不必一定要從試算表的「擴充功能 → Apps Script」開。 */
+var SHEET_ID = '把試算表網址中 /d/ 和 /edit 之間那一長串貼在這裡';
+
+function ss_(){ return SpreadsheetApp.openById(SHEET_ID); }
+
 function sheet_(name, header){
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sh = ss.getSheetByName(name);
-  if (!sh) { sh = ss.insertSheet(name); sh.appendRow(header); }
+  var sh = ss_().getSheetByName(name);
+  if (!sh) { sh = ss_().insertSheet(name); sh.appendRow(header); }
   return sh;
 }
 
@@ -101,6 +107,9 @@ function doPost(e){
   var d = JSON.parse(e.postData.contents);
   if (d.type === 'view')
     sheet_('瀏覽紀錄', ['時間']).appendRow([new Date()]);
+  else if (d.type === 'letter')
+    sheet_('飛鴿驛站', ['時間','暱稱','心情','內容','可公開'])
+      .appendRow([new Date(), d.nick, d.mood, d.text, d.pub ? '是' : '否']);
   else if (d.type === 'reply')
     sheet_('飛鴿回信', ['時間','回給誰','原信','回信']).appendRow([new Date(), d.from, d.letter, d.reply]);
   else
@@ -113,15 +122,15 @@ function doGet(e){
   var out;
   if (action === 'stats') {
     // 真實瀏覽人次 = 瀏覽紀錄的筆數（扣掉標題列）
-    var v = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('瀏覽紀錄');
+    var v = ss_().getSheetByName('瀏覽紀錄');
     out = {views: v ? Math.max(0, v.getLastRow() - 1) : 0};
   } else {
-    // 回傳「飛鴿驛站」工作表裡可以流傳的匿名心事
-    var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('飛鴿驛站');
+    // 只回傳勾選「可公開」的匿名心事，私訊不會被飛鴿抽到
+    var sh = ss_().getSheetByName('飛鴿驛站');
     var rows = sh ? sh.getDataRange().getValues().slice(1) : [];
-    out = {letters: rows.map(function(r){
+    out = {letters: rows.filter(function(r){ return String(r[4]) === '是'; }).map(function(r){
       return {nick:String(r[1]||'匿名旅人'), mood:String(r[2]||''), text:String(r[3]||''),
-              date:Utilities.formatDate(new Date(r[0]), 'Asia/Taipei', 'yyyy/MM/dd')};
+              date: r[0] ? Utilities.formatDate(new Date(r[0]), 'Asia/Taipei', 'yyyy/MM/dd') : ''};
     }).filter(function(x){ return x.text; })};
   }
   var body = JSON.stringify(out), cb = e && e.parameter && e.parameter.callback;
@@ -130,6 +139,9 @@ function doGet(e){
     : ContentService.createTextOutput(body).setMimeType(ContentService.MimeType.JSON);
 }
 ```
+
+貼上後**先在編輯器按一次「執行」**（選 `doGet`），Google 會跳授權視窗，按「允許」讓它有權限開你的試算表。
+之後每次改程式碼，都要回「部署 → 管理部署作業 → ✏️ → 版本：新版本 → 部署」，**網址不會變**。
 
 **部署 → 新增部署作業 → 網頁應用程式**，執行身分選「我」，存取權選「**所有人**」，
 把產生的網址貼進 `GAS_URL`。村民端全程免登入、非同步送出，不會跳任何 Google 畫面。
@@ -161,11 +173,11 @@ function doGet(e){
 
 全部都是真的，**沒有任何預設或示範數字**：
 
-| 數字 | 怎麼算 |
-| --- | --- |
-| 瀏覽人次 | 沒接試算表：這台裝置真的開過幾次，從 **0** 開始。<br />接了試算表：每次開站免登入送一筆進「瀏覽紀錄」，顯示全站真實總數。 |
-| 收到的信 | 真的被寫出來的留言數，一開始是 **0**。 |
-| 位陪伴夥伴 | 固定 8 位。 |
+| 數字       | 怎麼算                                                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| 瀏覽人次   | 沒接試算表：這台裝置真的開過幾次，從**0** 開始。<br />接了試算表：每次開站免登入送一筆進「瀏覽紀錄」，顯示全站真實總數。 |
+| 收到的信   | 真的被寫出來的留言數，一開始是**0**。                                                                                    |
+| 位陪伴夥伴 | 固定 8 位。                                                                                                                    |
 
 飛鴿攔截戰也一樣：一封真的信都還沒有時，鴿子會老實說「信袋是空的」並請村民先寫一封，
 不會生一封假的心事給人讀。
