@@ -93,7 +93,8 @@ var STATION = {
 /* 心之村 · 觀心氣象站 後台
    用 openById 指定試算表，所以「獨立的 Apps Script 專案」也能用，
    不必一定要從試算表的「擴充功能 → Apps Script」開。 */
-var SHEET_ID = '把試算表網址中 /d/ 和 /edit 之間那一長串貼在這裡';
+// 換一張試算表時，把網址中 /d/ 和 /edit 之間那一長串換掉
+var SHEET_ID = '1CpqT6jwV2WfCk0LBF9AgzWfNDUt-6RFso9EQc5SR8KE';
 
 function ss_(){ return SpreadsheetApp.openById(SHEET_ID); }
 
@@ -103,17 +104,38 @@ function sheet_(name, header){
   return sh;
 }
 
+var LETTER_COLS = ['時間','暱稱','心情','內容','可公開','編號','檢舉'];
+
+// 用編號找出某封信在「飛鴿驛站」的第幾列
+function findLetter_(id){
+  var sh = sheet_('飛鴿驛站', LETTER_COLS);
+  if (!id) return {sh:sh, row:0};
+  var v = sh.getDataRange().getValues();
+  for (var i = 1; i < v.length; i++) if (String(v[i][5]) === String(id)) return {sh:sh, row:i+1};
+  return {sh:sh, row:0};
+}
+
 function doPost(e){
   var d = JSON.parse(e.postData.contents);
-  if (d.type === 'view')
+  if (d.type === 'view') {
     sheet_('瀏覽紀錄', ['時間']).appendRow([new Date()]);
-  else if (d.type === 'letter')
-    sheet_('飛鴿驛站', ['時間','暱稱','心情','內容','可公開'])
-      .appendRow([new Date(), d.nick, d.mood, d.text, d.pub ? '是' : '否']);
-  else if (d.type === 'reply')
+  } else if (d.type === 'letter') {
+    sheet_('飛鴿驛站', LETTER_COLS)
+      .appendRow([new Date(), d.nick, d.mood, d.text, d.pub ? '是' : '否', d.id, 0]);
+  } else if (d.type === 'deleteLetter') {
+    // 村長在留言牆或後台按刪除：把試算表這一列也刪掉
+    var f = findLetter_(d.id);
+    if (f.row) f.sh.deleteRow(f.row);
+  } else if (d.type === 'flag') {
+    // 村民回報不對勁的信：檢舉數 +1，並另外記一筆給村長看
+    var g = findLetter_(d.id);
+    if (g.row) g.sh.getRange(g.row, 7).setValue(Number(g.sh.getRange(g.row, 7).getValue() || 0) + 1);
+    sheet_('檢舉回報', ['時間','編號','被回報的內容']).appendRow([new Date(), d.id, d.text]);
+  } else if (d.type === 'reply') {
     sheet_('飛鴿回信', ['時間','回給誰','原信','回信']).appendRow([new Date(), d.from, d.letter, d.reply]);
-  else
+  } else {
     sheet_('觀測趨勢', ['時間','代碼','心靈氣候','分數']).appendRow([new Date(), d.code, d.name, JSON.stringify(d.scores)]);
+  }
   return ContentService.createTextOutput('ok');
 }
 
@@ -125,11 +147,13 @@ function doGet(e){
     var v = ss_().getSheetByName('瀏覽紀錄');
     out = {views: v ? Math.max(0, v.getLastRow() - 1) : 0};
   } else {
-    // 只回傳勾選「可公開」的匿名心事，私訊不會被飛鴿抽到
+    // 只回傳「可公開」且沒被回報過的信；私訊與被檢舉的都不會被飛鴿抽到
     var sh = ss_().getSheetByName('飛鴿驛站');
     var rows = sh ? sh.getDataRange().getValues().slice(1) : [];
-    out = {letters: rows.filter(function(r){ return String(r[4]) === '是'; }).map(function(r){
-      return {nick:String(r[1]||'匿名旅人'), mood:String(r[2]||''), text:String(r[3]||''),
+    out = {letters: rows.filter(function(r){
+      return String(r[4]) === '是' && Number(r[6] || 0) < 1;
+    }).map(function(r){
+      return {id:String(r[5]||''), nick:String(r[1]||'匿名旅人'), mood:String(r[2]||''), text:String(r[3]||''),
               date: r[0] ? Utilities.formatDate(new Date(r[0]), 'Asia/Taipei', 'yyyy/MM/dd') : ''};
     }).filter(function(x){ return x.text; })};
   }
@@ -139,6 +163,9 @@ function doGet(e){
     : ContentService.createTextOutput(body).setMimeType(ContentService.MimeType.JSON);
 }
 ```
+
+被回報過的信會立刻停止流通（`檢舉 >= 1`）。想改成「兩個人回報才收掉」，把 `< 1` 改成 `< 2`；
+想讓某封信重新流通，把該列的「檢舉」欄改回 `0`。
 
 貼上後**先在編輯器按一次「執行」**（選 `doGet`），Google 會跳授權視窗，按「允許」讓它有權限開你的試算表。
 之後每次改程式碼，都要回「部署 → 管理部署作業 → ✏️ → 版本：新版本 → 部署」，**網址不會變**。
