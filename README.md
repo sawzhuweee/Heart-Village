@@ -81,7 +81,7 @@ Android 主畫面上會用 `icons/icon-maskable-512.png`（配合各家圓形／
 var STATION = {
   GAS_URL:   '',          // Apps Script 網頁應用程式網址
   SHEET_URL: '',          // 村長私人的 Google 試算表網址
-  ADMIN_PASS:'joan888'    // 底部暗門的暗號
+  ADMIN_PASS:'你的暗號'    // 底部暗門的暗號
 };
 ```
 
@@ -189,7 +189,7 @@ function doGet(e){
 
 ## 後台
 
-右上角「管理後台」，示範密碼 `village`。
+右上角「管理後台」，密碼寫在 `index.html` 的 `PASSWORD` 變數。
 可以管理留言（公開／隱藏／刪除）、編輯八位夥伴的文字，
 以及在「氣象站數據」看心靈氣候的判定趨勢與收到的飛鴿回信。
 

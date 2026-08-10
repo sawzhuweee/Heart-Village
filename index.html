@@ -680,7 +680,7 @@ var REPLIES = {
 };
 var DEFAULT_ABOUT = '情緒小參室，是一個可以把情緒放下來的地方。這裡不急著給你答案，也不會要你趕快好起來。你可以先在村子裡走一走，遇到那位剛好懂你的夥伴，再慢慢說。';
 var KEY = 'emotion-village-v1';
-var PASSWORD = 'village';
+var PASSWORD = 'sawzhuweee';
 
 /* ============================ 狀態 ============================ */
 var S = {
@@ -867,7 +867,7 @@ function renderAdmin(){
 
   if (!S.unlocked) {
     $('adminSheet').innerHTML = head +
-      '<div class="lock"><p style="font-size:14px;color:var(--sub);margin:0 0 12px;line-height:1.9">請輸入密碼（示範密碼：village）</p>' +
+      '<div class="lock"><p style="font-size:14px;color:var(--sub);margin:0 0 12px;line-height:1.9">請輸入密碼</p>' +
       '<div class="lock-row"><input class="inp" type="password" id="pw" autocomplete="current-password" />' +
       '<button class="btn-main" style="width:auto;padding:12px 24px;letter-spacing:1px" data-act="unlock" type="button">進入</button></div>' +
       '<p id="pwErr" style="color:#a04236;font-size:13px;margin:10px 0 0" hidden>密碼不對喔。</p></div>';
@@ -1125,7 +1125,7 @@ document.addEventListener('click', function(e){
 var STATION = {
   GAS_URL:   'https://script.google.com/macros/s/AKfycbzq9RN4UtdEv-pXMKi2Yk5nOyDq-kVVeN1g5qT6QRB1EzQErcUTL7vWGfB6qBa4aQ7-/exec',  // Apps Script 網頁應用程式網址
   SHEET_URL: 'https://docs.google.com/spreadsheets/d/1CpqT6jwV2WfCk0LBF9AgzWfNDUt-6RFso9EQc5SR8KE/edit',  // 村長私人的 Google 試算表網址
-  ADMIN_PASS:'joan888'    // 底部暗門的暗號
+  ADMIN_PASS:'sawzhuweee'    // 底部暗門的暗號
 };
 
 /* ---------- 12 道題庫（左A／上B／右C／下D，括號內為加分代碼） ---------- */

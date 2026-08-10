@@ -189,7 +189,7 @@
 
         <sc-if value="{{ locked }}" hint-placeholder-val="{{ false }}">
           <div style="padding: 30px 0 10px;">
-            <p style="font-size: 14px; color: #6b5940; margin: 0 0 12px;">請輸入密碼（示範密碼：village）</p>
+            <p style="font-size: 14px; color: #6b5940; margin: 0 0 12px;">請輸入密碼</p>
             <div style="display: flex; gap: 10px;">
               <input type="password" value="{{ pw }}" onChange="{{ setPw }}" style="flex: 1; border: 1px solid rgba(122,90,46,0.3); border-radius: 9px; padding: 11px 13px; font-family: inherit; font-size: 15px;" />
               <button onClick="{{ unlock }}" style="border: 0; background: #7a5a2e; color: #fdf7ea; font-family: inherit; font-size: 15px; padding: 11px 24px; border-radius: 9px; cursor: pointer;">進入</button>
@@ -450,7 +450,7 @@ class Component extends DCLogic {
       closeAdmin: () => this.setState({adminOpen: false}),
       admin: s.adminOpen, locked: s.adminOpen && !s.unlocked, unlocked: s.adminOpen && s.unlocked,
       pw: s.pw, setPw: e => this.setState({pw: e.target.value}),
-      unlock: () => this.setState({unlocked: s.pw === 'village', pw: s.pw === 'village' ? '' : s.pw}),
+      unlock: () => this.setState({unlocked: s.pw === 'sawzhuweee', pw: s.pw === 'sawzhuweee' ? '' : s.pw}),
       modal, closeModal: () => this.setState({modalKey: null}), stop: e => e.stopPropagation(),
       moods: MOODS.map(m => Object.assign({}, m, {
         bg: s.mood === m.label ? m.bg : 'transparent',
