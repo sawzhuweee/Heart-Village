@@ -569,6 +569,9 @@ var V = {
   earth:  IMGV + '/Buddhism/dust.png'
 };
 function charImg(k, w) {
+  if (typeof V[k] === 'string' && V[k].startsWith('./picture/')) {
+    return V[k];
+  }
   return cld(V[k], 'f_auto,q_auto,w_' + w);
 }
 var BASE = [
