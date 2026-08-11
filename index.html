@@ -563,13 +563,12 @@ var V = {
   sun:    IMGV + '/Buddhism/warm_sun.png',
   star:   IMGV + '/Buddhism/star.png',
   fog:    IMGV + '/Buddhism/fog.png',
-  rain: './picture/rain.png',
+  rain: IMGV + '/Buddhism/water.png',
   thunder:IMGV + '/Buddhism/thunder.png',
   breeze: IMGV + '/Buddhism/wind.png',
   earth:  IMGV + '/Buddhism/dust.png'
 };
-function charImgfunction charImg(k, w) {
-  if (V[k].indexOf('./') === 0) return V[k];
+function charImg(k, w) {
   return cld(V[k], 'f_auto,q_auto,w_' + w);
 }
 var BASE = [
