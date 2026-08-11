@@ -568,8 +568,10 @@ var V = {
   breeze: IMGV + '/Buddhism/wind.png',
   earth:  IMGV + '/Buddhism/dust.png'
 };
-function charImg(k, w){ return cld(V[k], 'f_auto,q_auto,w_' + w); }
-
+function charImgfunction charImg(k, w) {
+  if (V[k].indexOf('./') === 0) return V[k];
+  return cld(V[k], 'f_auto,q_auto,w_' + w);
+}
 var BASE = [
   {key:'moon', name:'月月', title:'夜晚守護者', place:'月眠林', bg:'#2b303b', fg:'#f4f2ee',
    companion:['焦慮。','失眠。','胡思亂想。'], personality:['成熟。','謹慎。'],
