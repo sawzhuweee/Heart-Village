@@ -1953,6 +1953,51 @@ window.addEventListener('appinstalled', function(){
 });
 
 window.addEventListener('offline', function(){ toast('目前離線中，村子仍然可以逛。'); });
+<style>
+  /* 確保所有角色的 X 按鈕都不會被圖片或文字卡住 */
+  .modal-close-btn, .close-btn, .close {
+    cursor: pointer !important;
+    z-index: 999999 !important; /* 確保按鈕在最最上層 */
+    pointer-events: auto !important;
+  }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  
+  // 1. 全域點擊監聽：不論你開哪一個角色，點擊 X 或點擊背景都能關閉！
+  document.addEventListener('click', function(event) {
+    
+    // A. 點擊到關閉按鈕（包含帶有 .close-btn 或 .modal-close-btn 或 .close 的元素）
+    const isCloseBtn = event.target.matches('.modal-close-btn, .close-btn, .close') || 
+                       event.target.closest('.modal-close-btn, .close-btn, .close');
+                       
+    if (isCloseBtn) {
+      // 找到目前點擊按鈕所屬的那一個 Modal 並隱藏它
+      const currentModal = event.target.closest('.modal-overlay, .modal, .popup-container, .modal-card');
+      if (currentModal) {
+        currentModal.style.display = 'none';
+      }
+    }
+
+    // B. 防呆：點擊半透明黑底背景時，自動關閉該 Modal
+    const isOverlay = event.target.matches('.modal-overlay, .modal, .popup-container');
+    if (isOverlay) {
+      event.target.style.display = 'none';
+    }
+  });
+
+  // 2. 鍵盤 Esc 鍵支援：按 Esc 一鍵關閉畫面上開啟的任何角色彈窗
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape' || event.key === 'Esc') {
+      const allModals = document.querySelectorAll('.modal-overlay, .modal, .popup-container');
+      allModals.forEach(function(modal) {
+        modal.style.display = 'none';
+      });
+    }
+  });
+
+});
 </script>
 </body>
 </html>
