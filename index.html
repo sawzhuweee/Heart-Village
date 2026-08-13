@@ -232,6 +232,9 @@ html[data-standalone] #installBtn{display:none !important} /* 已經是 App 就�
 .blk{margin-bottom:18px}
 .blk-l{font-size:17px;font-weight:500;margin-bottom:6px;letter-spacing:2px}
 .blk-line{font-size:15px;line-height:1.95;opacity:.9}
+  .modal-intro{font-size:14.5px;line-height:2.05;opacity:.92;margin-bottom:22px;text-wrap:pretty}
+.modal-intro p{margin:0 0 12px}
+.modal-intro p:last-child{margin-bottom:0}
 .modal-art{display:grid;place-items:center}
 .modal-art img{max-width:100%;max-height:min(380px,42vh);object-fit:contain}
 @media (max-width:820px){
@@ -609,30 +612,43 @@ function charImg(k, w) {
 }
 var BASE = [
   {key:'moon', name:'月月', title:'夜晚守護者', place:'月眠林', bg:'#2b303b', fg:'#f4f2ee',
+   intro:['這是一片沉睡在永夜中的幽靜森林。巨大的古樹遮蔽了星空，黑夜沉重得像是一場醒不來的夢。但在最深處，月月提著一盞小小的月亮提燈，那一束光不刺眼，卻剛好能照亮你腳下不安的每一步。',
+          '這裡不要求你堅強，也不會催你趕快振作。',
+          '靠著月月坐下來吧。祂手中的巨大鐮刀不是為了傷害，而是要幫你割斷深夜裡那些不斷纏繞、讓你睡不著的胡思亂想。',
+          '坐在提燈下，我陪你把今天徹底放下。讓光芒安撫你的驚惶，今晚，你終於可以安心地睡一覺了。'],
    companion:['焦慮。','失眠。','胡思亂想。'], personality:['成熟。','謹慎。'],
    work:['晚上巡夜。','拿著鐮刀。','不是攻擊。','而是，剪掉那些一直纏住人的念頭。']},
+
   {key:'thunder', name:'雷雷', title:'界線守護者', place:'雷鳴山', bg:'#d6d6d6', fg:'#1d232b',
+   intro:['這裡是一座怪石嶙峋、高聳入雲的險峻高山，山腰上圍著一圈圈被風雨拍打得搖搖欲墜的木頭圍欄。山頂黑雲翻滾，地殼在黑暗中經歷無數次擠壓與拉扯，就像你在生活裡默默吞下的那些委屈，壓得你幾乎無法呼吸。',
+          '這裡不勸你大度，也不教你繼續忍耐。',
+          '走到雷雷身邊，看他把鬆脫的圍欄一根根釘牢——那道界線不是用來把人擋在外面，而是用來保護山裡面，那個一直沒被好好對待的你。把憋在心裡的憤怒與不甘全都釋放出來吧，當閃電劃破夜空、雷聲轟鳴的那一刻，不是毀滅，而是一場積壓已久的勇敢救贖。',
+          '站在風暴裡，我陪你大聲地喊出來、哭出來。這裡的大雨和雷聲，會幫你掩蓋所有的痛苦，放心地卸下你的委屈吧。'],
    companion:['憤怒。','害怕。','沒有勇氣拒絕別人。'], personality:['看起來兇。','其實超暖。','最討厭別人欺負弱小。'],
    work:['巡邏並修補壞掉的圍欄。','因為：健康的界線，可以保護心。']},
+
   {key:'sun', name:'暖陽', title:'曬心人', place:'晨曦原', bg:'#fbdd76', fg:'#7a3d10',
+   intro:['這裡是一片永遠停留在清晨、泛著金黃色微光的溫暖草原。微風吹過草尖，空氣裡盡是慶祝與豐收的喜悅。那些在現實中無人分享的開心、獨自達成的驕傲，如果不被看見，有時候也會變成一種孤單。',
+          '這裡不講究謙虛，也不需要你藏起光芒。',
+          '走到暖陽身邊，把你的快樂放心說出來吧。不需要害怕被嫉妒，也不用覺得不好意思，你的每一份開心，在這裡都會被好好地捧起。',
+          '坐在草地上，我陪你一起大聲歡呼。等這份熱情傳開了，整個草原都會為你起舞，你的快樂，在這裡終於有了溫暖的回音。'],
    companion:['沒有自信。','自我懷疑。','否定自己。'], personality:['永遠笑笑的。','不是因為沒有煩惱。','而是，知道每一天都會過去。'],
    work:['把大家潮濕的心，拿去曬曬太陽。']},
+
   {key:'breeze', name:'微風', title:'改變旅人', place:'微風草原', bg:'#e3eed4', fg:'#4a5c39',
+   intro:['這裡是一片一望無際、綠意蔓延的遼闊草原。風原本是看不見、也摸不著的，但當微風輕輕吹過，漫山遍野的草浪隨之起伏。因為有了草原的承接，那些隱形的風，終於清晰地被看見了。',
+          '這裡不衡量你的成敗，只記錄你的每一次動搖。',
+          '站在草原中央，閉上眼睛張開雙臂吧。就像你看不到風卻能看到草浪一樣，你在生活裡悄悄做出的調整、默默承受的堅持，早已讓你的心變得更加柔軟。',
+          '迎著微風，我陪你感受這份輕柔的力量。你沒有停在原地，你其實一直在悄悄成長。'],
    companion:['離別。','新開始。','轉變。'], personality:['最自由。','想到哪就去哪。','大家都不知道他今天在哪。'],
    work:['把風送到需要的人身邊。','例如：把花香，送去難過的人窗前。']},
+
   {key:'fog', name:'霧霧', title:'迷途引路人', place:'迷霧谷', bg:'#e5dcf0', fg:'#46375c',
-   companion:['迷惘。','選擇。','不知道怎麼辦。'], personality:['慢。','非常慢。','從來不催促任何人。','總是笑笑地說：「慢慢來。」'],
-   work:['每天背著羅盤。','不是帶路，而是陪別人走。']},
-  {key:'earth', name:'土土', title:'種子照顧員', place:'大地嶺', bg:'#ddccb0', fg:'#6b3a1e',
-   companion:['自我接納。','等待。','耐心。'], personality:['只傾聽，不評判。','一天講不到十句話。','可是，跟他待在一起很舒服。'],
-   work:['包容所有情緒，就像大地接納一切種子。']},
-  {key:'star', name:'星星', title:'幸福收藏家', place:'星光丘', bg:'#23386b', fg:'#f6f1e2',
-   companion:['感恩。','快樂。','小確幸。'], personality:['最活潑。','最好奇。','每天都在到處跑。'],
-   work:['拿著玻璃瓶，收集今天的小確幸。']},
-  {key:'rain', name:'雨滴', title:'眼淚收藏員', place:'雨之湖', bg:'#dbe4f5', fg:'#16324f',
-   companion:['悲傷、委屈、失落、離別。'], personality:['最溫柔。','也是最會傾聽的人。','很少主動說話。','喜歡坐在屋簷下陪別人聽雨。','大家哭的時候都會來找她。'],
-   work:['把眼淚變成露珠。','澆灌小參室裡的植物。']}
-];
+   intro:['這裡是一片終年被茫茫白霧籠罩的深谷。來到這裡，你看不見前方的路，也望不到天空的輪廓，所有喧囂似乎都被霧氣溫柔地隔絕了。那些不知道該去哪裡的焦慮，在這個山谷裡，都會被安靜地收容。',
+          '這裡不逼你找方向，也不催你立刻看清未來。',
+          '走到谷底，把緊繃的肩膀鬆下來吧。霧霧手上握著一個小巧的指南針，它無法為你撥開濃霧，但會溫柔地提醒你——迷路了真的沒有關係，只要你別弄丟了自己。',
+          '閉上眼睛，我陪你在霧氣中停下來。有些答案不需要急著尋找，只要你的心還在，指針就永遠守護著你。'],
+   companion:
 
 var PLACES = {
   clinic:{place:'村子入口', heading:'情緒小參室', bg:'#efe4d0', fg:'#4a3a26', img:'earth',
@@ -855,6 +871,7 @@ function openModal(key){
   var m = null, c = charByKey(key);
   if (c) {
     m = {bg:c.bg, fg:c.fg, imgKey:c.key, place:c.place, heading:c.name + '｜' + c.title,
+         intro:c.intro,
          blocks:[{label:'負責陪伴',lines:c.companion},{label:'個性',lines:c.personality},{label:'工作',lines:c.work}]};
   } else if (PLACES[key]) {
     var p = PLACES[key];
@@ -869,28 +886,13 @@ function openModal(key){
       '<div>' +
         '<div class="modal-place">' + esc(m.place) + '</div>' +
         '<h3 class="modal-h" id="modalTitle">' + esc(m.heading) + '</h3>' +
+        (m.intro ? '<div class="modal-intro">' + m.intro.map(function(p){ return '<p>' + esc(p) + '</p>'; }).join('') + '</div>' : '') +
         m.blocks.map(function(b){
           return '<div class="blk"><div class="blk-l">' + esc(b.label) + '</div>' +
             b.lines.map(function(l){ return '<div class="blk-line">' + esc(l) + '</div>'; }).join('') + '</div>';
         }).join('') +
       '</div>' +
       '<div class="modal-art"><img src="' + charImg(m.imgKey, 600) + '" alt="' + esc(m.heading) + '" /></div>' +
-    '</div>';
-  showOverlay($('modal'));
-  pushLayer('modal', closeModalNow);
-}
-function closeModal(){ if (!$('modal').hidden) popLayer(); }
-function closeModalNow(){ S.modalKey = null; hideOverlay($('modal')); }
-
-/* 純文字的說明視窗（例如安裝步驟），共用同一個彈層 */
-function openInfo(title, html){
-  S.lastFocus = document.activeElement;
-  $('modalSheet').setAttribute('style', 'background:#fdfaf3;color:var(--ink);width:min(560px,100%)');
-  $('modalSheet').innerHTML =
-    '<button class="x-btn" data-act="closeModal" aria-label="關閉" type="button">×</button>' +
-    '<div style="padding:clamp(28px,5vw,38px)">' +
-      '<h3 class="modal-h" id="modalTitle" style="font-size:clamp(21px,4.8vw,27px);margin-bottom:16px">' + title + '</h3>' +
-      html +
     '</div>';
   showOverlay($('modal'));
   pushLayer('modal', closeModalNow);
