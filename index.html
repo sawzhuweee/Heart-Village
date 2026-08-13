@@ -1974,7 +1974,7 @@ document.addEventListener('DOMContentLoaded', function() {
                        
     if (isCloseBtn) {
       // 找到目前點擊按鈕所屬的那一個 Modal 並隱藏它
-      const currentModal = event.target.closest('.modal-overlay, .modal, .popup-container, .modal-card');
+      const currentModal = event.target.closest('.modal-overlay, .modal, .popup-container');
       if (currentModal) {
         currentModal.style.display = 'none';
       }
