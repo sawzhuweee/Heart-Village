@@ -729,7 +729,8 @@ var V = {
   rain: './picture/rain.png',
   thunder:IMGV + '/Buddhism/thunder.png',
   breeze: IMGV + '/Buddhism/wind.png',
-  earth:  IMGV + '/Buddhism/dust.png'
+  earth: './picture/earth.png',
+  okcave:'./picture/okcave.png'
 };
 function charImg(k, w) {
   if (typeof V[k] === 'string' && V[k].startsWith('./picture/')) {
@@ -810,7 +811,7 @@ var PLACES = {
   weather:{place:'雷鳴山頂', heading:'觀心氣象站', bg:'#dfe3ec', fg:'#2b3345', img:'thunder',
     blocks:[{label:'做什麼', lines:['每天量一次心裡的天氣。','晴、陰、雨，都是正常的。']},
             {label:'怎麼用', lines:['寫下今天的天氣。','久了會看見自己的季節。']}]},
-  okcave:{place:'山的另一邊', heading:'OK洞', bg:'#3a2f26', fg:'#f4ead8', img:'star',
+  okcave:{place:'山的另一邊', heading:'OK洞', bg:'#3a2f26', fg:'#f4ead8', img:'okcave',
     blocks:[{label:'洞裡有什麼', lines:['什麼都沒有。','只有回音。']},
             {label:'為什麼要來', lines:['對著洞口喊一聲「我沒事」，','洞會回你一句「你可以不用沒事」。']}]}
 };
