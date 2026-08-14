@@ -1,0 +1,2293 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>心之村｜情緒村地圖</title>
+<meta name="description" content="心之村 Emotion Village — 八位陪伴情緒的夥伴，和一間永遠開著門的情緒小參室。" />
+
+<!-- PWA -->
+<link rel="manifest" href="./manifest.webmanifest" />
+<meta name="theme-color" content="#fbf6ec" />
+<meta name="color-scheme" content="light" />
+<link rel="icon" href="./icons/favicon-32.png" sizes="32x32" />
+<link rel="icon" href="./icons/icon-192.png" sizes="192x192" />
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="心之村" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://res.cloudinary.com" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet" />
+
+<style>
+:root{
+  --paper:#f3ece0; --ink:#3a2f22; --brown:#7a5a2e; --brown-d:#5f4522;
+  --muted:#8a7457; --sub:#6b5940; --body:#5c4a33; --card:#fffdf8;
+  --line:rgba(122,90,46,.2); --line-s:rgba(122,90,46,.3);
+  --header-h:64px;
+  --serif:"Noto Serif TC",serif; --sans:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--paper); color:var(--ink); font-family:var(--sans);
+  overflow-x:hidden; -webkit-tap-highlight-color:transparent;
+  overscroll-behavior-y:none;
+}
+img{max-width:100%}
+a{color:var(--brown);text-decoration:none}
+button,input,textarea{font-family:inherit}
+button{min-height:44px}
+
+@keyframes pulseRing{0%{transform:scale(.7);opacity:.9}70%{transform:scale(1.9);opacity:0}100%{transform:scale(1.9);opacity:0}}
+@keyframes softIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes riseIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important}
+  html{scroll-behavior:auto}
+}
+
+/* ---------- shell ---------- */
+.page{min-height:100vh;min-height:100svh;background:radial-gradient(circle at 50% 0%,#fbf6ec 0%,#efe5d4 60%,#e6d9c3 100%)}
+.wrap{max-width:1240px;margin:0 auto;padding:clamp(36px,6vw,64px) clamp(16px,4vw,40px)}
+.wrap-narrow{max-width:1000px}
+section[id]{scroll-margin-top:calc(var(--header-h) + 8px)}
+
+/* ---------- header ---------- */
+.site-header{
+  position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:12px clamp(16px,4vw,40px);padding-top:max(12px,env(safe-area-inset-top));
+  border-bottom:1px solid var(--line);background:rgba(251,246,236,.94);backdrop-filter:blur(8px);
+}
+.brand{display:flex;align-items:baseline;gap:10px;min-width:0}
+.brand b{font-family:var(--serif);font-size:clamp(19px,4.4vw,24px);font-weight:700;letter-spacing:2px;color:#4a3a26}
+.brand span{font-size:12px;letter-spacing:3px;color:var(--muted);white-space:nowrap}
+.nav{display:flex;align-items:center;gap:clamp(14px,2.2vw,28px);font-size:15px}
+.nav a{color:#5c4a33;padding:6px 2px;white-space:nowrap}
+.nav a:hover{color:#c08a3e}
+.pill{
+  border:1px solid rgba(122,90,46,.4);background:transparent;color:var(--brown);
+  font-size:13px;padding:8px 14px;border-radius:999px;cursor:pointer;white-space:nowrap;
+  transition:background .2s ease,color .2s ease;
+}
+.pill:hover{background:var(--brown);color:#fbf6ec}
+.pill--go{background:var(--brown);color:#fdf7ea;border-color:var(--brown)}
+.pill--go:hover{background:var(--brown-d);color:#fdf7ea}
+#installBtn{display:none}
+html[data-standalone] #installBtn{display:none !important} /* 已經是 App 就不再顯示安裝 */
+.nav-toggle{display:none;border:1px solid var(--line-s);background:transparent;border-radius:10px;width:44px;height:44px;cursor:pointer;padding:0;color:var(--brown)}
+.nav-toggle span,.nav-toggle span::before,.nav-toggle span::after{
+  content:"";display:block;width:18px;height:2px;background:currentColor;border-radius:2px;margin:0 auto;position:relative;transition:transform .2s ease,opacity .2s ease;
+}
+.nav-toggle span::before{position:absolute;top:-6px}
+.nav-toggle span::after{position:absolute;top:6px}
+.nav-toggle[aria-expanded="true"] span{background:transparent}
+.nav-toggle[aria-expanded="true"] span::before{transform:translateY(6px) rotate(45deg)}
+.nav-toggle[aria-expanded="true"] span::after{transform:translateY(-6px) rotate(-45deg)}
+
+@media (max-width:860px){
+  .nav-toggle{display:block}
+  .nav{
+    position:absolute;left:0;right:0;top:100%;flex-direction:column;align-items:stretch;gap:0;
+    background:#fbf6ec;border-bottom:1px solid var(--line);box-shadow:0 18px 32px rgba(70,50,25,.14);
+    padding:6px clamp(16px,4vw,40px) 14px;display:none;
+  }
+  .nav.open{display:flex;animation:softIn .22s ease both}
+  .nav a{padding:14px 4px;border-bottom:1px solid rgba(122,90,46,.12);font-size:16px}
+  .nav .pill{margin-top:12px;text-align:center;padding:12px 14px;font-size:15px}
+}
+
+/* ---------- hero + map ---------- */
+.hero{text-align:center;margin-bottom:clamp(22px,4vw,34px)}
+.hero h1{font-family:var(--serif);font-size:clamp(28px,7vw,46px);font-weight:700;letter-spacing:clamp(2px,1.2vw,6px);margin:0 0 12px}
+.hero p{font-size:clamp(15px,3.6vw,17px);line-height:2;color:var(--sub);margin:0;text-wrap:pretty}
+.map-frame{
+  position:relative;border-radius:clamp(12px,2vw,18px);overflow:hidden;
+  box-shadow:0 24px 60px rgba(60,42,20,.28);border:clamp(4px,1.2vw,8px) solid #f7f1e5;
+}
+.map-frame img{display:block;width:100%;height:auto}
+.hot{
+  position:absolute;transform:translate(-50%,-50%);width:max(3.2%,30px);aspect-ratio:1;min-height:0;
+  border:0;border-radius:50%;background:rgba(255,232,150,.9);box-shadow:0 0 14px 4px rgba(255,214,110,.75);
+  cursor:pointer;padding:0;transition:transform .25s ease;
+}
+.hot::before{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid rgba(255,226,140,.9);animation:pulseRing 2.4s ease-out infinite;animation-delay:var(--d,0s)}
+.hot::after{content:"";position:absolute;inset:-11px;border-radius:50%}
+.hot:hover,.hot:focus-visible{transform:translate(-50%,-50%) scale(1.45);outline:none}
+.hot--soft{background:rgba(232,240,255,.85);box-shadow:0 0 12px 3px rgba(200,220,255,.6);width:max(2.6%,26px)}
+.hot--soft::before{border-color:rgba(226,238,255,.9)}
+.hot--post{width:max(4.4%,36px);border:2px solid rgba(255,248,222,.95);background:rgba(255,255,255,.35);box-shadow:0 0 20px 6px rgba(255,246,205,.7)}
+.hot--post::before{inset:-2px;border-color:rgba(255,255,255,.85);animation-duration:2.8s}
+.map-note{text-align:center;font-size:14px;color:var(--muted);margin:16px 0 0;letter-spacing:1px}
+.legend{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:16px}
+.chip{
+  border:1px solid var(--line-s);background:var(--card);color:var(--body);font-size:14px;
+  padding:9px 15px;border-radius:999px;cursor:pointer;line-height:1.2;
+  box-shadow:0 4px 12px rgba(70,50,25,.07);transition:transform .18s ease,background .18s ease;
+}
+.chip:hover{background:#f7efdf;transform:translateY(-2px)}
+.chip i{font-style:normal;color:var(--muted);font-size:12px;margin-left:6px}
+
+/* ---------- headings ---------- */
+.h2{font-family:var(--serif);font-size:clamp(24px,5.4vw,32px);letter-spacing:clamp(2px,.8vw,4px);text-align:center;margin:0 0 10px}
+.lede{text-align:center;color:var(--sub);margin:0 0 clamp(24px,4vw,40px);font-size:15px;line-height:2}
+
+/* ---------- character cards ---------- */
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(12px,2vw,22px)}
+.card{
+  border:0;padding:0;cursor:pointer;border-radius:16px;overflow:hidden;background:#fff;text-align:left;
+  box-shadow:0 10px 26px rgba(70,50,25,.14);transition:transform .25s ease,box-shadow .25s ease;
+  display:flex;flex-direction:column;
+}
+.card:hover,.card:focus-visible{transform:translateY(-6px);box-shadow:0 18px 38px rgba(70,50,25,.24);outline:none}
+.card-art{height:clamp(126px,20vw,180px);display:grid;place-items:center}
+.card-art img{max-height:84%;max-width:80%;object-fit:contain}
+.card-body{padding:14px 16px 18px;background:var(--card);flex:1}
+.card-name{font-family:var(--serif);font-size:clamp(17px,2.4vw,20px);font-weight:600;color:var(--ink)}
+.card-meta{font-size:12px;color:var(--muted);margin-top:4px;letter-spacing:1px}
+.card-lead{font-size:13.5px;color:var(--body);margin-top:9px;line-height:1.8}
+@media (max-width:1080px){.cards{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:820px){.cards{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:400px){.cards{grid-template-columns:1fr}.card{flex-direction:row;align-items:stretch}.card-art{width:40%;height:auto;min-height:120px;flex:none}}
+
+/* ---------- post ---------- */
+.post{background:#efe4d0;border-top:1px solid rgba(122,90,46,.18);border-bottom:1px solid rgba(122,90,46,.18)}
+.post-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(20px,3vw,34px);align-items:start}
+@media (max-width:900px){.post-grid{grid-template-columns:1fr}}
+.panel{background:var(--card);border-radius:16px;padding:clamp(18px,3vw,28px);box-shadow:0 12px 30px rgba(70,50,25,.14)}
+.lbl{display:block;font-size:13px;color:var(--muted);margin-bottom:6px;letter-spacing:1px}
+.inp,.txt{
+  width:100%;border:1px solid var(--line-s);border-radius:9px;padding:12px 13px;
+  font-size:16px;background:#fff;color:var(--ink);line-height:1.7;
+}
+.inp:focus,.txt:focus{outline:2px solid rgba(122,90,46,.35);outline-offset:1px}
+.txt{height:130px;resize:vertical;line-height:1.9}
+.moods{margin:0 0 18px}
+.mood-g{font-size:11.5px;letter-spacing:2px;color:var(--muted);margin:0 0 7px}
+.mood-row{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 14px}
+.mood-row:last-child{margin-bottom:0}
+.mood{
+  border:1px solid var(--line-s);background:transparent;color:var(--sub);font-size:13.5px;
+  padding:8px 14px;border-radius:999px;cursor:pointer;min-height:40px;line-height:1.3;
+  transition:background .18s ease,color .18s ease,border-color .18s ease,transform .18s ease;
+}
+.mood.on{font-weight:500;transform:translateY(-1px);box-shadow:0 4px 10px rgba(70,50,25,.12)}
+.check{display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--sub);margin:14px 0 18px;cursor:pointer;line-height:1.6}
+.check input{width:18px;height:18px;accent-color:var(--brown);flex:none}
+.btn-main{
+  width:100%;border:0;background:var(--brown);color:#fdf7ea;font-size:16px;letter-spacing:3px;
+  padding:15px;border-radius:10px;cursor:pointer;transition:background .2s ease;
+}
+.btn-main:hover{background:var(--brown-d)}
+.wall-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px}
+.wall-head h3{font-family:var(--serif);font-size:20px;margin:0;letter-spacing:2px}
+.wall-head span{font-size:13px;color:var(--muted)}
+.wall{display:flex;flex-direction:column;gap:12px;max-height:460px;overflow-y:auto;padding-right:4px;-webkit-overflow-scrolling:touch}
+@media (max-width:900px){.wall{max-height:none;overflow:visible;padding-right:0}}
+.note{background:var(--card);border-radius:13px;padding:15px 17px;box-shadow:0 6px 16px rgba(70,50,25,.1);animation:softIn .4s ease both}
+.note-top{display:flex;align-items:center;gap:9px;margin-bottom:8px;flex-wrap:wrap}
+.note-nick{font-size:15px;font-weight:500}
+.tag{font-size:12px;padding:3px 9px;border-radius:999px}
+.note-date{font-size:12px;color:#a3906f;margin-left:auto}
+.note-text{font-size:14px;line-height:1.95;color:var(--body);text-wrap:pretty;white-space:pre-wrap;overflow-wrap:anywhere}
+.note-reply{font-size:13px;color:var(--muted);margin-top:10px;padding-top:10px;border-top:1px dashed rgba(122,90,46,.25)}
+/* 留言牆上的刪除鈕：只有解鎖後台的村長會看到 */
+.note-del{
+  border:1px solid rgba(160,60,50,.3);background:transparent;color:#a04236;font-size:12px;
+  padding:4px 11px;border-radius:999px;cursor:pointer;min-height:30px;line-height:1;margin-left:8px;
+}
+.note-del:hover{background:#a04236;color:#fff8f2}
+.empty{color:var(--muted);font-size:14px;text-align:center;padding:26px 10px;line-height:2}
+
+/* ---------- about ---------- */
+.about{text-align:center}
+.about p{font-size:clamp(15px,3.4vw,16px);line-height:2.2;color:var(--body);margin:0 auto;max-width:720px;text-wrap:pretty}
+.stats{display:flex;justify-content:center;gap:clamp(12px,3vw,40px);margin-top:36px;flex-wrap:wrap}
+.stat{background:var(--card);border-radius:14px;padding:20px clamp(20px,4vw,34px);box-shadow:0 8px 22px rgba(70,50,25,.12);min-width:104px}
+.stat b{display:block;font-family:var(--serif);font-size:clamp(24px,5vw,30px);color:var(--brown);font-weight:600}
+.stat span{font-size:12.5px;color:var(--muted);letter-spacing:2px;margin-top:4px;display:block}
+.foot{border-top:1px solid var(--line);padding:24px clamp(16px,4vw,40px);padding-bottom:max(24px,env(safe-area-inset-bottom));text-align:center;font-size:13px;color:var(--muted);line-height:2}
+
+/* ---------- overlays ---------- */
+.overlay{
+  position:fixed;inset:0;z-index:60;background:rgba(40,30,18,.62);backdrop-filter:blur(4px);
+  display:grid;place-items:center;padding:clamp(10px,3vw,40px);overscroll-behavior:contain;
+}
+.overlay[hidden]{display:none}
+.sheet{
+  width:min(940px,100%);max-height:min(88vh,88svh);overflow-y:auto;border-radius:20px;position:relative;
+  box-shadow:0 30px 80px rgba(0,0,0,.4);animation:riseIn .32s ease both;-webkit-overflow-scrolling:touch;
+}
+.x-btn{
+  position:absolute;right:14px;top:12px;border:0;background:rgba(0,0,0,.14);color:inherit;
+  width:40px;height:40px;min-height:40px;border-radius:50%;font-size:20px;cursor:pointer;z-index:2;line-height:1;
+}
+.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:center;padding:clamp(26px,4vw,46px) clamp(20px,4vw,48px)}
+.modal-place{font-size:12.5px;letter-spacing:4px;opacity:.72;margin-bottom:10px}
+.modal-h{font-family:var(--serif);font-size:clamp(26px,5.6vw,38px);font-weight:600;margin:0 0 20px;letter-spacing:3px;line-height:1.35}
+.blk{margin-bottom:18px}
+.blk-l{font-size:17px;font-weight:500;margin-bottom:6px;letter-spacing:2px}
+.blk-line{font-size:15px;line-height:1.95;opacity:.9}
+.modal-intro{font-size:14.5px;line-height:2.05;opacity:.92;margin-bottom:22px;text-wrap:pretty}
+.modal-intro p{margin:0 0 12px}
+.modal-intro p:last-child{margin-bottom:0}
+.modal-art{display:grid;place-items:center}
+.modal-art img{max-width:100%;max-height:min(380px,42vh);object-fit:contain}
+@media (max-width:820px){
+  .modal-grid{grid-template-columns:1fr;gap:6px;padding-top:52px}
+  .modal-art{order:-1}
+  .modal-art img{max-height:30vh}
+}
+
+/* ---------- admin ---------- */
+.admin-sheet{background:#fdfaf3;padding:clamp(20px,3vw,34px) clamp(16px,3vw,36px) clamp(26px,4vw,40px);width:min(1000px,100%)}
+.admin-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}
+.admin-top h3{font-family:var(--serif);font-size:clamp(20px,4.4vw,26px);margin:0;letter-spacing:3px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:24px}
+.kpi{background:#f3ebdb;border-radius:12px;padding:16px 18px}
+.kpi span{font-size:12px;color:var(--muted);letter-spacing:2px}
+.kpi b{display:block;font-family:var(--serif);font-size:26px;color:var(--brown-d);margin-top:4px;font-weight:600}
+.tabs{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap}
+.tab{border:0;background:#efe4d0;color:var(--sub);font-size:14px;padding:10px 20px;border-radius:999px;cursor:pointer}
+.tab.on{background:var(--brown);color:#fdf7ea}
+.row{background:#fff;border:1px solid rgba(122,90,46,.16);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.row-top{display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap}
+.row-acts{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.mini{border:1px solid var(--line-s);background:transparent;color:var(--brown);font-size:13px;padding:8px 15px;border-radius:999px;cursor:pointer;min-height:38px}
+.mini--danger{border-color:rgba(160,60,50,.35);color:#a04236}
+.edit-txt{width:100%;border:1px solid rgba(122,90,46,.25);border-radius:9px;padding:11px 13px;font-size:15px;line-height:1.85;height:150px;resize:vertical}
+.swatch{width:12px;height:12px;border-radius:50%;border:1px solid rgba(0,0,0,.15);display:inline-block;flex:none}
+.lock{padding:24px 0 8px}
+.lock-row{display:flex;gap:10px;flex-wrap:wrap}
+.lock-row .inp{flex:1;min-width:180px}
+
+/* ================= 情緒小參室 ================= */
+.clinic-scene{
+  position:fixed;inset:0;z-index:75;display:flex;flex-direction:column;color:#f6efe1;
+  background:linear-gradient(180deg,#241a10 0%,#1b1410 60%,#120d09 100%);
+  overscroll-behavior:contain;animation:softIn .26s ease both;
+}
+.clinic-scene[hidden]{display:none}
+.clinic-head{
+  flex:none;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:12px clamp(14px,4vw,26px);padding-top:max(12px,env(safe-area-inset-top));
+}
+.clinic-head h2{font-family:var(--serif);font-size:clamp(18px,4.4vw,24px);letter-spacing:3px;margin:0;font-weight:600}
+.clinic-head small{display:block;font-size:11px;letter-spacing:2px;color:#c9b48c;margin-top:3px}
+.clinic-stage{
+  position:relative;flex:1;margin:0 clamp(14px,4vw,30px) clamp(14px,4vw,26px);border-radius:22px;overflow:hidden;
+  background:url('https://res.cloudinary.com/dplbydqx/image/upload/v1786709161/%E8%B3%87%E7%94%A2_1.png') center/cover no-repeat;
+  border:6px solid #3a2a18;box-shadow:inset 0 0 60px rgba(0,0,0,.35),0 20px 50px rgba(0,0,0,.4);
+}
+.clinic-note{position:absolute;left:0;right:0;bottom:10px;text-align:center;font-size:12px;letter-spacing:2px;color:#f6efe1;opacity:.85;text-shadow:0 2px 6px rgba(0,0,0,.6);pointer-events:none}
+.clinic-hot{position:absolute;transform:translate(-50%,-50%);border:0;background:transparent;padding:0;cursor:pointer}
+.clinic-hot::before{content:"";position:absolute;inset:-16%;border-radius:50%;box-shadow:0 0 26px 10px rgba(255,224,150,.4);opacity:.2;animation:clinicPulse 2.6s ease-in-out infinite}
+@keyframes clinicPulse{0%,100%{opacity:.12}50%{opacity:.55}}
+.clinic-book{left:48%;top:57%;width:32%;aspect-ratio:1.7}
+.clinic-door{left:83%;top:60%;width:13%;aspect-ratio:.5}
+.flash--gold{background:radial-gradient(circle at 78% 82%,#fff6d8,#ffdd8a 40%,#fff 100%)}
+
+/* ---- 翻頁繪本 Modal ---- */
+.flip-overlay{
+  position:fixed;inset:0;z-index:80;background:rgba(10,8,6,.82);backdrop-filter:blur(6px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:clamp(10px,3vw,30px);
+}
+.flip-overlay[hidden]{display:none}
+.flipbook-wrap{position:relative;width:min(920px,94vw);aspect-ratio:1.5;perspective:2600px}
+.flipbook{position:absolute;inset:0;display:flex;border-radius:10px;overflow:visible;box-shadow:0 30px 70px rgba(0,0,0,.5)}
+.flip-base-l,.flip-base-r{flex:1;background:linear-gradient(180deg,#fffdf6,#f3ead4);position:relative;overflow:hidden}
+.flip-base-l{border-radius:10px 0 0 10px}
+.flip-base-r{border-radius:0 10px 10px 0}
+.flip-spine{position:absolute;left:50%;top:0;bottom:0;width:6px;margin-left:-3px;background:linear-gradient(90deg,rgba(0,0,0,.15),rgba(0,0,0,0) 50%,rgba(0,0,0,.15));z-index:5;pointer-events:none}
+.flip-page{
+  position:absolute;top:0;bottom:0;left:50%;width:50%;transform-origin:left center;
+  transform-style:preserve-3d;transition:transform .6s cubic-bezier(.4,.1,.2,1);cursor:pointer;
+}
+.flip-page.flipped{transform:rotateY(-180deg)}
+.flip-face{
+  position:absolute;inset:0;backface-visibility:hidden;background:linear-gradient(180deg,#fffdf6,#f3ead4);
+  padding:clamp(14px,3vw,26px);overflow:auto;
+}
+.flip-face--back{transform:rotateY(180deg);border-radius:10px 0 0 10px}
+.flip-face--front{border-radius:0 10px 10px 0}
+.flip-photos{display:grid;grid-template-columns:1fr 1fr;gap:10px;height:calc(100% - 26px)}
+.flip-photos div{border-radius:8px;overflow:hidden;background:#e7dcc4;display:grid;place-items:center}
+.flip-photos img{width:100%;height:100%;object-fit:cover}
+.video-card{height:calc(100% - 26px);display:flex;flex-direction:column;gap:10px}
+.video-card video{flex:1;width:100%;border-radius:8px;background:#000;object-fit:cover}
+.video-card p{margin:0;font-size:13px;color:#6b5940;line-height:1.8}
+.flip-caption{font-size:12px;color:#8a7457;letter-spacing:1px;margin-bottom:8px}
+.flip-nav{display:flex;gap:16px;margin-top:18px}
+.flip-nav button{
+  border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);color:#f6efe1;
+  font-size:14px;padding:10px 20px;border-radius:999px;cursor:pointer;
+}
+.flip-nav button:disabled{opacity:.35;cursor:default}
+.flip-close{position:absolute;top:-18px;right:-18px;border:0;background:#f6efe1;color:#3a2f22;width:38px;height:38px;min-height:38px;border-radius:50%;font-size:18px;cursor:pointer}
+@media (max-width:820px){
+  .flipbook-wrap{aspect-ratio:1.05}
+  .flip-close{top:-46px;right:0}
+}
+
+/* ---- 加入我們表單 Modal ---- */
+.join-overlay{
+  position:fixed;inset:0;z-index:85;background:rgba(20,30,20,.5);backdrop-filter:blur(3px);
+  display:grid;place-items:center;padding:clamp(14px,4vw,30px);
+}
+.join-overlay[hidden]{display:none}
+.join-sheet{
+  width:min(480px,100%);border-radius:20px;padding:clamp(24px,5vw,34px);position:relative;
+  background:rgba(255,253,248,.72);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border:1px solid rgba(255,255,255,.5);box-shadow:0 30px 70px rgba(0,0,0,.35);animation:riseIn .32s ease both;
+}
+.join-sheet h3{font-family:var(--serif);font-size:22px;margin:0 0 6px;letter-spacing:2px;color:#3a2f22}
+.join-sheet p{font-size:13px;color:#6b5940;margin:0 0 18px;line-height:1.8}
+.join-field{margin-bottom:14px}
+.join-field label{display:block;font-size:12.5px;color:#8a7457;margin-bottom:5px;letter-spacing:1px}
+
+/* ================= 觀心氣象站 ================= */
+.station{
+  position:fixed;inset:0;z-index:70;display:flex;flex-direction:column;color:#2b3345;
+  background:linear-gradient(180deg,#e9edf6 0%,#dfe3ec 44%,#efe7d8 100%);
+  overscroll-behavior:contain;animation:softIn .26s ease both;
+}
+.station[hidden]{display:none}
+.st-head{
+  flex:none;display:flex;align-items:center;gap:10px;
+  padding:10px clamp(12px,4vw,22px);padding-top:max(10px,env(safe-area-inset-top));
+  background:rgba(233,237,246,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(60,72,96,.14);
+}
+.st-head h2{font-family:var(--serif);font-size:clamp(17px,4.4vw,22px);letter-spacing:3px;margin:0;font-weight:600;line-height:1.25}
+.st-head small{display:block;font-size:11px;letter-spacing:2px;color:#6f7a90;margin-top:3px}
+.st-ico{
+  border:1px solid rgba(60,72,96,.22);background:rgba(255,255,255,.62);color:inherit;
+  width:40px;height:40px;min-height:40px;border-radius:50%;font-size:16px;line-height:1;padding:0;cursor:pointer;flex:none;
+}
+.st-ico + .st-ico{margin-left:2px}
+.st-ico.first{margin-left:auto}
+.st-tabs{flex:none;display:flex;gap:6px;padding:10px clamp(10px,3vw,20px) 2px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.st-tabs::-webkit-scrollbar{display:none}
+.st-tab{
+  flex:1 0 auto;white-space:nowrap;border:1px solid rgba(60,72,96,.2);background:rgba(255,255,255,.62);
+  color:#4b566d;font-size:13.5px;padding:10px 14px;border-radius:14px;cursor:pointer;min-height:46px;
+  transition:background .2s ease,color .2s ease,transform .2s ease,box-shadow .2s ease;
+}
+.st-tab.on{background:#3f4a63;color:#f4f1e8;border-color:#3f4a63;transform:translateY(-1px);box-shadow:0 8px 18px rgba(45,55,75,.24)}
+.st-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:clamp(14px,4vw,26px) clamp(14px,4vw,24px) calc(48px + env(safe-area-inset-bottom))}
+.st-pane{max-width:640px;margin:0 auto}
+.st-pane[hidden]{display:none}
+.st-note{font-size:13px;line-height:2;color:#6f7a90;text-align:center;margin:14px 0 0;text-wrap:pretty}
+
+/* ---- 分頁1 觀測站：指針儀表盤 ---- */
+.q-step{font-size:12px;letter-spacing:3px;color:#6f7a90;text-align:center;margin:0}
+.q-bar{height:5px;border-radius:99px;background:rgba(60,72,96,.14);margin:9px auto 18px;max-width:220px;overflow:hidden}
+.q-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#8ea0c0,#5f6d8a);border-radius:99px;transition:width .4s ease}
+.q-text{font-family:var(--serif);font-size:clamp(16.5px,4.3vw,21px);line-height:1.85;text-align:center;margin:0 0 clamp(16px,3.4vw,24px);text-wrap:pretty;animation:softIn .3s ease both}
+.gauge{
+  position:relative;width:min(72vw,272px);aspect-ratio:1;margin:0 auto;border-radius:50%;touch-action:none;
+  background:radial-gradient(circle at 34% 26%,#f8e8c8 0%,#e2c08a 30%,#c69c5b 62%,#9b7740 100%);
+  border:7px solid #8a6a37;cursor:grab;user-select:none;-webkit-user-select:none;
+  box-shadow:0 18px 40px rgba(60,45,20,.35),inset 0 0 26px rgba(90,64,26,.45),inset 0 6px 14px rgba(255,246,222,.55);
+}
+.gauge:active{cursor:grabbing}
+.gauge::before{content:"";position:absolute;inset:11px;border-radius:50%;border:2px dashed rgba(94,68,28,.35)}
+.gauge-mark{
+  position:absolute;width:30px;height:30px;display:grid;place-items:center;border-radius:50%;
+  font-size:14px;font-weight:700;color:#6b4f24;pointer-events:none;
+  transition:color .18s ease,background .18s ease,box-shadow .18s ease;
+}
+.gauge-mark.on{color:#3a2a10;background:rgba(255,248,224,.9);box-shadow:0 0 14px 4px rgba(255,238,180,.8)}
+.m-up{top:16px;left:calc(50% - 15px)} .m-dn{bottom:16px;left:calc(50% - 15px)}
+.m-lf{left:16px;top:calc(50% - 15px)}  .m-rt{right:16px;top:calc(50% - 15px)}
+.needle{
+  position:absolute;left:50%;top:8%;width:16px;height:42%;margin-left:-8px;transform-origin:50% 100%;
+  transform:rotate(0deg);background:linear-gradient(180deg,#4b3a20 0%,#7a5a2e 70%,#5f4522 100%);
+  clip-path:polygon(50% 0,100% 20%,66% 100%,34% 100%,0 20%);pointer-events:none;
+  filter:drop-shadow(0 3px 5px rgba(50,34,10,.5));transition:transform .38s cubic-bezier(.2,.85,.3,1);
+}
+.gauge.dragging .needle{transition:none}
+.gauge-hub{
+  position:absolute;left:50%;top:50%;width:19%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;
+  background:radial-gradient(circle at 34% 30%,#fdf3dc,#c9a25e 55%,#7f6031 100%);
+  box-shadow:0 3px 8px rgba(50,34,10,.45),inset 0 0 6px rgba(255,255,255,.5);pointer-events:none;
+}
+.opt-card{
+  margin:20px auto 0;max-width:520px;background:#fffdf8;border-radius:16px;padding:15px 17px;
+  border:1px solid rgba(60,72,96,.13);box-shadow:0 12px 28px rgba(45,55,75,.17);
+  display:flex;gap:12px;align-items:flex-start;text-align:left;cursor:pointer;width:100%;
+  animation:optIn .3s cubic-bezier(.2,.8,.3,1) both;
+}
+@keyframes optIn{from{opacity:0;transform:translate(var(--fx,0),8px)}to{opacity:1;transform:none}}
+.opt-card.picked{background:#fff6dd;border-color:#e0c07a;box-shadow:0 0 0 3px rgba(224,192,122,.5),0 12px 28px rgba(45,55,75,.2)}
+.opt-k{flex:none;width:34px;height:34px;border-radius:50%;background:#3f4a63;color:#f4f1e8;display:grid;place-items:center;font-size:15px;font-weight:700}
+.opt-t{font-size:14.8px;line-height:1.9;color:#41485a;text-wrap:pretty}
+.flash{position:fixed;inset:0;z-index:95;background:#fff;pointer-events:none;animation:zap .7s ease-out forwards}
+@keyframes zap{0%{opacity:0}8%{opacity:.95}18%{opacity:.1}30%{opacity:.8}48%{opacity:.05}100%{opacity:0}}
+
+/* ---- 結果頁 ---- */
+.res{max-width:560px;margin:0 auto;animation:riseIn .45s ease both}
+.res-card{border-radius:22px;padding:clamp(22px,5vw,34px);box-shadow:0 24px 60px rgba(40,50,70,.3);text-align:center}
+.res-tag{font-size:11.5px;letter-spacing:4px;opacity:.7}
+.res-name{font-family:var(--serif);font-size:clamp(21px,5.4vw,29px);letter-spacing:2px;margin:8px 0 14px;line-height:1.5}
+.res-line{font-size:14.8px;line-height:2.1;opacity:.93;text-wrap:pretty}
+.res-arrow{display:block;font-size:24px;margin:20px 0 4px;opacity:.85}
+.res-who{font-size:12.5px;letter-spacing:3px;opacity:.75;margin-bottom:6px}
+.res-quote{font-size:15px;line-height:2.15;text-wrap:pretty;font-family:var(--serif)}
+.res-go{
+  display:inline-block;margin:22px 6px 0;border:0;padding:14px 24px;border-radius:999px;cursor:pointer;
+  background:#fff6dd;color:#5f4522;font-size:15px;letter-spacing:2px;box-shadow:0 0 18px 4px rgba(255,231,163,.75);
+  animation:glowy 2.2s ease-in-out infinite;
+}
+@keyframes glowy{0%,100%{box-shadow:0 0 14px 3px rgba(255,231,163,.6)}50%{box-shadow:0 0 26px 8px rgba(255,231,163,.95)}}
+.res-again{margin-top:16px;text-align:center}
+
+/* ---- 分頁2 OK蹦撕撕樂 ---- */
+.bd-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(10px,2.6vw,16px)}
+@media (max-width:430px){.bd-grid{grid-template-columns:repeat(2,1fr)}}
+.bd{
+  position:relative;border-radius:16px;overflow:hidden;min-height:158px;background:#fffdf6;
+  box-shadow:0 10px 24px rgba(60,50,30,.16);border:1px solid rgba(122,90,46,.14);touch-action:pan-y;
+}
+.bd-quote{position:absolute;inset:0;display:grid;place-items:center;padding:14px 12px;font-size:12.6px;line-height:1.95;color:#4d4335;text-align:center;text-wrap:pretty}
+.bd-strip{
+  position:absolute;inset:0;display:grid;place-items:center;gap:4px;align-content:center;cursor:grab;
+  border:0;padding:10px;min-height:0;font-family:inherit;border-radius:16px;color:#5b4a2e;touch-action:pan-y;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.5),inset 0 -8px 16px rgba(120,90,45,.18);
+}
+.bd-strip::before{
+  content:"";position:absolute;inset:0 22%;border-radius:8px;opacity:.5;
+  background:radial-gradient(circle,rgba(255,255,255,.85) 1.6px,transparent 1.7px) 0 0/12px 12px;
+}
+.bd-strip em{font-style:normal;font-size:30px;line-height:1;position:relative}
+.bd-strip b{font-size:12.5px;letter-spacing:2px;font-weight:600;position:relative}
+.bd-strip i{font-style:normal;font-size:10.5px;letter-spacing:1px;opacity:.72;position:relative}
+.bd.torn .bd-strip{animation:ripAway .5s cubic-bezier(.35,.7,.4,1) forwards;pointer-events:none}
+@keyframes ripAway{to{transform:translate(115%,-78%) rotate(26deg) scale(.9);opacity:0}}
+.bd.torn{box-shadow:0 4px 12px rgba(60,50,30,.1)}
+
+/* ---- 分頁3 飛鴿攔截戰 ---- */
+.sky{
+  position:relative;height:min(46vh,330px);min-height:240px;border-radius:20px;overflow:hidden;
+  background:linear-gradient(180deg,#8cc4ee 0%,#bfdcf3 52%,#eee6d6 100%);
+  box-shadow:inset 0 -20px 40px rgba(255,255,255,.45),0 12px 30px rgba(45,55,75,.16);
+}
+.cloud{position:absolute;background:rgba(255,255,255,.78);border-radius:99px;filter:blur(2px);animation:drift linear infinite}
+@keyframes drift{from{transform:translateX(-30vw)}to{transform:translateX(120vw)}}
+.dove{
+  position:absolute;left:-14%;top:0;border:0;background:transparent;padding:8px;min-height:44px;cursor:pointer;
+  font-size:0;animation:flyx linear infinite;will-change:left;
+}
+.dove span{display:block;animation:flyy 2.6s ease-in-out infinite alternate}
+.dove em{display:block;font-style:normal;font-size:34px;line-height:1;animation:flap .42s ease-in-out infinite alternate;filter:drop-shadow(0 4px 6px rgba(40,60,90,.25))}
+@keyframes flyx{from{left:-14%}to{left:106%}}
+@keyframes flyy{from{transform:translateY(-14px)}to{transform:translateY(16px)}}
+@keyframes flap{from{transform:scaleY(.86) rotate(-6deg)}to{transform:scaleY(1.06) rotate(6deg)}}
+.dove.caught{opacity:0;pointer-events:none}
+.letter{
+  background:#fffdf4;border:1px solid rgba(122,90,46,.2);border-radius:18px;margin-top:18px;
+  padding:clamp(18px,4vw,24px);box-shadow:0 16px 36px rgba(60,50,30,.18);animation:riseIn .35s ease both;color:#4a3d2b;
+}
+.letter-top{display:flex;align-items:center;gap:8px;font-size:12px;letter-spacing:2px;color:#8a7457;margin-bottom:12px}
+.letter-body{font-size:15px;line-height:2.15;white-space:pre-wrap;text-wrap:pretty;overflow-wrap:anywhere}
+.letter-hint{font-size:13px;line-height:2;color:#7a6a52;margin:18px 0 10px;text-wrap:pretty}
+.letter-flag{
+  border:1px solid rgba(122,90,46,.22);background:transparent;color:#8a7457;font-size:12.5px;
+  padding:8px 16px;border-radius:999px;cursor:pointer;min-height:38px;line-height:1.3;
+}
+.letter-flag:hover{border-color:rgba(160,60,50,.4);color:#a04236}
+.st-scold{
+  background:#3a2f22;color:#f6efe1;border-radius:18px;padding:clamp(18px,4vw,24px);margin-top:18px;
+  font-size:14.5px;line-height:2.1;text-wrap:pretty;animation:riseIn .35s ease both;box-shadow:0 16px 36px rgba(0,0,0,.3);
+}
+
+/* ---- 分頁4 長老的秘密 ---- */
+.secret{text-align:center;padding-top:10px}
+.secret-scene{position:relative;height:150px;margin-bottom:8px}
+.secret-scene .ground{position:absolute;left:0;right:0;bottom:26px;height:2px;background:rgba(60,72,96,.2)}
+.secret-scene .elder,.secret-scene .bird{position:absolute;bottom:26px;font-size:40px;line-height:1;filter:grayscale(1) brightness(.25)}
+.secret-scene .elder{animation:chase 5.5s ease-in-out infinite}
+.secret-scene .bird{font-size:28px;animation:flee 5.5s ease-in-out infinite}
+.secret-scene .bird.b2{animation-delay:.7s;font-size:24px;opacity:.75}
+@keyframes chase{0%,100%{left:6%;transform:scaleX(1)}48%{left:64%;transform:scaleX(1)}50%{left:64%;transform:scaleX(-1)}98%{left:6%;transform:scaleX(-1)}}
+@keyframes flee{0%,100%{left:28%;transform:translateY(0) scaleX(1)}24%{left:60%;transform:translateY(-8px) scaleX(1)}48%{left:86%;transform:translateY(0) scaleX(1)}50%{left:86%;transform:translateY(0) scaleX(-1)}74%{left:50%;transform:translateY(-8px) scaleX(-1)}}
+.secret-box{background:#fffdf6;border:2px dashed rgba(122,90,46,.35);border-radius:18px;padding:clamp(20px,4vw,28px);box-shadow:0 12px 30px rgba(60,50,30,.14)}
+.secret-box h3{font-family:var(--serif);font-size:clamp(18px,4.4vw,22px);margin:0 0 14px;letter-spacing:2px}
+.secret-box p{font-size:14.5px;line-height:2.15;color:#5c4a33;margin:0;text-align:left;text-wrap:pretty}
+
+/* ---- 暗門 ---- */
+.foot .copy{display:inline-block;padding:6px 10px;cursor:default;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+
+/* ---------- toast / offline ---------- */
+.toast{
+  position:fixed;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom));
+  z-index:90;background:#3a2f22;color:#fbf6ec;font-size:14px;padding:12px 18px;border-radius:999px;
+  box-shadow:0 12px 30px rgba(0,0,0,.3);display:flex;align-items:center;gap:12px;max-width:calc(100vw - 32px);
+  animation:riseIn .3s ease both;
+}
+.toast[hidden]{display:none}
+.toast button{border:0;background:#fbf6ec;color:#3a2f22;font-size:13px;padding:7px 13px;border-radius:999px;cursor:pointer;min-height:34px;white-space:nowrap}
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+@media (max-width:768px){
+  .hot{
+    width:max(2.4%,20px);
+    background:rgba(255,232,150,.55);
+    box-shadow:0 0 8px 2px rgba(255,214,110,.4);
+    z-index:1;
+  }
+  .hot::before{
+    border-width:1.5px;
+    border-color:rgba(255,226,140,.5);
+  }
+  .hot::after{ inset:-8px; }
+
+  .hot--soft{
+    width:max(2%,16px);
+    background:rgba(232,240,255,.5);
+    box-shadow:0 0 6px 2px rgba(200,220,255,.35);
+  }
+  .hot--soft::before{ border-color:rgba(226,238,255,.5); }
+
+  .hot--post{
+    width:max(3.2%,24px);
+    background:rgba(255,255,255,.2);
+    box-shadow:0 0 8px 3px rgba(255,246,205,.4);
+  }
+  .hot--post::before{ border-color:rgba(255,255,255,.45); }
+
+  .card-name,.card-meta,.card-lead,
+  .modal-h,.blk-l,.blk-line,
+  .note-text,.res-line,.res-quote{
+    position:relative;
+    z-index:2;
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="page">
+
+  <header class="site-header">
+    <div class="brand"><b>心之村</b><span>EMOTION VILLAGE</span></div>
+    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="nav" aria-label="開啟選單"><span></span></button>
+    <nav class="nav" id="nav">
+      <a href="#map">村莊地圖</a>
+      <a href="#friends">八位夥伴</a>
+      <a href="#" data-act="open" data-key="weather">觀心氣象站</a>
+      <a href="#post">飛鴿驛站</a>
+      <a href="#about">關於小參室</a>
+      <button class="pill pill--go" id="installBtn" type="button">📲 安裝到手機</button>
+      <button class="pill" data-act="openAdmin" type="button">管理後台</button>
+    </nav>
+  </header>
+
+  <section id="map" class="wrap" style="padding-bottom:8px">
+    <div class="hero">
+      <h1>歡迎來到心之村</h1>
+      <p>這裡住著八位陪伴情緒的夥伴。<br />點一個地方，就會有人走出來，跟你說說話。</p>
+    </div>
+    <div class="map-frame" id="mapFrame">
+      <img id="mapImg" alt="心之村地圖" width="1600" height="1000" fetchpriority="high" />
+    </div>
+    <p class="map-note">✦ 點亮的光點，是可以走進去的地方 ✦</p>
+    <div class="legend" id="legend"></div>
+  </section>
+
+  <section id="friends" class="wrap">
+    <h2 class="h2">八位夥伴</h2>
+    <p class="lede">每一種情緒，都有人在等你。</p>
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <section id="post" class="post">
+    <div class="wrap wrap-narrow">
+      <h2 class="h2">飛鴿驛站</h2>
+      <p class="lede">把煩惱寫下來，交給鴿子。<br />牠會替你送到村子裡，最適合陪你的那位夥伴手上。</p>
+      <div class="post-grid">
+        <div class="panel">
+          <label class="lbl" for="nick">你想怎麼被稱呼</label>
+          <input class="inp" id="nick" placeholder="旅人" autocomplete="nickname" style="margin-bottom:18px" />
+          <span class="lbl">今天的心情</span>
+          <div class="moods" id="moods"></div>
+          <label class="lbl" for="text">想說的話</label>
+          <textarea class="txt" id="text" placeholder="這裡不需要說得漂亮，想到什麼就寫什麼。"></textarea>
+          <label class="check"><input type="checkbox" id="priv" />只給村長看，不要公開在留言牆</label>
+          <button class="btn-main" id="sendBtn" data-act="send" type="button">交給鴿子</button>
+        </div>
+        <div>
+          <div class="wall-head"><h3>留言牆</h3><span id="wallCount">共 0 則</span></div>
+          <div class="wall" id="wall"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="wrap wrap-narrow about">
+    <h2 class="h2">關於情緒小參室</h2>
+    <p id="aboutText"></p>
+    <div class="stats">
+      <div class="stat"><b id="statViews">0</b><span>瀏覽人次</span></div>
+      <div class="stat"><b id="statMsgs">0</b><span>收到的信</span></div>
+      <div class="stat"><b>8</b><span>位陪伴夥伴</span></div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    心之村 Emotion Village　·　喬安老師 情緒小參室<br />
+    <span class="copy" id="copyLine">© 2026 喬安老師的情緒小參室</span>
+  </footer>
+</div>
+
+<div class="station" id="station" hidden role="dialog" aria-modal="true" aria-label="觀心氣象站">
+  <div class="st-head">
+    <div>
+      <h2>觀心氣象站</h2>
+      <small>雷鳴山頂 · 今天心裡是什麼天氣</small>
+    </div>
+    <button class="st-ico first" id="stSound" type="button" aria-label="音效開關">🔊</button>
+    <button class="st-ico" data-act="closeStation" type="button" aria-label="離開氣象站">×</button>
+  </div>
+  <div class="st-tabs" id="stTabs" role="tablist"></div>
+  <div class="st-body" id="stBody">
+    <div class="st-pane" id="pane-quiz" role="tabpanel"></div>
+    <div class="st-pane" id="pane-band" role="tabpanel" hidden></div>
+    <div class="st-pane" id="pane-dove" role="tabpanel" hidden></div>
+    <div class="st-pane" id="pane-secret" role="tabpanel" hidden></div>
+  </div>
+</div>
+
+<div class="overlay" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="sheet" id="modalSheet"></div>
+</div>
+
+<div class="overlay" id="admin" hidden role="dialog" aria-modal="true" aria-label="村長後台">
+  <div class="sheet admin-sheet" id="adminSheet"></div>
+</div>
+
+<!-- 情緒小參室：兩層樓樹屋場景 -->
+<div class="clinic-scene" id="clinicScene" hidden role="dialog" aria-modal="true" aria-label="情緒小參室">
+  <div class="clinic-head">
+    <div>
+      <h2>情緒小參室</h2>
+      <small>村子入口 · 一間開在大樹裡的小屋</small>
+    </div>
+    <button class="st-ico" data-act="closeClinic" type="button" aria-label="離開小參室">×</button>
+  </div>
+  <div class="clinic-stage">
+    <button class="clinic-hot clinic-book" id="clinicBook" data-act="openBook" type="button" aria-label="翻開秘典"></button>
+    <button class="clinic-hot clinic-door" id="clinicDoor" data-act="openDoor" type="button" aria-label="加入我們"></button>
+    <p class="clinic-note">✦ 點擊書本閱讀秘典，點擊木門加入我們 ✦</p>
+  </div>
+</div>
+
+<!-- 秘典：3D 翻頁繪本 Modal -->
+<div class="flip-overlay" id="flipOverlay" hidden role="dialog" aria-modal="true" aria-label="秘典">
+  <div class="flipbook-wrap">
+    <button class="flip-close" data-act="closeFlip" type="button" aria-label="關閉">×</button>
+    <div class="flipbook" id="flipbook"></div>
+  </div>
+  <div class="flip-nav">
+    <button data-act="flipPrev" id="flipPrevBtn" type="button">← 上一頁</button>
+    <button data-act="flipNext" id="flipNextBtn" type="button">下一頁 →</button>
+  </div>
+</div>
+
+<!-- 加入我們：報名表單 Modal -->
+<div class="join-overlay" id="joinOverlay" hidden role="dialog" aria-modal="true" aria-label="加入我們">
+  <div class="join-sheet" id="joinSheet">
+    <button class="x-btn" style="position:absolute;right:14px;top:14px" data-act="closeJoin" type="button" aria-label="關閉">×</button>
+    <h3>加入我們</h3>
+    <p>推開這道門，代表你想跟心之村的夥伴們，走得更近一點。</p>
+    <div class="join-field"><label for="joinName">怎麼稱呼你</label><input class="inp" id="joinName" /></div>
+    <div class="join-field"><label for="joinContact">聯絡方式（Email 或電話）</label><input class="inp" id="joinContact" /></div>
+    <div class="join-field"><label for="joinMsg">想說的話</label><textarea class="txt" id="joinMsg" style="height:90px"></textarea></div>
+    <button class="btn-main" data-act="submitJoin" type="button">送出</button>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden><span id="toastText"></span><button type="button" id="toastBtn" hidden></button></div>
+
+<script>
+/* ============================ 資料 ============================ */
+var CDN = 'https://res.cloudinary.com/dbiirpmpy/image/upload/';
+function cld(ver, tr){ return CDN + tr + '/' + ver; }
+/* 在 Cloudinary 換過圖之後，把 IMGV 改成新的數字（例如當天日期 v20260901），
+   網址一變，所有人的瀏覽器／App 快取就會自動失效，馬上看到新圖。
+   同時也要把 sw.js 的 VERSION 加一。 */
+var IMGV = 'v20260804';
+var V = {
+  main:   IMGV + '/Buddhism/main.jpg',
+  moon:   IMGV + '/Buddhism/month_after_month.png',
+  sun:    IMGV + '/Buddhism/warm_sun.png',
+  star: './picture/star.png',
+  fog:    IMGV + '/Buddhism/fog.png',
+  rain: './picture/rain.png',
+  thunder:IMGV + '/Buddhism/thunder.png',
+  breeze: IMGV + '/Buddhism/wind.png',
+  earth:  IMGV + '/Buddhism/dust.png'
+};
+function charImg(k, w) {
+  if (typeof V[k] === 'string' && V[k].startsWith('./picture/')) {
+    return V[k];
+  }
+  return cld(V[k], 'f_auto,q_auto,w_' + w);
+}
+var BASE = [
+  {key:'moon', name:'月月', title:'夜晚守護者', place:'月眠林', bg:'#2b303b', fg:'#f4f2ee',
+   intro:['這是一片沉睡在永夜中的幽靜森林。巨大的古樹遮蔽了星空，黑夜沉重得像是一場醒不來的夢。但在最深處，月月提著一盞小小的月亮提燈，那一束光不刺眼，卻剛好能照亮你腳下不安的每一步。',
+          '這裡不要求你堅強，也不會催你趕快振作。',
+          '靠著月月坐下來吧。祂手中的巨大鐮刀不是為了傷害，而是要幫你割斷深夜裡那些不斷纏繞、讓你睡不著的胡思亂想。',
+          '坐在提燈下，我陪你把今天徹底放下。讓光芒安撫你的驚惶，今晚，你終於可以安心地睡一覺了。'],
+   companion:['焦慮。','失眠。','胡思亂想。'], personality:['成熟。','謹慎。'],
+   work:['晚上巡夜。','拿著鐮刀。','不是攻擊。','而是，剪掉那些一直纏住人的念頭。']},
+
+  {key:'thunder', name:'雷雷', title:'界線守護者', place:'雷鳴山', bg:'#d6d6d6', fg:'#1d232b',
+   intro:['這裡是一座怪石嶙峋、高聳入雲的險峻高山，山腰上圍著一圈圈被風雨拍打得搖搖欲墜的木頭圍欄。山頂黑雲翻滾，地殼在黑暗中經歷無數次擠壓與拉扯，就像你在生活裡默默吞下的那些委屈，壓得你幾乎無法呼吸。',
+          '這裡不勸你大度，也不教你繼續忍耐。',
+          '走到雷雷身邊，看他把鬆脫的圍欄一根根釘牢——那道界線不是用來把人擋在外面，而是用來保護山裡面，那個一直沒被好好對待的你。把憋在心裡的憤怒與不甘全都釋放出來吧，當閃電劃破夜空、雷聲轟鳴的那一刻，不是毀滅，而是一場積壓已久的勇敢救贖。',
+          '站在風暴裡，我陪你大聲地喊出來、哭出來。這裡的大雨和雷聲，會幫你掩蓋所有的痛苦，放心地卸下你的委屈吧。'],
+   companion:['憤怒。','害怕。','沒有勇氣拒絕別人。'], personality:['看起來兇。','其實超暖。','最討厭別人欺負弱小。'],
+   work:['巡邏並修補壞掉的圍欄。','因為：健康的界線，可以保護心。']},
+
+  {key:'sun', name:'暖陽', title:'曬心人', place:'晨曦原', bg:'#fbdd76', fg:'#7a3d10',
+   intro:['這裡是一片永遠停留在清晨、泛著金黃色微光的溫暖草原。微風吹過草尖，空氣裡盡是慶祝與豐收的喜悅。那些在現實中無人分享的開心、獨自達成的驕傲，如果不被看見，有時候也會變成一種孤單。',
+          '這裡不講究謙虛，也不需要你藏起光芒。',
+          '走到暖陽身邊，把你的快樂放心說出來吧。不需要害怕被嫉妒，也不用覺得不好意思，你的每一份開心，在這裡都會被好好地捧起。',
+          '坐在草地上，我陪你一起大聲歡呼。等這份熱情傳開了，整個草原都會為你起舞，你的快樂，在這裡終於有了溫暖的回音。'],
+   companion:['沒有自信。','自我懷疑。','否定自己。'], personality:['永遠笑笑的。','不是因為沒有煩惱。','而是，知道每一天都會過去。'],
+   work:['把大家潮濕的心，拿去曬曬太陽。']},
+
+  {key:'breeze', name:'微風', title:'改變旅人', place:'微風草原', bg:'#e3eed4', fg:'#4a5c39',
+   intro:['這裡是一片一望無際、綠意蔓延的遼闊草原。風原本是看不見、也摸不著的，但當微風輕輕吹過，漫山遍野的草浪隨之起伏。因為有了草原的承接，那些隱形的風，終於清晰地被看見了。',
+          '這裡不衡量你的成敗，只記錄你的每一次動搖。',
+          '站在草原中央，閉上眼睛張開雙臂吧。就像你看不到風卻能看到草浪一樣，你在生活裡悄悄做出的調整、默默承受的堅持，早已讓你的心變得更加柔軟。',
+          '迎著微風，我陪你感受這份輕柔的力量。你沒有停在原地，你其實一直在悄悄成長。'],
+   companion:['離別。','新開始。','轉變。'], personality:['最自由。','想到哪就去哪。','大家都不知道他今天在哪。'],
+   work:['把風送到需要的人身邊。','例如：把花香，送去難過的人窗前。']},
+
+  {key:'fog', name:'霧霧', title:'迷途引路人', place:'迷霧谷', bg:'#e5dcf0', fg:'#46375c',
+   intro:['這裡是一片終年被茫茫白霧籠罩的深谷。來到這裡，你看不見前方的路，也望不到天空的輪廓，所有喧囂似乎都被霧氣溫柔地隔絕了。那些不知道該去哪裡的焦慮，在這個山谷裡，都會被安靜地收容。',
+          '這裡不逼你找方向，也不催你立刻看清未來。',
+          '走到谷底，把緊繃的肩膀鬆下來吧。霧霧手上握著一個小巧的指南針，它無法為你撥開濃霧，但會溫柔地提醒你——迷路了真的沒有關係，只要你別弄丟了自己。',
+          '閉上眼睛，我陪你在霧氣中停下來。有些答案不需要急著尋找，只要你的心還在，指針就永遠守護著你。'],
+   companion:['迷惘。','選擇。','不知道怎麼辦。'], personality:['慢。','非常慢。','從來不催促任何人。','總是笑笑地說：「慢慢來。」'],
+   work:['每天背著羅盤。','不是帶路，而是陪別人走。']},
+
+  {key:'earth', name:'土土', title:'種子照顧員', place:'大地嶺', bg:'#ddccb0', fg:'#6b3a1e',
+   intro:['這裡是一道連綿起伏、寬厚沉穩的土嶺。它沒有高山的陡峭迫人，卻有著時光凝聚而成的溫厚與踏實。土土就像大地一樣，默默孕育著生命，也無條件地包容著這座村莊的一切。',
+          '這裡不要求你完美，也不怕你的混亂與脆弱。',
+          '躺在大地嶺的泥土上，把全身的重量放心交出來吧。無論是多麼沉重的痛苦、多麼委屈的黑暗面，土土都會像擁抱種子一樣，伸出雙手深深地接住你。',
+          '貼著這片土地，我陪你靜靜地休息。不用假裝堅強，這裡足夠寬廣，會把你的淚水化為養分，等待你下一次重新發芽。'],
+   companion:['自我接納。','等待。','耐心。'], personality:['只傾聽，不評判。','一天講不到十句話。','可是，跟他待在一起很舒服。'],
+   work:['包容所有情緒，就像大地接納一切種子。']},
+
+  {key:'star', name:'星星', title:'幸福收藏家', place:'星光丘', bg:'#23386b', fg:'#f6f1e2',
+   intro:['這裡是一座緩緩隆起的草丘，沒有陡峭與險阻。你不需要費力攀爬，只要帶著輕鬆的步伐走上來，就會發現這裡「剛剛好」離天空最近。坐在丘頂，漫天星辰彷彿觸手可及。',
+          '這裡不賣宏大的夢想，只收集微小的微光。',
+          '走上丘頂，和星星一起把心裡的罐子打開吧。那些你以為微不足道的小事——一盞深夜留給你的燈、一杯剛好溫熱的茶，都是掉落在你生命裡的星星。',
+          '坐在草地上，我陪你把這些微小的美好一顆顆數回來。幸福從來不需要費力，它一直都在你身邊。'],
+   companion:['感恩。','快樂。','小確幸。'], personality:['最活潑。','最好奇。','每天都在到處跑。'],
+   work:['拿著玻璃瓶，收集今天的小確幸。']},
+
+  {key:'rain', name:'雨滴', title:'眼淚收藏員', place:'雨之湖', bg:'#dbe4f5', fg:'#16324f',
+   intro:['這裡是村子裡最靜謐、也最深邃的地方。天空中永遠下著淅淅瀝瀝的小雨，而地表上那片波光粼粼的廣闊湖泊，承接了所有來到心之村的人，在外面不敢流、不能流的每一滴眼淚。無數的心碎與委屈，最終在這裡匯聚成了這座溫柔的湖。',
+          '這裡不賣傘，也不勸你擦乾眼淚。',
+          '走到湖畔，把被雨淋濕的沉重行李放下來吧。你的每一滴眼淚，掉進湖裡都只是一聲輕柔的漣漪，不會被評判，更不會被嘲笑。',
+          '坐在岸邊，我陪你靜靜地看著湖面。等這場心裡的雨下完了，澄澈的湖水，會映照出你最清澈的靈魂。'],
+   companion:['悲傷、委屈、失落、離別。'], personality:['最溫柔。','也是最會傾聽的人。','很少主動說話。','喜歡坐在屋簷下陪別人聽雨。','大家哭的時候都會來找她。'],
+   work:['把眼淚變成露珠。','澆灌小參室裡的植物。']}
+];
+
+var PLACES = {
+  clinic:{place:'村子入口', heading:'情緒小參室', bg:'#efe4d0', fg:'#4a3a26', img:'earth',
+    blocks:[{label:'這是什麼地方', lines:['一間開在大樹裡的小屋。','門永遠是開的。']},
+            {label:'誰可以進來', lines:['所有帶著情緒來的人。','不用先整理好自己。']}]},
+  weather:{place:'雷鳴山頂', heading:'觀心氣象站', bg:'#dfe3ec', fg:'#2b3345', img:'thunder',
+    blocks:[{label:'做什麼', lines:['每天量一次心裡的天氣。','晴、陰、雨，都是正常的。']},
+            {label:'怎麼用', lines:['寫下今天的天氣。','久了會看見自己的季節。']}]},
+  okcave:{place:'山的另一邊', heading:'OK洞', bg:'#3a2f26', fg:'#f4ead8', img:'star',
+    blocks:[{label:'洞裡有什麼', lines:['什麼都沒有。','只有回音。']},
+            {label:'為什麼要來', lines:['對著洞口喊一聲「我沒事」，','洞會回你一句「你可以不用沒事」。']}]}
+};
+
+/* 地圖光點座標（%），與原地圖一致 */
+var SPOTS = [
+  {key:'thunder', l:28,   t:19.6, cls:''}, {key:'fog',   l:64.5, t:15.3, cls:''},
+  {key:'rain',    l:83.2, t:24.6, cls:''}, {key:'moon',  l:51.7, t:39.5, cls:''},
+  {key:'star',    l:80.8, t:53.1, cls:''}, {key:'sun',   l:43.6, t:77.9, cls:''},
+  {key:'earth',   l:59.5, t:84.6, cls:''}, {key:'breeze',l:13,   t:79.6, cls:''},
+  {key:'__post',  l:35.2, t:50.7, cls:'hot--post', label:'飛鴿驛站 · 留言'},
+  {key:'clinic',  l:10.6, t:50.7, cls:'hot--soft'},
+  {key:'weather', l:36.4, t:3,    cls:'hot--soft'},
+  {key:'okcave',  l:86.4, t:74,   cls:'hot--soft'}
+];
+
+/* 24 種心情，依「心裡的天氣」分成五組（g = 組名） */
+var MOODS = [
+  {g:'☀️ 亮的',   label:'開心',     bg:'#fbdd76', fg:'#7a3d10', border:'#e9c655'},
+  {g:'☀️ 亮的',   label:'感恩',     bg:'#fbe9a8', fg:'#7c5312', border:'#edd58c'},
+  {g:'☀️ 亮的',   label:'期待',     bg:'#fde4bd', fg:'#8a4b16', border:'#f0cf9c'},
+  {g:'☀️ 亮的',   label:'放鬆',     bg:'#eef3dd', fg:'#566a3c', border:'#d8e3bd'},
+  {g:'☀️ 亮的',   label:'平靜',     bg:'#e3eed4', fg:'#4a5c39', border:'#cbdcb6'},
+
+  {g:'💧 濕的',   label:'難過',     bg:'#dbe4f5', fg:'#16324f', border:'#b9c9e6'},
+  {g:'💧 濕的',   label:'委屈',     bg:'#cfdcf0', fg:'#163b5c', border:'#b0c4e0'},
+  {g:'💧 濕的',   label:'想哭',     bg:'#e6edf9', fg:'#1f4260', border:'#c8d8ee'},
+  {g:'💧 濕的',   label:'失落',     bg:'#dde3ee', fg:'#33445c', border:'#c2cbdb'},
+  {g:'💧 濕的',   label:'孤單',     bg:'#d7dae2', fg:'#2b303b', border:'#c0c4cf'},
+  {g:'💧 濕的',   label:'想念',     bg:'#e4e2ee', fg:'#3c3a52', border:'#cecbdf'},
+
+  {g:'⚡ 悶的',   label:'生氣',     bg:'#e6d6d2', fg:'#7a3226', border:'#d3b8b1'},
+  {g:'⚡ 悶的',   label:'煩躁',     bg:'#ecdcd4', fg:'#7c422a', border:'#dbc4b8'},
+  {g:'⚡ 悶的',   label:'壓力大',   bg:'#dedede', fg:'#35414f', border:'#c6c6c6'},
+  {g:'⚡ 悶的',   label:'不甘心',   bg:'#e3d3d6', fg:'#6e2f3c', border:'#cfb8bd'},
+
+  {g:'🌫 糊的',   label:'焦慮',     bg:'#e5dcf0', fg:'#46375c', border:'#cfc0e2'},
+  {g:'🌫 糊的',   label:'害怕',     bg:'#ded5ec', fg:'#413159', border:'#c7b9de'},
+  {g:'🌫 糊的',   label:'迷惘',     bg:'#eae4f4', fg:'#4f4166', border:'#d8cee9'},
+  {g:'🌫 糊的',   label:'自我懷疑', bg:'#e7e2f0', fg:'#4b4266', border:'#d2cbe4'},
+  {g:'🌫 糊的',   label:'睡不著',   bg:'#d9dcea', fg:'#303851', border:'#c2c7db'},
+
+  {g:'🪨 沉的',   label:'好累',     bg:'#ddccb0', fg:'#6b3a1e', border:'#cbb896'},
+  {g:'🪨 沉的',   label:'想被抱抱', bg:'#ead9c2', fg:'#7a4a24', border:'#dcc6a8'},
+  {g:'🪨 沉的',   label:'想改變',   bg:'#e0e7d2', fg:'#4e6038', border:'#c9d5b4'},
+  {g:'🪨 沉的',   label:'說不出來', bg:'#e9e2d5', fg:'#5c4a33', border:'#d6cbb8'}
+];
+var REPLIES = {
+  '開心':'星星把這件事收進玻璃瓶了。',
+  '感恩':'星星說：會道謝的人，瓶子總是裝得比較滿。',
+  '期待':'暖陽先幫你把明天曬暖了，慢慢等。',
+  '放鬆':'微風從你身邊經過，什麼都沒問。',
+  '平靜':'微風說：這種天氣最難得，多待一會兒。',
+  '難過':'雨滴坐在你旁邊，陪你聽雨。',
+  '委屈':'雨滴說：你不是小題大作，你只是忍太久。',
+  '想哭':'雨滴把屋簷讓給你，想哭就哭，她會收好。',
+  '失落':'雨滴說：失去的東西會變成露珠，不會不見。',
+  '孤單':'月月今晚把燈掛低一點，讓你找得到。',
+  '想念':'微風往你想的那個人的方向，吹了一下。',
+  '生氣':'雷雷說：你的界線值得被守住。',
+  '煩躁':'雷雷去幫你把那道吵人的圍欄修一修了。',
+  '壓力大':'雷雷說：山會擋雨，但山也會累。先放下一點。',
+  '不甘心':'雷雷說：不甘心是好事，代表你知道自己值得。',
+  '焦慮':'月月今晚會替你巡夜。',
+  '害怕':'月月提著燈站在門口，你先睡。',
+  '迷惘':'霧霧說：慢慢來，沒關係。',
+  '自我懷疑':'暖陽把你潮濕的那一面，拿去曬了。',
+  '睡不著':'月月拿著鐮刀，把纏住你的那幾條念頭剪掉了。',
+  '好累':'土土說：先坐下，別的等一下再說。',
+  '想被抱抱':'土土沒說話，只是往旁邊挪了一個位子。',
+  '想改變':'微風說：想改變的人，風會先來找他。',
+  '說不出來':'土土只是坐著，不問你為什麼。'
+};
+var DEFAULT_ABOUT = '情緒小參室，是一個可以把情緒放下來的地方。這裡不急著給你答案，也不會要你趕快好起來。你可以先在村子裡走一走，遇到那位剛好懂你的夥伴，再慢慢說。';
+var KEY = 'emotion-village-v1';
+var PASSWORD = 'sawzhuweee';
+
+/* ============================ 狀態 ============================ */
+var S = {
+  msgs:[], overrides:{}, about:DEFAULT_ABOUT, views:0, todayViews:0,
+  nick:'', mood:'說不出來', text:'', priv:false,
+  adminOpen:false, unlocked:false, tab:'msgs', draft:null, modalKey:null, lastFocus:null
+};
+
+function load(){ try{ return JSON.parse(localStorage.getItem(KEY)) || {}; }catch(e){ return {}; } }
+function persist(patch){
+  var d = load(); for (var k in patch) d[k] = patch[k];
+  try{ localStorage.setItem(KEY, JSON.stringify(d)); }catch(e){}
+}
+function esc(s){
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+function $(id){ return document.getElementById(id); }
+
+/* 後台文字 -> 角色資料 */
+function chars(){
+  return BASE.map(function(c){
+    var o = S.overrides[c.key];
+    if (!o) return c;
+    var out = {}; for (var k in c) out[k] = c[k];
+    var secs = {'負責陪伴':'companion','個性':'personality','工作':'work'};
+    var buf = {companion:[], personality:[], work:[]}, cur = null;
+    String(o).split('\n').map(function(s){ return s.trim(); }).forEach(function(l){
+      if (!l) return;
+      if (secs[l]) { cur = secs[l]; return; }
+      if (cur) buf[cur].push(l);
+      else if (l.indexOf('｜') > -1) { var p = l.split('｜'); out.name = p[0].trim(); out.title = (p[1]||'').trim(); }
+    });
+    ['companion','personality','work'].forEach(function(k){ if (buf[k].length) out[k] = buf[k]; });
+    return out;
+  });
+}
+function charByKey(k){ var a = chars(); for (var i=0;i<a.length;i++) if (a[i].key===k) return a[i]; return null; }
+function toText(c){
+  return c.name + '｜' + c.title + '\n負責陪伴\n' + c.companion.join('\n') +
+         '\n個性\n' + c.personality.join('\n') + '\n工作\n' + c.work.join('\n');
+}
+function moodMeta(l){ for (var i=0;i<MOODS.length;i++) if (MOODS[i].label===l) return MOODS[i]; return MOODS[MOODS.length-1]; }
+
+/* ============================ 畫面 ============================ */
+function renderMap(){
+  var img = $('mapImg');
+  img.src = cld(V.main, 'f_auto,q_auto,w_1600');
+  img.srcset = [800,1200,1600,2000].map(function(w){ return cld(V.main,'f_auto,q_auto,w_'+w) + ' ' + w + 'w'; }).join(', ');
+  img.sizes = '(max-width:1240px) 100vw, 1240px';
+
+  var frame = $('mapFrame'), html = '';
+  SPOTS.forEach(function(s, i){
+    var label = s.label;
+    if (!label) { var c = charByKey(s.key); label = c ? (c.place + ' · ' + c.name) : (PLACES[s.key] ? PLACES[s.key].heading : s.key); }
+    html += '<button class="hot ' + s.cls + '" style="left:' + s.l + '%;top:' + s.t + '%;--d:' + (i * 0.3) + 's" ' +
+            'data-act="' + (s.key === '__post' ? 'goPost' : 'open') + '" data-key="' + esc(s.key) + '" ' +
+            'title="' + esc(label) + '" aria-label="' + esc(label) + '" type="button"></button>';
+  });
+  frame.insertAdjacentHTML('beforeend', html);
+}
+
+function renderLegend(){
+  var html = '';
+  chars().forEach(function(c){
+    html += '<button class="chip" data-act="open" data-key="' + esc(c.key) + '" type="button">' +
+            esc(c.name) + '<i>' + esc(c.place) + '</i></button>';
+  });
+  Object.keys(PLACES).forEach(function(k){
+    html += '<button class="chip" data-act="open" data-key="' + esc(k) + '" type="button">' + esc(PLACES[k].heading) + '</button>';
+  });
+  html += '<button class="chip" data-act="goPost" type="button">飛鴿驛站<i>寫封信</i></button>';
+  $('legend').innerHTML = html;
+}
+
+function renderCards(){
+  $('cards').innerHTML = chars().map(function(c){
+    return '<button class="card" data-act="open" data-key="' + esc(c.key) + '" type="button">' +
+      '<div class="card-art" style="background:' + esc(c.bg) + '">' +
+        '<img src="' + charImg(c.key, 400) + '" srcset="' + charImg(c.key,300) + ' 300w,' + charImg(c.key,500) + ' 500w" ' +
+        'sizes="(max-width:820px) 45vw, 280px" alt="' + esc(c.name) + '" loading="lazy" decoding="async" />' +
+      '</div>' +
+      '<div class="card-body">' +
+        '<div class="card-name">' + esc(c.name) + '</div>' +
+        '<div class="card-meta">' + esc(c.title) + '｜' + esc(c.place) + '</div>' +
+        '<div class="card-lead">' + esc(c.companion.join('')) + '</div>' +
+      '</div></button>';
+  }).join('');
+}
+
+function renderMoods(){
+  var html = '', group = null;
+  MOODS.forEach(function(m){
+    if (m.g !== group) {
+      if (group !== null) html += '</div>';
+      html += '<div class="mood-g">' + esc(m.g) + '</div><div class="mood-row">';
+      group = m.g;
+    }
+    var on = S.mood === m.label;
+    html += '<button class="mood' + (on ? ' on' : '') + '" data-act="mood" data-mood="' + esc(m.label) + '" type="button" aria-pressed="' + on + '" ' +
+      'style="background:' + (on ? m.bg : 'transparent') + ';color:' + (on ? m.fg : 'var(--sub)') +
+      ';border-color:' + (on ? m.border : 'var(--line-s)') + '">' + esc(m.label) + '</button>';
+  });
+  $('moods').innerHTML = html + (group === null ? '' : '</div>');
+}
+
+function renderWall(){
+  var pub = S.msgs.filter(function(m){ return m.pub; });
+  $('wallCount').textContent = '共 ' + pub.length + ' 則';
+  $('wall').innerHTML = pub.length ? pub.map(function(m){
+    var mm = moodMeta(m.mood);
+    return '<div class="note">' +
+      '<div class="note-top">' +
+        '<span class="note-nick">' + esc(m.nick) + '</span>' +
+        '<span class="tag" style="background:' + mm.bg + ';color:' + mm.fg + '">' + esc(m.mood) + '</span>' +
+        '<span class="note-date">' + esc(m.date) + '</span>' +
+        (S.unlocked ? '<button class="note-del" data-act="delWall" data-id="' + esc(m.id) +
+          '" type="button" title="刪除這則留言" aria-label="刪除這則留言">刪除</button>' : '') +
+      '</div>' +
+      '<div class="note-text">' + esc(m.text) + '</div>' +
+      '<div class="note-reply">🕊 ' + esc(REPLIES[m.mood] || '鴿子已經把信送到了。') + '</div>' +
+    '</div>';
+  }).join('') : '<div class="empty">留言牆還空空的。<br />第一封信，可以由你來寫。</div>';
+}
+
+function renderStats(){
+  $('statViews').textContent = S.views.toLocaleString();
+  $('statMsgs').textContent = S.msgs.length;
+  $('aboutText').textContent = S.about;
+}
+
+/* ---------- 角色／地點視窗 ---------- */
+function openModal(key){
+  var m = null, c = charByKey(key);
+  if (c) {
+    m = {bg:c.bg, fg:c.fg, imgKey:c.key, place:c.place, heading:c.name + '｜' + c.title,
+         intro:c.intro,
+         blocks:[{label:'負責陪伴',lines:c.companion},{label:'個性',lines:c.personality},{label:'工作',lines:c.work}]};
+  } else if (PLACES[key]) {
+    var p = PLACES[key];
+    m = {bg:p.bg, fg:p.fg, imgKey:p.img, place:p.place, heading:p.heading, blocks:p.blocks};
+  }
+  if (!m) return;
+  S.modalKey = key; S.lastFocus = document.activeElement;
+  $('modalSheet').setAttribute('style', 'background:' + m.bg + ';color:' + m.fg);
+  $('modalSheet').innerHTML =
+    '<button class="x-btn" data-act="closeModal" aria-label="關閉" type="button">×</button>' +
+    '<div class="modal-grid">' +
+      '<div>' +
+        '<div class="modal-place">' + esc(m.place) + '</div>' +
+        '<h3 class="modal-h" id="modalTitle">' + esc(m.heading) + '</h3>' +
+        (m.intro ? '<div class="modal-intro">' + m.intro.map(function(p){ return '<p>' + esc(p) + '</p>'; }).join('') + '</div>' : '') +
+        m.blocks.map(function(b){
+          return '<div class="blk"><div class="blk-l">' + esc(b.label) + '</div>' +
+            b.lines.map(function(l){ return '<div class="blk-line">' + esc(l) + '</div>'; }).join('') + '</div>';
+        }).join('') +
+      '</div>' +
+      '<div class="modal-art"><img src="' + charImg(m.imgKey, 600) + '" alt="' + esc(m.heading) + '" /></div>' +
+    '</div>';
+  showOverlay($('modal'));
+  pushLayer('modal', closeModalNow);
+}
+function closeModal(){ if (!$('modal').hidden) popLayer(); }
+function closeModalNow(){ S.modalKey = null; hideOverlay($('modal')); }
+
+/* 純文字的說明視窗（例如安裝步驟），共用同一個彈層 */
+function openInfo(title, html){
+  S.lastFocus = document.activeElement;
+  $('modalSheet').setAttribute('style', 'background:#fdfaf3;color:var(--ink);width:min(560px,100%)');
+  $('modalSheet').innerHTML =
+    '<button class="x-btn" data-act="closeModal" aria-label="關閉" type="button">×</button>' +
+    '<div style="padding:clamp(28px,5vw,38px)">' +
+      '<h3 class="modal-h" id="modalTitle" style="font-size:clamp(21px,4.8vw,27px);margin-bottom:16px">' + title + '</h3>' +
+      html +
+    '</div>';
+  showOverlay($('modal'));
+  pushLayer('modal', closeModalNow);
+}
+
+/* ================= 情緒小參室：秘典翻頁書 + 加入我們 ================= */
+/* 相片與影片網址：請替換成校色後的圖片 / Cloudinary 影片連結 */
+var CLINIC_PHOTOS = [
+  /* 照片 1 */ 'https://res.cloudinary.com/dplbydqx/image/upload/v1786684884/IMG_7058_0.jpg',
+  /* 照片 2 */ 'https://res.cloudinary.com/dplbydqx/image/upload/v1786684856/DSC_4247_0.jpg',
+  /* 照片 3 */ 'https://res.cloudinary.com/dplbydqx/image/upload/v1786684847/DSC_4239_0.jpg',
+  /* 照片 4 */ 'https://res.cloudinary.com/dplbydqx/image/upload/v1786684847/DSC_4178_0.jpg',
+  /* 照片 5 */ 'https://res.cloudinary.com/dplbydqx/image/upload/v1786684846/DSC_4101_0.jpg',
+  /* 照片 6 */ 'https://res.cloudinary.com/dplbydqx/image/upload/v1786684845/DSC_4161_0.jpg'
+];
+var CLINIC_VIDEOS = [
+  /* 影片一：青少年篇 */ 'https://res.cloudinary.com/dplbydqx/video/upload/v1786685030/1150813%E9%9D%92%E5%B0%91%E5%B9%B4%E7%AF%87.mp4',
+  /* 影片二：小毛球情緒篇新版 */ 'https://res.cloudinary.com/dplbydqx/video/upload/v1786685329/1150813%E5%B0%8F%E6%AF%9B%E7%90%83%E6%83%85%E7%B7%92%E7%AF%87%E6%96%B0%E7%89%88.mp4',
+  /* 影片三：舊版小毛球 */ 'https://res.cloudinary.com/dplbydqx/video/upload/v1786685046/1150813%E8%88%8A%E7%89%88%E5%B0%8F%E6%AF%9B%E7%90%83.mp4'
+];
+/* 6 個內頁，每 2 個組成一張「葉子」的正反面，共 3 葉 */
+var CLINIC_PAGES = [
+  {kind:'intro'},
+  {kind:'photos', caption:'小參室的日常', photos:CLINIC_PHOTOS},
+  {kind:'video', caption:'影片一', src:CLINIC_VIDEOS[0]},
+  {kind:'video', caption:'影片二', src:CLINIC_VIDEOS[1]},
+  {kind:'video', caption:'影片三', src:CLINIC_VIDEOS[2]},
+  {kind:'closing'}
+];
+function clinicPageHTML(p){
+  if (p.kind === 'cover')
+    return '<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">' +
+      '<div style="font-size:12px;letter-spacing:4px;color:#8a7457;margin-bottom:10px">EMOTION VILLAGE</div>' +
+      '<h3 style="font-family:var(--serif);font-size:24px;margin:0 0 14px;color:#3a2f22;letter-spacing:3px">情緒小參室<br />秘典</h3>' +
+      '<div style="font-size:13px;color:#6b5940;line-height:2">請翻開右頁，看看小參室的日常。</div></div>';
+  if (p.kind === 'intro')
+    return '<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">' +
+      '<div style="font-size:13px;color:#6b5940;line-height:2.2">這裡是一間開在大樹裡的小屋。<br />門永遠是開的，所有帶著情緒來的人，<br />都不用先整理好自己。</div></div>';
+  if (p.kind === 'photos')
+    return '<div class="flip-caption">' + esc(p.caption || '') + '</div><div class="flip-photos">' +
+      (p.photos || []).map(function(src){ return '<div><img src="' + esc(src) + '" alt="小參室照片" loading="lazy" /></div>'; }).join('') + '</div>';
+  if (p.kind === 'video')
+    return '<div class="flip-caption">' + esc(p.caption || '') + '</div><div class="video-card">' +
+      '<video src="' + esc(p.src) + '" controls muted playsinline preload="metadata"></video>' +
+      '<p>點擊播放，了解更多。</p></div>';
+  if (p.kind === 'closing')
+    return '<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">' +
+      '<div style="font-size:14.5px;line-height:2.2;color:#5c4a33">看完這些，如果你也想成為<br />心之村的一份子——</div>' +
+      '<div style="margin-top:14px;font-size:13px;color:#8a7457;letter-spacing:1px">推開小屋右側那扇門，加入我們。</div></div>';
+  if (p.kind === 'theend')
+    return '<div style="height:100%;display:flex;align-items:center;justify-content:center;text-align:center">' +
+      '<div style="font-size:13px;color:#8a7457;letter-spacing:2px;line-height:2">— 秘典的最後一頁 —</div></div>';
+  return '';
+}
+
+var FLIP = {built:false, idx:0, leaves:[]};
+function buildFlipbook(){
+  var fb = $('flipbook'), n = CLINIC_PAGES.length / 2;
+  fb.innerHTML =
+    '<div class="flip-base-l">' + clinicPageHTML({kind:'cover'}) + '</div>' +
+    '<div class="flip-spine"></div>' +
+    '<div class="flip-base-r">' + clinicPageHTML({kind:'theend'}) + '</div>';
+  FLIP.leaves = [];
+  for (var i = 0; i < n; i++) {
+    var leaf = document.createElement('div');
+    leaf.className = 'flip-page';
+    leaf.setAttribute('data-i', i);
+    leaf.innerHTML =
+      '<div class="flip-face flip-face--front">' + clinicPageHTML(CLINIC_PAGES[2*i]) + '</div>' +
+      '<div class="flip-face flip-face--back">' + clinicPageHTML(CLINIC_PAGES[2*i+1]) + '</div>';
+    fb.appendChild(leaf);
+    FLIP.leaves.push(leaf);
+    bindFlipLeaf(leaf, i);
+  }
+}
+function updateFlipView(){
+  FLIP.leaves.forEach(function(leaf, i){
+    var flipped = i < FLIP.idx;
+    leaf.classList.toggle('flipped', flipped);
+    leaf.style.zIndex = flipped ? String(200 + i) : String(100 - i);
+  });
+  $('flipPrevBtn').disabled = FLIP.idx <= 0;
+  $('flipNextBtn').disabled = FLIP.idx >= FLIP.leaves.length;
+}
+function flipTo(target){
+  FLIP.idx = Math.max(0, Math.min(FLIP.leaves.length, target));
+  updateFlipView();
+}
+function bindFlipLeaf(leaf, i){
+  leaf.addEventListener('click', function(){
+    if (i === FLIP.idx) flipTo(FLIP.idx + 1);
+    else if (i === FLIP.idx - 1) flipTo(FLIP.idx - 1);
+  });
+  var down = false, startX = 0;
+  leaf.addEventListener('pointerdown', function(e){
+    if (i !== FLIP.idx && i !== FLIP.idx - 1) return;
+    down = true; startX = e.clientX; leaf.style.transition = 'none';
+    try { leaf.setPointerCapture(e.pointerId); } catch (err) {}
+  });
+  leaf.addEventListener('pointermove', function(e){
+    if (!down) return;
+    var w = ($('flipbook').getBoundingClientRect().width / 2) || 200;
+    var dx = e.clientX - startX, forward = (i === FLIP.idx), deg;
+    if (forward) deg = Math.max(-180, Math.min(0, (dx / w) * -180));
+    else deg = Math.max(-180, Math.min(0, -180 + (dx / w) * 180));
+    leaf.style.transform = 'rotateY(' + deg + 'deg)';
+  });
+  function release(e){
+    if (!down) return;
+    down = false; leaf.style.transition = ''; leaf.style.transform = '';
+    var w = ($('flipbook').getBoundingClientRect().width / 2) || 200;
+    var dx = e.clientX - startX, forward = (i === FLIP.idx);
+    if (forward) { if (dx < -w * 0.35) flipTo(FLIP.idx + 1); else updateFlipView(); }
+    else { if (dx > w * 0.35) flipTo(FLIP.idx - 1); else updateFlipView(); }
+  }
+  leaf.addEventListener('pointerup', release);
+  leaf.addEventListener('pointercancel', release);
+}
+function pauseClinicVideos(){
+  var vids = $('flipbook').querySelectorAll('video');
+  Array.prototype.forEach.call(vids, function(v){ try { v.pause(); } catch (e) {} });
+}
+function openFlipbook(){
+  if (!FLIP.built) { buildFlipbook(); FLIP.built = true; }
+  FLIP.idx = 0; updateFlipView();
+  S.lastFocus = document.activeElement;
+  $('flipOverlay').hidden = false;
+  document.body.style.overflow = 'hidden';
+  pushLayer('flip', closeFlipNow);
+}
+function closeFlip(){ if (!$('flipOverlay').hidden) popLayer(); }
+function closeFlipNow(){
+  $('flipOverlay').hidden = true; pauseClinicVideos();
+  if ($('modal').hidden && $('admin').hidden && $('station').hidden && $('clinicScene').hidden && $('joinOverlay').hidden) document.body.style.overflow = '';
+  if (S.lastFocus && S.lastFocus.focus) S.lastFocus.focus({preventScroll:true});
+}
+
+/* 木門：金白色夢境閃光，淡出後開啟「加入我們」Google 表單 */
+var CLINIC_JOIN_FORM_URL = 'https://forms.gle/wGoLNj2icThRK2d89';
+function openDoor(){
+  var f = document.createElement('div'); f.className = 'flash flash--gold';
+  document.body.appendChild(f);
+  buzz(16);
+  setTimeout(function(){
+    if (f.parentNode) f.parentNode.removeChild(f);
+    window.open(CLINIC_JOIN_FORM_URL, '_blank', 'noopener');
+  }, 560);
+}
+function openJoin(){
+  S.lastFocus = document.activeElement;
+  $('joinOverlay').hidden = false;
+  document.body.style.overflow = 'hidden';
+  pushLayer('join', closeJoinNow);
+}
+function closeJoin(){ if (!$('joinOverlay').hidden) popLayer(); }
+function closeJoinNow(){
+  $('joinOverlay').hidden = true;
+  if ($('modal').hidden && $('admin').hidden && $('station').hidden && $('clinicScene').hidden && $('flipOverlay').hidden) document.body.style.overflow = '';
+  if (S.lastFocus && S.lastFocus.focus) S.lastFocus.focus({preventScroll:true});
+}
+function submitJoin(){
+  var name = $('joinName').value.trim(), contact = $('joinContact').value.trim(), msg = $('joinMsg').value.trim();
+  if (!name || !contact) { toast('請留下稱呼和聯絡方式喔。'); return; }
+  gasSend({type:'join', name:name, contact:contact, msg:msg});
+  toast('已經收到，村長會盡快與你聯繫 🌿');
+  $('joinName').value = ''; $('joinContact').value = ''; $('joinMsg').value = '';
+  closeJoin();
+}
+
+/* 情緒小參室場景本身 */
+function openClinicScene(){
+  S.lastFocus = document.activeElement;
+  $('clinicScene').hidden = false;
+  document.body.style.overflow = 'hidden';
+  pushLayer('clinic', closeClinicNow);
+}
+function closeClinic(){ if (!$('clinicScene').hidden) popLayer(); }
+function closeClinicNow(){
+  $('clinicScene').hidden = true;
+  if ($('modal').hidden && $('admin').hidden && $('station').hidden && $('flipOverlay').hidden && $('joinOverlay').hidden) document.body.style.overflow = '';
+  if (S.lastFocus && S.lastFocus.focus) S.lastFocus.focus({preventScroll:true});
+}
+
+/* ---------- 後台 ---------- */
+function renderAdmin(){
+  var head =
+    '<div class="admin-top"><h3>村長後台</h3>' +
+    '<button class="pill" data-act="closeAdmin" type="button">關閉</button></div>';
+
+  if (!S.unlocked) {
+    $('adminSheet').innerHTML = head +
+      '<div class="lock"><p style="font-size:14px;color:var(--sub);margin:0 0 12px;line-height:1.9">請輸入密碼</p>' +
+      '<div class="lock-row"><input class="inp" type="password" id="pw" autocomplete="current-password" />' +
+      '<button class="btn-main" style="width:auto;padding:12px 24px;letter-spacing:1px" data-act="unlock" type="button">進入</button></div>' +
+      '<p id="pwErr" style="color:#a04236;font-size:13px;margin:10px 0 0" hidden>密碼不對喔。</p></div>';
+    return;
+  }
+
+  var d = S.draft || {about:S.about, chars:(function(){
+    var o = {}; chars().forEach(function(c){ o[c.key] = S.overrides[c.key] || toText(c); }); return o;
+  })()};
+  S.draft = d;
+
+  var body = head +
+    '<div class="kpis">' +
+      '<div class="kpi"><span>總瀏覽人次</span><b>' + S.views.toLocaleString() + '</b></div>' +
+      '<div class="kpi"><span>今日瀏覽</span><b>' + S.todayViews + '</b></div>' +
+      '<div class="kpi"><span>留言總數</span><b>' + S.msgs.length + '</b></div>' +
+    '</div>' +
+    '<div class="tabs">' +
+      '<button class="tab' + (S.tab==='msgs'?' on':'') + '" data-act="tab" data-tab="msgs" type="button">留言管理</button>' +
+      '<button class="tab' + (S.tab==='edit'?' on':'') + '" data-act="tab" data-tab="edit" type="button">內容編輯</button>' +
+      '<button class="tab' + (S.tab==='station'?' on':'') + '" data-act="tab" data-tab="station" type="button">氣象站數據</button>' +
+    '</div>';
+
+  if (S.tab === 'station') {
+    body += renderStationAdmin();
+  } else if (S.tab === 'msgs') {
+    body += S.msgs.length ? S.msgs.map(function(m){
+      var label = m.priv ? '私訊' : (m.pub ? '已公開' : '已隱藏');
+      var color = m.priv ? 'var(--muted)' : (m.pub ? '#5b7a4a' : '#a04236');
+      return '<div class="row">' +
+        '<div class="row-top"><span style="font-size:15px;font-weight:500">' + esc(m.nick) + '</span>' +
+        '<span style="font-size:12px;color:var(--muted)">' + esc(m.mood) + '　' + esc(m.date) + '</span>' +
+        '<span style="font-size:12px;color:' + color + ';margin-left:auto">' + label + '</span></div>' +
+        '<div class="note-text">' + esc(m.text) + '</div>' +
+        '<div class="row-acts">' +
+          '<button class="mini" data-act="toggleMsg" data-id="' + esc(m.id) + '" type="button">' + (m.pub ? '隱藏' : '公開') + '</button>' +
+          '<button class="mini mini--danger" data-act="delMsg" data-id="' + esc(m.id) + '" type="button">刪除</button>' +
+        '</div></div>';
+    }).join('') : '<div class="empty">還沒有任何留言。</div>';
+  } else {
+    body += '<p style="font-size:13px;color:var(--muted);margin:0 0 14px;line-height:1.9">直接修改文字後按「儲存」，網站內容立刻更新，不需要改任何程式碼。</p>' +
+      '<div style="margin-bottom:20px"><div style="font-size:14px;font-weight:500;margin-bottom:6px">關於情緒小參室（首頁介紹）</div>' +
+      '<textarea class="edit-txt" style="height:110px" data-edit="about">' + esc(d.about) + '</textarea></div>' +
+      chars().map(function(c){
+        return '<div class="row"><div class="row-top">' +
+          '<span class="swatch" style="background:' + esc(c.bg) + '"></span>' +
+          '<span style="font-size:15px;font-weight:500">' + esc(c.name) + '｜' + esc(c.title) + '</span>' +
+          '<span style="font-size:12px;color:var(--muted)">' + esc(c.place) + '</span></div>' +
+          '<textarea class="edit-txt" data-edit="char" data-key="' + esc(c.key) + '">' + esc(d.chars[c.key]) + '</textarea></div>';
+      }).join('') +
+      '<div class="row-acts" style="margin-top:16px">' +
+        '<button class="btn-main" style="width:auto;padding:12px 26px;letter-spacing:1px" data-act="save" type="button">儲存修改</button>' +
+        '<button class="mini" style="padding:12px 22px;font-size:15px" data-act="reset" type="button">還原成預設</button>' +
+      '</div>';
+  }
+  $('adminSheet').innerHTML = body;
+}
+function openAdmin(){
+  S.adminOpen = true; S.lastFocus = document.activeElement;
+  renderAdmin(); showOverlay($('admin'));
+  pushLayer('admin', closeAdminNow);
+}
+function closeAdmin(){ if (!$('admin').hidden) popLayer(); }
+function closeAdminNow(){ S.adminOpen = false; hideOverlay($('admin')); }
+
+/* ---------- Android 返回鍵：先關彈窗，不要直接退出 App ---------- */
+var layers = [];
+function pushLayer(type, closeFn){
+  layers.push({type:type, close:closeFn});
+  try { history.pushState({village:type, depth:layers.length}, ''); } catch (e) {}
+}
+function popLayer(){
+  if (!layers.length) return;
+  if (history.state && history.state.village) history.back();   // 交給 popstate 收尾
+  else layers.pop().close();                                    // 沒有歷史紀錄時直接關
+}
+window.addEventListener('popstate', function(e){
+  var depth = (e.state && e.state.village) ? (e.state.depth || 0) : 0;
+  while (layers.length > depth) { layers.pop().close(); }
+});
+
+/* ---------- overlay 共用 ---------- */
+function showOverlay(el){
+  el.hidden = false;
+  document.body.style.overflow = 'hidden';
+  var f = el.querySelector('button,input,textarea');
+  if (f) f.focus({preventScroll:true});
+}
+function hideOverlay(el){
+  el.hidden = true;
+  if ($('modal').hidden && $('admin').hidden && $('station').hidden) document.body.style.overflow = '';
+  if (S.lastFocus && S.lastFocus.focus) S.lastFocus.focus({preventScroll:true});
+}
+
+/* ---------- 提示 ---------- */
+var toastTimer = null;
+function toast(msg, actionLabel, action){
+  clearTimeout(toastTimer);
+  $('toastText').textContent = msg;
+  var b = $('toastBtn');
+  if (actionLabel) { b.hidden = false; b.textContent = actionLabel; b.onclick = action; }
+  else { b.hidden = true; b.onclick = null; }
+  $('toast').hidden = false;
+  if (!actionLabel) toastTimer = setTimeout(function(){ $('toast').hidden = true; }, 3000);
+}
+
+/* ============================ 動作 ============================ */
+function send(){
+  var t = $('text').value.trim();
+  if (!t) { $('text').focus(); toast('先寫一點想說的話吧。'); return; }
+  var now = new Date();
+  var msg = {
+    /* 給每封信一個唯一編號，之後才能連試算表裡的那一列一起刪掉 */
+    id: String(Date.now()) + '-' + Math.random().toString(36).slice(2, 8),
+    nick: ($('nick').value.trim() || '匿名旅人'), mood: S.mood, text: t,
+    date: now.getFullYear() + '/' + String(now.getMonth()+1).padStart(2,'0') + '/' + String(now.getDate()).padStart(2,'0'),
+    pub: !$('priv').checked, priv: $('priv').checked
+  };
+  S.msgs = [msg].concat(S.msgs);
+  persist({msgs:S.msgs});
+  /* 同步進村長的試算表：公開的那些之後會被飛鴿攔截戰抽出來讀 */
+  gasSend({type:'letter', id:msg.id, nick:msg.nick, mood:msg.mood, text:msg.text, pub:msg.pub});
+  $('text').value = '';
+  renderWall(); renderStats();
+  var btn = $('sendBtn'); btn.textContent = '🕊 鴿子已經飛走了';
+  setTimeout(function(){ btn.textContent = '交給鴿子'; }, 2600);
+  toast(REPLIES[S.mood] || '鴿子已經把信送到了。');
+}
+
+function goPost(){
+  var el = $('post');
+  window.scrollTo({top: el.offsetTop - 70, behavior:'smooth'});
+  setTimeout(function(){ $('text').focus({preventScroll:true}); }, 500);
+}
+
+document.addEventListener('click', function(e){
+  var el = e.target.closest('[data-act]');
+  if (!el) return;
+  var act = el.getAttribute('data-act');
+
+  if (act === 'open')       {
+    var okey = el.getAttribute('data-key');
+    if (el.tagName === 'A') e.preventDefault();
+    if (okey === 'weather') { closeNav(); closeModal(); openStation(); }
+    else if (okey === 'clinic') { closeNav(); closeModal(); openClinicScene(); }
+    else openModal(okey);
+  }
+  else if (act === 'closeClinic'){ closeClinic(); }
+  else if (act === 'openBook'){ openFlipbook(); }
+  else if (act === 'closeFlip'){ closeFlip(); }
+  else if (act === 'flipNext'){ flipTo(FLIP.idx + 1); }
+  else if (act === 'flipPrev'){ flipTo(FLIP.idx - 1); }
+  else if (act === 'openDoor'){ openDoor(); }
+  else if (act === 'closeJoin'){ closeJoin(); }
+  else if (act === 'submitJoin'){ submitJoin(); }
+  else if (act === 'closeStation'){ closeStation(); }
+  else if (act === 'goPost'){ closeModal(); closeStation(); goPost(); }
+  else if (act === 'closeModal'){ closeModal(); }
+  else if (act === 'openAdmin'){ closeNav(); openAdmin(); }
+  else if (act === 'closeAdmin'){ closeAdmin(); }
+  else if (act === 'send')  { send(); }
+  else if (act === 'mood')  { S.mood = el.getAttribute('data-mood'); renderMoods(); }
+  else if (act === 'unlock'){
+    var v = $('pw').value;
+    if (v === PASSWORD) { S.unlocked = true; renderAdmin(); renderWall(); }  /* 解鎖後留言牆才長出刪除鈕 */
+    else { $('pwErr').hidden = false; $('pw').value = ''; $('pw').focus(); }
+  }
+  else if (act === 'tab')   { S.tab = el.getAttribute('data-tab'); renderAdmin(); }
+  else if (act === 'toggleMsg'){
+    var id = el.getAttribute('data-id');
+    S.msgs = S.msgs.map(function(m){ return String(m.id) === id ? Object.assign({}, m, {pub:!m.pub}) : m; });
+    persist({msgs:S.msgs}); renderAdmin(); renderWall();
+  }
+  else if (act === 'delMsg' || act === 'delWall'){
+    if (!confirm('確定要刪除這則留言嗎？\n留言牆和試算表裡的那一列都會一起刪掉，鴿子之後也不會再抽到它。')) return;
+    var did = el.getAttribute('data-id');
+    gasSend({type:'deleteLetter', id:did});      /* 一併刪掉試算表「飛鴿驛站」的那一列 */
+    S.msgs = S.msgs.filter(function(m){ return String(m.id) !== did; });
+    persist({msgs:S.msgs});
+    if (act === 'delMsg') renderAdmin();
+    renderWall(); renderStats();
+    toast('已刪除，試算表那一列也一起收掉了。');
+  }
+  else if (act === 'save'){
+    S.about = S.draft.about; S.overrides = Object.assign({}, S.draft.chars);
+    persist({about:S.about, overrides:S.overrides});
+    renderCards(); renderLegend(); renderStats();
+    toast('已儲存 ✓');
+  }
+  else if (act === 'reset'){
+    if (!confirm('要把所有文字還原成預設嗎？')) return;
+    S.about = DEFAULT_ABOUT; S.overrides = {}; S.draft = null;
+    persist({about:DEFAULT_ABOUT, overrides:{}});
+    renderCards(); renderLegend(); renderStats(); renderAdmin();
+    toast('已還原成預設');
+  }
+});
+
+/* 後台文字編輯 */
+document.addEventListener('input', function(e){
+  var t = e.target, which = t.getAttribute && t.getAttribute('data-edit');
+  if (!which || !S.draft) return;
+  if (which === 'about') S.draft.about = t.value;
+  else S.draft.chars[t.getAttribute('data-key')] = t.value;
+});
+
+/* 表單狀態 */
+document.addEventListener('change', function(e){
+  if (e.target.id === 'nick') { S.nick = e.target.value; }
+  if (e.target.id === 'priv') { S.priv = e.target.checked; }
+});
+
+/* 點背景關閉、Esc 關閉 */
+['modal','admin'].forEach(function(id){
+  $(id).addEventListener('click', function(e){ if (e.target === this) { id === 'modal' ? closeModal() : closeAdmin(); } });
+});
+$('flipOverlay').addEventListener('click', function(e){ if (e.target === this) closeFlip(); });
+$('joinOverlay').addEventListener('click', function(e){ if (e.target === this) closeJoin(); });
+document.addEventListener('keydown', function(e){
+  if (e.key !== 'Escape') return;
+  if (!$('joinOverlay').hidden) closeJoin();
+  else if (!$('flipOverlay').hidden) closeFlip();
+  else if (!$('clinicScene').hidden) closeClinic();
+  else if (!$('modal').hidden) closeModal();
+  else if (!$('admin').hidden) closeAdmin();
+  else if (!$('station').hidden) closeStation();
+  else closeNav();
+});
+
+/* 手機選單 */
+function closeNav(){ $('nav').classList.remove('open'); $('navToggle').setAttribute('aria-expanded','false'); }
+$('navToggle').addEventListener('click', function(){
+  var open = $('nav').classList.toggle('open');
+  this.setAttribute('aria-expanded', String(open));
+});
+$('nav').addEventListener('click', function(e){ if (e.target.tagName === 'A') closeNav(); });
+/* 選單開著時點別的地方就收起來 */
+document.addEventListener('click', function(e){
+  if (!$('nav').classList.contains('open')) return;
+  if (!e.target.closest('.site-header')) closeNav();
+});
+
+/* ============================ 啟動 ============================ */
+(function init(){
+  var d = load();
+  var today = new Date().toISOString().slice(0,10);
+  var daily = Object.assign({}, d.daily || {});
+  daily[today] = (daily[today] || 0) + 1;
+  /* 瀏覽人次與留言都從 0 開始，只記錄真實發生的次數，不放任何示範數字 */
+  S.views = (d.views || 0) + 1;
+  S.todayViews = daily[today];
+  S.msgs = d.msgs || [];
+  S.overrides = d.overrides || {};
+  S.about = d.about || DEFAULT_ABOUT;
+  persist({views:S.views, daily:daily, msgs:S.msgs});
+
+  renderMap(); renderLegend(); renderCards(); renderMoods(); renderWall(); renderStats();
+})();
+
+/* ======================================================================
+   觀心氣象站（雷鳴山頂）
+   ─ 分頁1 觀測站：12題盲抽4題，撥動指針作答，判定心靈氣候
+   ─ 分頁2 斯啦！OK蹦撕撕樂：滑開OK繃，讀長老開示（不計分）
+   ─ 分頁3 飛鴿攔截戰：抽讀匿名心事，寫回信給村長（不計分）
+   ─ 分頁4 長老的秘密：預留擴充區
+   ====================================================================== */
+
+/* ---------- 村長設定區（只要改這三行） ---------- */
+var STATION = {
+  GAS_URL:   'https://script.google.com/macros/s/AKfycbzq9RN4UtdEv-pXMKi2Yk5nOyDq-kVVeN1g5qT6QRB1EzQErcUTL7vWGfB6qBa4aQ7-/exec',  // Apps Script 網頁應用程式網址
+  SHEET_URL: 'https://docs.google.com/spreadsheets/d/1CpqT6jwV2WfCk0LBF9AgzWfNDUt-6RFso9EQc5SR8KE/edit',  // 村長私人的 Google 試算表網址
+  ADMIN_PASS:'sawzhuweee'    // 底部暗門的暗號
+};
+
+/* ---------- 12 道題庫（左A／上B／右C／下D，括號內為加分代碼） ---------- */
+var QUESTIONS = [
+  {q:'當你在現實中感到累了或受了委屈，你最常出現的反應是什麼？', o:{
+    A:{t:'胸口像有一股悶熱氣流堵著，話到了嘴邊卻說不出口，默默吞下去。', add:['thunder']},
+    B:{t:'腦海裡會突然颳起狂風，開始排山倒海地胡思亂想，甚至一躺下就失眠。', add:['moon']},
+    C:{t:'鼻頭一酸，眼眶熱熱的，雖然想忍住，但內心快要下起一場大雨。', add:['rain']},
+    D:{t:'覺得雙腳像踩在沙灘上，很想整個人癱軟下來，被厚實的東西狠狠抱住。', add:['earth']}}},
+  {q:'抬頭看看你此刻「心裡的那片天空」，能見度怎麼樣？', o:{
+    A:{t:'四周茫茫一片，看不清遠方的山頭，不知道下一步該往哪裡走，有點弄丟了方向。', add:['fog']},
+    B:{t:'天空是厚重的墨黑色，烏雲不斷翻滾擠壓，胸口壓抑到極點，好像快要爆炸了。', add:['thunder']},
+    C:{t:'雖然天空是黑夜，但隱約能看見點點微弱的星光，正提醒我收集身邊微小的好事。', add:['star']},
+    D:{t:'天空泛著金黃色的溫暖朝陽，心裡有一些藏不住的喜悅，但發現沒有人可以分享。', add:['sun']}}},
+  {q:'如果長老現在要送你一個小道具，你最想把哪一個放進口袋裡？', o:{
+    A:{t:'一個只會指向你內心、提醒你別弄丟自己的「小指南針」。', add:['fog']},
+    B:{t:'一盞能照亮黑夜、安撫夜晚所有驚惶不安的「月亮提燈」。', add:['moon']},
+    C:{t:'一把巨大的「鐮刀」，可以俐落地幫你剪斷夜裡那些瘋狂打結的雜訊與思緒。', add:['moon']},
+    D:{t:'一個亮晶晶的「玻璃罐」，想用它來盛裝今天發生的一丁點小確幸。', add:['star']}}},
+  {q:'關於你目前的「心靈狀態」，你最認同以下哪一句話的描述？', o:{
+    A:{t:'我不需要去爬最高、最累的山，我只想在一個剛剛好的草丘上，不費力地歇一歇。', add:['star']},
+    B:{t:'雖然看不見進步，但每一次內心的動搖與草浪起伏，其實都是我默默成長的痕跡。', add:['wind']},
+    C:{t:'哭泣並不是因為我軟弱，我知道那只是我的心，正在幫自己下一場清理傷口的雨。', add:['rain']},
+    D:{t:'我不期待現在馬上被修好、被催著變好。我只想找一個安全、溫暖的山洞，允許自己現在可以很不OK。', add:['earth']}}},
+  {q:'如果今天收到一份神祕禮物，你最希望它是？', o:{
+    A:{t:'一條舒服的毯子。', add:['rain','sun']},
+    B:{t:'一本能帶給自己力量的書。', add:['earth','thunder']},
+    C:{t:'一張旅行兌換券。', add:['wind','star']},
+    D:{t:'一盞小夜燈。', add:['fog','moon']}}},
+  {q:'在人群中，你比較像？', o:{
+    A:{t:'喜歡照顧別人，也會默默照顧自己。', add:['sun','earth']},
+    B:{t:'安靜觀察大家，很少主動開口。', add:['fog','moon']},
+    C:{t:'想到什麼就去做，充滿行動力。', add:['thunder','wind']},
+    D:{t:'喜歡分享生活中的小幸福。', add:['rain','star']}}},
+  {q:'如果今天可以按下一個按鈕，你最希望得到？', o:{
+    A:{t:'「立即恢復元氣」。', add:['rain','sun']},
+    B:{t:'「獲得面對未知的勇氣」。', add:['wind','thunder']},
+    C:{t:'「找到自己真正想要的答案」。', add:['fog','earth']},
+    D:{t:'「生活中充滿小確幸」。', add:['star','moon']}}},
+  {q:'如果今天是一部電影，你最喜歡哪種類型？', o:{
+    A:{t:'溫暖療癒的故事。', add:['sun','moon']},
+    B:{t:'熱血冒險電影。', add:['wind','thunder']},
+    C:{t:'發人省思的劇情片。', add:['fog','earth']},
+    D:{t:'幸福又讓人嘴角上揚的喜劇。', add:['star','rain']}}},
+  {q:'遇到低潮時，你最希望有人對你說？', o:{
+    A:{t:'「辛苦了，你可以好好休息。」', add:['rain','moon']},
+    B:{t:'「你比自己想像中更勇敢。」', add:['thunder','wind']},
+    C:{t:'「不用急，你可以慢慢來。」', add:['fog','sun']},
+    D:{t:'「你已經做得很好了。」', add:['earth','star']}}},
+  {q:'如果你的房間只能留下其中一個角落，你會選？', o:{
+    A:{t:'舒適的床與抱枕。', add:['rain','moon']},
+    B:{t:'能享受陽光的窗邊角落。', add:['sun','star']},
+    C:{t:'擺滿夢想與目標的工作桌。', add:['thunder','earth']},
+    D:{t:'放著地圖與相機的旅行角落。', add:['fog','wind']}}},
+  {q:'最近的你，最想練習的是？', o:{
+    A:{t:'好好照顧自己的情緒。', add:['rain','earth']},
+    B:{t:'勇敢跨出舒適圈。', add:['thunder','wind']},
+    C:{t:'放慢腳步，好好感受生活。', add:['sun','star']},
+    D:{t:'接受還在摸索中的自己。', add:['fog','moon']}}},
+  {q:'如果可以送給未來的自己一句話，你會選？', o:{
+    A:{t:'「願你永遠記得溫柔地對待自己。」', add:['sun','earth']},
+    B:{t:'「願你保有探索世界的勇氣。」', add:['thunder','wind']},
+    C:{t:'「願你在迷惘時，也相信自己會找到方向。」', add:['fog','moon']},
+    D:{t:'「願你發現，幸福其實一直都在。」', add:['rain','star']}}}
+];
+
+/* ---------- 八種心靈氣候（結果判定） ---------- */
+var CLIMATE = {
+  fog:{name:'【大霧特報 · 能見度偏低】', go:'fog', who:'霧霧', place:'迷霧谷', emo:'🌫️',
+    bg:'#e5dcf0', fg:'#46375c',
+    lines:['你的心裡起了一層霧。','不是路不見了，是這幾天你看得太遠、太用力。','霧不會永遠不散，它只是要你先站著別亂跑。'],
+    quote:'慢慢來。走不動的時候，就先站著，霧自己會散。你不是迷路了，你只是暫時看不見——這兩件事差很多。'},
+  rain:{name:'【全日降雨 · 心裡正在下一場好雨】', go:'rain', who:'雨滴', place:'雨之湖', emo:'💧',
+    bg:'#dbe4f5', fg:'#16324f',
+    lines:['今天的你，心裡在下雨。','雨不是壞天氣，雨是心在幫自己清洗傷口。','別急著撐傘，也別急著擦乾。'],
+    quote:'哭出來的不是軟弱，是還沒說完的話。雨下完了，湖會比較清澈——你也是。'},
+  sun:{name:'【多雲時晴 · 陽光正在回來】', go:'sun', who:'暖陽', place:'晨曦原', emo:'☀️',
+    bg:'#fbdd76', fg:'#7a3d10',
+    lines:['你心裡的雲比較薄了，陽光找得到縫。','只是你好像習慣把光都分給別人，','自己站在陰影裡還說沒關係。'],
+    quote:'你把每個人都曬得暖暖的，那你自己呢？今天輪到你躺下來曬一曬，這不叫偷懶，這叫保養。'},
+  moon:{name:'【夜間強風 · 思緒亂流】', go:'moon', who:'月月', place:'月眠林', emo:'🌙',
+    bg:'#2b303b', fg:'#f4f2ee',
+    lines:['你的天氣在晚上才變壞。','白天都還好，一躺下風就開始颳。','那些念頭不是事實，它們只是纏得比較緊。'],
+    quote:'凌晨三點想通的事，早上八點都會後悔。今晚我巡夜，該剪的我來剪，你負責睡。'},
+  star:{name:'【夜空無雲 · 星光微亮】', go:'star', who:'星星', place:'星光丘', emo:'✨',
+    bg:'#23386b', fg:'#f6f1e2',
+    lines:['沒有大晴天，但也沒有大雨。','你已經有能力在黑夜裡看見一點光了，','這比「一切都很好」更難得。'],
+    quote:'今天沒有什麼大事發生，不代表沒事發生。撿三件小事放進瓶子裡，一天就算數了。'},
+  wind:{name:'【風向轉變 · 草浪起伏】', go:'breeze', who:'微風', place:'微風草原', emo:'🍃',
+    bg:'#e3eed4', fg:'#4a5c39',
+    lines:['有東西正在變，你也感覺到了。','心裡一陣一陣的起伏，不是不穩，','是草在被風吹，根還在。'],
+    quote:'你以為自己在原地搖晃，其實草浪每一次起伏都是在長。變動很吵，但它會把你送到下一個地方。'},
+  thunder:{name:'【雷雨胞接近 · 低氣壓籠罩】', go:'thunder', who:'雷雷', place:'雷鳴山', emo:'⛈️',
+    bg:'#d6d6d6', fg:'#1d232b',
+    lines:['你的胸口積了很多沒說出口的話。','悶久了會打雷，這是氣象常識，也是心的常識。','生氣不可怕，可怕的是全部往肚子裡吞。'],
+    quote:'你不是脾氣不好，你是忍太久。圍欄該修就修，界線不是拿來對不起別人的，是拿來保護心的。'},
+  earth:{name:'【大地回溫 · 土壤含水量偏高】', go:'earth', who:'土土', place:'大地嶺', emo:'🪨',
+    bg:'#ddccb0', fg:'#6b3a1e',
+    lines:['你很累，累到只想被接住。','你不想被修好，也不想被催著變好。','那就先不要好。地會撐著。'],
+    quote:'種子埋在土裡的時候，看起來什麼都沒發生。你現在就是那個時候。什麼都不用做，我陪你坐著。'}
+};
+
+/* ---------- 9 款 OK 繃（不計分） ---------- */
+var BANDAIDS = [
+  {n:'雨滴', e:'💧', bg:'#dbe4f5', fg:'#16324f',
+   q:'哭完記得喝水。你這樣一直哭又不補水，等一下不是心碎，是脫水。'},
+  {n:'霧霧', e:'🌫️', bg:'#e5dcf0', fg:'#46375c',
+   q:'你不是迷路，你只是站在原地想了三個月，然後怪路不會自己走過來。'},
+  {n:'雷雷', e:'⚡', bg:'#d9d9d9', fg:'#1d232b',
+   q:'你忍到快內傷，對方連你在忍都不知道。你這叫犧牲，還是叫演給自己看？'},
+  {n:'土土', e:'🪨', bg:'#ddccb0', fg:'#6b3a1e',
+   q:'手機沒電你知道要充，自己沒電你想直接續命。土土不講話，但土土在看。'},
+  {n:'星星', e:'✨', bg:'#23386b', fg:'#f6f1e2',
+   q:'你說今天沒發生什麼好事。你今天有好好吃飯、有活著回家，這兩件被你當空氣。'},
+  {n:'月月', e:'🌙', bg:'#2b303b', fg:'#f4f2ee',
+   q:'半夜想的事沒有一件是真的，包括「大家都討厭我」。先睡，明天再開會。'},
+  {n:'暖陽', e:'☀️', bg:'#fbdd76', fg:'#7a3d10',
+   q:'你把每個人都照顧好，然後蹲在角落問為什麼沒人照顧你。你猜為什麼？'},
+  {n:'微風', e:'🍃', bg:'#e3eed4', fg:'#4a5c39',
+   q:'你說你想改變。你連那張椅子都還沒離開過。'},
+  {n:'長老', e:'🫖', bg:'#efe4d0', fg:'#5f4522',
+   q:'老衲看了三十年，最難撕的不是傷口上的貼布，是「我沒事」這三個字。斯啦。'}
+];
+
+/* ---------- 狀態 ---------- */
+var ST = {tab:'quiz', qs:[], idx:0, scores:{}, dir:null, locked:false, result:null,
+          sound:true, torn:{}, letter:null, sent:false, dovesReady:false};
+
+/* ---------- 音效（純程式產生，不用音檔） ---------- */
+var AC = null;
+function actx(){
+  if (!ST.sound) return null;
+  try { if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)(); } catch(e){ return null; }
+  if (AC.state === 'suspended') { try{ AC.resume(); }catch(e){} }
+  return AC;
+}
+function noiseSrc(a, sec){
+  var len = Math.floor(a.sampleRate * sec), buf = a.createBuffer(1, len, a.sampleRate), d = buf.getChannelData(0);
+  for (var i=0;i<len;i++) d[i] = (Math.random()*2-1) * (1 - i/len);
+  var s = a.createBufferSource(); s.buffer = buf; return s;
+}
+function sfx(kind){
+  var a = actx(); if (!a) return;
+  var t = a.currentTime, g = a.createGain(); g.connect(a.destination);
+  if (kind === 'tick' || kind === 'lock') {
+    var o = a.createOscillator(); o.type = 'square';
+    o.frequency.setValueAtTime(kind==='lock'?900:1500, t);
+    o.frequency.exponentialRampToValueAtTime(kind==='lock'?420:760, t+0.05);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(kind==='lock'?0.15:0.08, t+0.005);
+    g.gain.exponentialRampToValueAtTime(0.0001, t+(kind==='lock'?0.18:0.06));
+    o.connect(g); o.start(t); o.stop(t+0.22);
+  } else if (kind === 'rip') {
+    var b = noiseSrc(a, 0.34), f = a.createBiquadFilter(); f.type = 'bandpass'; f.Q.value = 1.2;
+    f.frequency.setValueAtTime(800, t); f.frequency.exponentialRampToValueAtTime(3600, t+0.3);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.3, t+0.03);
+    g.gain.exponentialRampToValueAtTime(0.0001, t+0.34);
+    b.connect(f); f.connect(g); b.start(t);
+  } else if (kind === 'coo') {
+    [0, 0.24].forEach(function(d, i){
+      var o2 = a.createOscillator(), g2 = a.createGain(); o2.type = 'sine';
+      o2.frequency.setValueAtTime(i?430:520, t+d);
+      o2.frequency.linearRampToValueAtTime(i?340:420, t+d+0.17);
+      g2.gain.setValueAtTime(0.0001, t+d);
+      g2.gain.exponentialRampToValueAtTime(0.13, t+d+0.04);
+      g2.gain.exponentialRampToValueAtTime(0.0001, t+d+0.22);
+      o2.connect(g2); g2.connect(a.destination); o2.start(t+d); o2.stop(t+d+0.26);
+    });
+  } else if (kind === 'thunder') {
+    var b2 = noiseSrc(a, 1.3), lp = a.createBiquadFilter(); lp.type = 'lowpass';
+    lp.frequency.setValueAtTime(420, t); lp.frequency.exponentialRampToValueAtTime(90, t+1.15);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.32, t+0.06);
+    g.gain.exponentialRampToValueAtTime(0.0001, t+1.3);
+    b2.connect(lp); lp.connect(g); b2.start(t);
+  }
+}
+function buzz(ms){ try{ if (navigator.vibrate) navigator.vibrate(ms); }catch(e){} }
+
+/* ---------- 開關氣象站 ---------- */
+var ST_TABS = [
+  {k:'quiz',   label:'🌤 觀測站'},
+  {k:'band',   label:'🩹 OK蹦撕撕樂'},
+  {k:'dove',   label:'🕊 飛鴿攔截戰'},
+  {k:'secret', label:'🤫 長老的秘密'}
+];
+function openStation(){
+  S.lastFocus = document.activeElement;
+  ST.sound = load().stSound !== false;
+  $('stSound').textContent = ST.sound ? '🔊' : '🔇';
+  if (!ST.qs.length && !ST.result) startQuiz();
+  renderStTabs(); showStPane();
+  $('station').hidden = false;
+  document.body.style.overflow = 'hidden';
+  pushLayer('station', closeStationNow);
+}
+function closeStation(){ if (!$('station').hidden) popLayer(); }
+function closeStationNow(){
+  $('station').hidden = true;
+  if ($('modal').hidden && $('admin').hidden) document.body.style.overflow = '';
+  if (S.lastFocus && S.lastFocus.focus) S.lastFocus.focus({preventScroll:true});
+  /* 從結果頁「前往某某房間」：等氣象站真的關掉（返回鍵處理完）再開角色視窗 */
+  if (ST.pendingRoom) {
+    var k = ST.pendingRoom; ST.pendingRoom = null;
+    setTimeout(function(){ openModal(k); }, 60);
+  }
+}
+function renderStTabs(){
+  $('stTabs').innerHTML = ST_TABS.map(function(t){
+    return '<button class="st-tab' + (ST.tab===t.k?' on':'') + '" role="tab" aria-selected="' + (ST.tab===t.k) +
+           '" data-act="stTab" data-tab="' + t.k + '" type="button">' + t.label + '</button>';
+  }).join('');
+}
+function showStPane(){
+  ST_TABS.forEach(function(t){ $('pane-'+t.k).hidden = (t.k !== ST.tab); });
+  $('stBody').scrollTop = 0;
+  if (ST.tab === 'quiz') renderQuiz();
+  else if (ST.tab === 'band') renderBand();
+  else if (ST.tab === 'dove') renderDove();
+  else renderSecret();
+}
+
+/* ================= 分頁 1：觀測站 ================= */
+function startQuiz(){
+  var pool = QUESTIONS.slice(), pick = [];
+  while (pick.length < 4 && pool.length) pick.push(pool.splice(Math.floor(Math.random()*pool.length), 1)[0]);
+  ST.qs = pick; ST.idx = 0; ST.dir = null; ST.locked = false; ST.result = null;
+  ST.scores = {fog:0, rain:0, sun:0, moon:0, star:0, wind:0, thunder:0, earth:0};
+}
+function optOf(q, k){ var o = q.o[k]; return {k:k, t:o.t, add:o.add}; }
+
+function renderQuiz(){
+  var p = $('pane-quiz');
+  if (ST.result) { p.innerHTML = resultHTML(); return; }
+  var q = ST.qs[ST.idx];
+  p.innerHTML =
+    '<p class="q-step">第 ' + (ST.idx+1) + ' 次觀測　共 ' + ST.qs.length + ' 次</p>' +
+    '<div class="q-bar"><i style="width:' + Math.round(ST.idx / ST.qs.length * 100) + '%"></i></div>' +
+    '<h3 class="q-text">' + esc(q.q) + '</h3>' +
+    '<div class="gauge" id="gauge" tabindex="0" role="group" aria-label="心靈氣象指針：撥動指針選擇方向">' +
+      '<div class="gauge-mark m-up" data-k="B">B</div>' +
+      '<div class="gauge-mark m-rt" data-k="C">C</div>' +
+      '<div class="gauge-mark m-dn" data-k="D">D</div>' +
+      '<div class="gauge-mark m-lf" data-k="A">A</div>' +
+      '<div class="needle" id="needle"></div><div class="gauge-hub"></div>' +
+    '</div>' +
+    '<div id="optSlot" aria-live="polite"></div>' +
+    '<p class="st-note">用大拇指撥動中間的指針，轉到哪個方向，就會滑出那個方向的選項。<br />放開手指（或點一下滑出來的字）就算選定。</p>';
+  bindGauge();
+}
+
+function paintDir(){
+  var marks = $('pane-quiz').querySelectorAll('.gauge-mark');
+  for (var i=0;i<marks.length;i++) marks[i].classList.toggle('on', marks[i].getAttribute('data-k') === ST.dir);
+  var slot = $('optSlot'); if (!slot) return;
+  if (!ST.dir) { slot.innerHTML = ''; return; }
+  var o = optOf(ST.qs[ST.idx], ST.dir);
+  var fx = ST.dir === 'A' ? '-30px' : (ST.dir === 'C' ? '30px' : '0px');
+  slot.innerHTML =
+    '<button class="opt-card" type="button" data-act="pickOpt" style="--fx:' + fx + '">' +
+      '<span class="opt-k">' + o.k + '</span><span class="opt-t">' + esc(o.t) + '</span></button>';
+}
+
+function bindGauge(){
+  var g = $('gauge'), n = $('needle');
+  if (!g) return;
+  var dragging = false, moved = false;
+
+  function aim(x, y){
+    var r = g.getBoundingClientRect(), cx = r.left + r.width/2, cy = r.top + r.height/2;
+    var dx = x - cx, dy = y - cy, dist = Math.sqrt(dx*dx + dy*dy);
+    var ang = Math.atan2(dx, -dy) * 180 / Math.PI;   /* 0=上 90=右 ±180=下 -90=左 */
+    n.style.transform = 'rotate(' + ang + 'deg)';
+    var dir = null;
+    if (dist > r.width * 0.11) {
+      if (ang >= -45 && ang < 45) dir = 'B';
+      else if (ang >= 45 && ang < 135) dir = 'C';
+      else if (ang >= -135 && ang < -45) dir = 'A';
+      else dir = 'D';
+    }
+    if (dir !== ST.dir) { ST.dir = dir; if (dir) { sfx('tick'); buzz(8); } paintDir(); }
+  }
+  g.addEventListener('pointerdown', function(e){
+    if (ST.locked) return;
+    dragging = true; moved = false;
+    g.classList.add('dragging');
+    try { g.setPointerCapture(e.pointerId); } catch(err){}
+    aim(e.clientX, e.clientY);
+    e.preventDefault();
+  });
+  g.addEventListener('pointermove', function(e){
+    if (!dragging || ST.locked) return;
+    moved = true; aim(e.clientX, e.clientY); e.preventDefault();
+  });
+  function release(){
+    if (!dragging) return;
+    dragging = false;
+    if (ST.dir) pickCurrent();
+    else { g.classList.remove('dragging'); n.style.transform = 'rotate(0deg)'; }
+  }
+  g.addEventListener('pointerup', release);
+  g.addEventListener('pointercancel', function(){
+    dragging = false; g.classList.remove('dragging');
+    if (!ST.locked) { ST.dir = null; n.style.transform = 'rotate(0deg)'; paintDir(); }
+  });
+  /* 鍵盤／輔助工具：方向鍵轉指針，Enter 選定 */
+  g.addEventListener('keydown', function(e){
+    if (ST.locked) return;
+    var map = {ArrowUp:'B', ArrowRight:'C', ArrowDown:'D', ArrowLeft:'A'};
+    if (map[e.key]) {
+      ST.dir = map[e.key];
+      n.style.transform = 'rotate(' + ({B:0, C:90, D:180, A:-90}[ST.dir]) + 'deg)';
+      sfx('tick'); paintDir(); e.preventDefault();
+    } else if (e.key === 'Enter' || e.key === ' ') {
+      if (ST.dir) { pickCurrent(); e.preventDefault(); }
+    }
+  });
+}
+
+function pickCurrent(){
+  if (ST.locked || !ST.dir) return;
+  ST.locked = true;
+  var o = optOf(ST.qs[ST.idx], ST.dir);
+  o.add.forEach(function(k){ ST.scores[k] = (ST.scores[k] || 0) + 1; });
+  var card = $('pane-quiz').querySelector('.opt-card');
+  if (card) card.classList.add('picked');
+  sfx('lock'); buzz(18);
+  var g = $('gauge'), n = $('needle');
+  setTimeout(function(){ if (g && n) { g.classList.remove('dragging'); n.style.transform = 'rotate(0deg)'; } }, 220);
+  setTimeout(function(){
+    ST.dir = null; ST.locked = false; ST.idx++;
+    if (ST.idx >= ST.qs.length) finishQuiz(); else renderQuiz();
+  }, 640);
+}
+
+function finishQuiz(){
+  var best = -1, codes = [];
+  for (var k in ST.scores) {
+    if (ST.scores[k] > best) { best = ST.scores[k]; codes = [k]; }
+    else if (ST.scores[k] === best) codes.push(k);
+  }
+  if (codes.length > 2) codes = [codes[Math.floor(Math.random()*codes.length)]];
+  ST.result = codes;
+  var f = document.createElement('div'); f.className = 'flash';
+  document.body.appendChild(f);
+  setTimeout(function(){ if (f.parentNode) f.parentNode.removeChild(f); }, 720);
+  sfx('thunder'); buzz([30, 60, 120]);
+  logQuiz(codes[0]);
+  renderQuiz();
+}
+
+function resultHTML(){
+  var main = CLIMATE[ST.result[0]], extra = ST.result.slice(1);
+  var html =
+    '<div class="res"><div class="res-card" style="background:' + main.bg + ';color:' + main.fg + '">' +
+      '<div class="res-tag">今日觀測結果</div>' +
+      '<div style="font-size:38px;line-height:1;margin:12px 0 2px">' + main.emo + '</div>' +
+      '<h3 class="res-name">' + esc(main.name) + '</h3>' +
+      main.lines.map(function(l){ return '<div class="res-line">' + esc(l) + '</div>'; }).join('') +
+      '<span class="res-arrow">↪️</span>' +
+      '<div class="res-who">' + esc(main.who) + ' 的開示</div>' +
+      '<div class="res-quote">「' + esc(main.quote) + '」</div>' +
+      '<button class="res-go" data-act="goRoom" data-key="' + main.go + '" type="button">前往' + esc(main.place) + '找' + esc(main.who) + ' ' + main.emo + '</button>' +
+    '</div>';
+  if (extra.length) {
+    var e0 = CLIMATE[extra[0]];
+    html += '<div class="res-card" style="margin-top:16px;background:' + e0.bg + ';color:' + e0.fg + '">' +
+      '<div class="res-tag">同時發布 · 多站引導</div>' +
+      '<h3 class="res-name" style="font-size:19px">' + e0.emo + '　' + esc(e0.name) + '</h3>' +
+      '<div class="res-line">今天你心裡有兩種天氣同時出現，這很正常。<br />兩邊都可以去坐坐。</div>' +
+      '<button class="res-go" data-act="goRoom" data-key="' + e0.go + '" type="button">也去' + esc(e0.place) + '找' + esc(e0.who) + ' ' + e0.emo + '</button>' +
+      '</div>';
+  }
+  html += '<div class="res-again">' +
+      '<button class="st-tab" data-act="requiz" type="button" style="flex:none">🔄 再觀測一次（題目會不一樣）</button>' +
+    '</div></div>';
+  return html;
+}
+
+/* ================= 分頁 2：斯啦！OK蹦撕撕樂 ================= */
+function renderBand(){
+  $('pane-band').innerHTML =
+    '<p class="st-note" style="margin:0 0 16px">用大拇指在 OK 繃上「由左往右」用力一滑，就會斯啦一聲撕開。<br />這裡不計分、不判定，撕開只有長老的一句話。</p>' +
+    '<div class="bd-grid">' +
+      BANDAIDS.map(function(b, i){
+        var torn = ST.torn[i] ? ' torn' : '';
+        return '<div class="bd' + torn + '" data-bd="' + i + '">' +
+          '<div class="bd-quote">' + esc(b.q) + '</div>' +
+          '<button class="bd-strip" type="button" data-bd="' + i + '" ' +
+            'aria-label="撕開' + esc(b.n) + '的 OK 繃" ' +
+            'style="background:linear-gradient(135deg,' + b.bg + ' 0%,' + shade(b.bg) + ' 100%);color:' + b.fg + '">' +
+            '<em>' + b.e + '</em><b>' + esc(b.n) + '</b><i>往右滑開</i>' +
+          '</button></div>';
+      }).join('') +
+    '</div>';
+  bindRip();
+}
+function shade(hex){
+  var h = hex.replace('#',''), n = parseInt(h, 16);
+  var r = Math.max(0, (n>>16 & 255) - 22), g = Math.max(0, (n>>8 & 255) - 22), b = Math.max(0, (n & 255) - 22);
+  return 'rgb(' + r + ',' + g + ',' + b + ')';
+}
+function bindRip(){
+  var strips = $('pane-band').querySelectorAll('.bd-strip');
+  Array.prototype.forEach.call(strips, function(s){
+    var sx = 0, sy = 0, down = false, done = false;
+    s.addEventListener('pointerdown', function(e){ down = true; done = false; sx = e.clientX; sy = e.clientY; });
+    s.addEventListener('pointermove', function(e){
+      if (!down || done) return;
+      if (e.clientX - sx > 42 && Math.abs(e.clientY - sy) < 46) { done = true; down = false; rip(s); }
+    });
+    s.addEventListener('pointerup', function(){ down = false; setTimeout(function(){ done = false; }, 60); });
+    s.addEventListener('pointercancel', function(){ down = false; });
+    s.addEventListener('click', function(){ if (!done) rip(s); });
+  });
+}
+function rip(s){
+  var i = s.getAttribute('data-bd'), box = s.parentNode;
+  if (!box || box.classList.contains('torn')) return;
+  ST.torn[i] = true;
+  box.classList.add('torn');
+  sfx('rip'); buzz(24);
+}
+
+/* ================= 分頁 3：飛鴿攔截戰 ================= */
+function renderDove(){
+  var doves = '';
+  for (var i=0;i<4;i++){
+    var top = [12, 34, 56, 74][i], dur = [15, 19, 13, 17][i], delay = [0, 4, 8, 2][i];
+    doves += '<button class="dove" type="button" data-act="catchDove" aria-label="攔截一隻飛鴿" ' +
+      'style="top:' + top + '%;animation-duration:' + dur + 's;animation-delay:-' + delay + 's">' +
+      '<span style="animation-duration:' + (2.2 + i*0.4) + 's"><em>🕊️</em></span></button>';
+  }
+  var clouds = '';
+  [[18,70,26,34],[48,120,44,22],[72,90,18,40]].forEach(function(c, i){
+    clouds += '<div class="cloud" style="top:' + c[0] + '%;width:' + c[1] + 'px;height:' + c[2] + 'px;' +
+      'animation-duration:' + (40 + i*14) + 's;animation-delay:-' + c[3] + 's"></div>';
+  });
+  $('pane-dove').innerHTML =
+    '<p class="st-note" style="margin:0 0 14px">氣象台上空總有幾隻鴿子叼著別人的心事在盤旋。<br />點一下正在飛的鴿子，就攔下一封信。</p>' +
+    '<div class="sky" id="sky">' + clouds + doves + '</div>' +
+    '<div id="letterSlot"></div>';
+}
+function catchDove(btn){
+  btn.classList.add('caught');
+  setTimeout(function(){ btn.classList.remove('caught'); }, 7000);  /* 讓天空不會愈飛愈空 */
+  sfx('coo'); buzz(14);
+  var slot = $('letterSlot');
+  slot.innerHTML = '<div class="letter"><div class="letter-body" style="text-align:center;color:#8a7457">信封正在打開……</div></div>';
+  ST.sent = false;
+  pickLetter(function(m){
+    ST.letter = m;
+    if (!m) {                      /* 還沒有任何村民投遞過，就不要生一封假的給人看 */
+      slot.innerHTML =
+        '<div class="letter">' +
+          '<div class="letter-top">🕊️ 這隻鴿子的信袋是空的</div>' +
+          '<div class="letter-body">今天天空上還沒有信。\n村子剛開，還沒有村民把心事交給鴿子。\n\n' +
+          '長老說：「那就由你先寫一封吧。你寫的那封，之後會被別人攔下來，換他來安慰你。」</div>' +
+          '<button class="btn-main" style="margin-top:16px;letter-spacing:2px" data-act="goPost" type="button">去飛鴿驛站寫一封 🕊️</button>' +
+        '</div>';
+      slot.scrollIntoView({behavior:'smooth', block:'nearest'});
+      return;
+    }
+    slot.innerHTML =
+      '<div class="letter">' +
+        '<div class="letter-top">🕊️ 來自村子裡的匿名心事　·　' + esc(m.mood || '說不出來') + '　·　' + esc(m.date || '') + '</div>' +
+        '<div class="letter-body">' + esc(m.text) + '</div>' +
+        '<div class="letter-hint">看著這封信，你最想對這位素未謀面的村民說些什麼？別擔心，這封回信不會被公開。牠會綁上紅毛線，直接投遞進村長的秘密信箱，只有村長本人能看見你的溫柔。</div>' +
+        '<textarea class="txt" id="replyTxt" placeholder="不用寫得漂亮，一句就好。"></textarea>' +
+        '<button class="btn-main" style="margin-top:14px;letter-spacing:2px" data-act="sendReply" type="button">綁上紅毛線，幫牠把信送去給村長 🕊️</button>' +
+        '<div style="text-align:center;margin-top:12px">' +
+          '<button class="letter-flag" data-act="flagLetter" type="button">⚠️ 這封不太對勁，回報給村長</button>' +
+        '</div>' +
+      '</div>';
+    slot.scrollIntoView({behavior:'smooth', block:'nearest'});
+  });
+}
+/* 讀到不對勁的信：回報給村長，並立刻把這封從天空上收起來 */
+function flagLetter(){
+  if (!ST.letter) return;
+  if (!confirm('要把這封信回報給村長嗎？\n回報後牠會先從天空上收起來，等村長看過再決定。')) return;
+  gasSend({type:'flag', id:(ST.letter.id || ''), text:(ST.letter.text || '')});
+  ST.letter = null; ST.sent = true;
+  buzz(14);
+  $('letterSlot').innerHTML =
+    '<div class="st-scold">' +
+      '🕊️ 收到了。長老已經把這封信從天空上收下來，會親自交給村長看一看。<br />' +
+      '謝謝你替其他村民留意 —— 這個村子就是這樣被照顧起來的。' +
+      '<div style="margin-top:16px">' +
+        '<button class="st-tab" style="flex:none" data-act="stTab" data-tab="dove" type="button">再攔一隻鴿子</button>' +
+      '</div>' +
+    '</div>';
+}
+
+function sendReply(){
+  var box = $('replyTxt'); if (!box) return;
+  var v = box.value.trim();
+  if (!v) { box.focus(); toast('先寫一句話，再交給鴿子。'); return; }
+  if (ST.sent) return;
+  ST.sent = true;
+  saveReply(ST.letter, v);
+  sfx('coo'); buzz(20);
+  $('letterSlot').innerHTML =
+    '<div class="st-scold">' +
+      '👴🏻「看吧，你明明就很會安慰別人，輪到自己的時候就天天在那邊想不開？<br />' +
+      '信已經送去給村長了，快去別的房間逛逛！」' +
+      '<div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">' +
+        '<button class="st-tab" style="flex:none" data-act="stTab" data-tab="dove" type="button">再攔一隻鴿子</button>' +
+        '<button class="st-tab" style="flex:none" data-act="stTab" data-tab="band" type="button">去撕兩片 OK 繃</button>' +
+      '</div>' +
+    '</div>';
+}
+
+/* ================= 分頁 4：長老的秘密 ================= */
+function renderSecret(){
+  $('pane-secret').innerHTML =
+    '<div class="secret">' +
+      '<div class="secret-scene">' +
+        '<div class="ground"></div>' +
+        '<div class="bird">🐦</div><div class="bird b2">🐦</div>' +
+        '<div class="elder">🧙</div>' +
+      '</div>' +
+      '<div class="secret-box">' +
+        '<h3>🚧 嗶嗶！長老的秘密基地正在施工中！</h3>' +
+        '<p>氣象台報告：因為今天村子裡的飼料太好吃，飛鴿們集體吃太胖，正在草地上散步減肥，長老忙著拿棒針趕牠們回籠子。<br /><br />' +
+        '局長說祂正在研發更厲害的神祕心靈新法寶（新遊戲預留區），現在裡面還空空的。請村民們稍安勿躁、敬請期待！<br /><br />' +
+        '閒著也是閒著，快去點點別的分頁，或者去撕兩片 OK 繃吧！</p>' +
+        '<div style="margin-top:18px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center">' +
+          '<button class="st-tab" style="flex:none" data-act="stTab" data-tab="band" type="button">🩹 去撕 OK 繃</button>' +
+          '<button class="st-tab" style="flex:none" data-act="stTab" data-tab="quiz" type="button">🌤 回觀測站</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+}
+
+/* ================= 資料：本機 + Google 試算表 ================= */
+function stLoad(){ var d = load(); return {quiz:d.stQuiz || {}, replies:d.stReplies || []}; }
+function logQuiz(code){
+  var d = stLoad(); d.quiz[code] = (d.quiz[code] || 0) + 1;
+  persist({stQuiz:d.quiz});
+  gasSend({type:'quiz', code:code, name:(CLIMATE[code]||{}).name || code, scores:ST.scores});
+}
+function saveReply(letter, reply){
+  var d = stLoad(), now = new Date();
+  var rec = {
+    id: Date.now(), reply: reply,
+    letter: (letter && letter.text) || '', from: (letter && letter.nick) || '匿名旅人',
+    date: now.getFullYear() + '/' + String(now.getMonth()+1).padStart(2,'0') + '/' + String(now.getDate()).padStart(2,'0')
+  };
+  d.replies = [rec].concat(d.replies).slice(0, 300);
+  persist({stReplies:d.replies});
+  gasSend({type:'reply', letter:rec.letter, from:rec.from, reply:reply});
+}
+/* 免登入、非同步送到村長的 Google 試算表（沒設定網址就只存本機） */
+function gasSend(payload){
+  if (!STATION.GAS_URL) return;
+  try {
+    payload.ts = new Date().toISOString();
+    fetch(STATION.GAS_URL, {
+      method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify(payload)
+    }).catch(function(){});
+  } catch(e){}
+}
+/* 向試算表要資料（JSONP，避開跨網域限制）；沒接後台或失敗時回 null */
+var jsonpN = 0;
+function stJsonp(action, cb){
+  if (!STATION.GAS_URL) { cb(null); return; }
+  var name = '__stcb' + (jsonpN++), s = document.createElement('script'), done = false, timer;
+  function cleanup(){
+    clearTimeout(timer);
+    try { delete window[name]; } catch(e){ window[name] = undefined; }
+    if (s.parentNode) s.parentNode.removeChild(s);
+  }
+  window[name] = function(d){ done = true; cleanup(); cb(d); };
+  s.onerror = function(){ if (!done) { cleanup(); cb(null); } };
+  timer = setTimeout(function(){ if (!done) { cleanup(); cb(null); } }, 6000);
+  s.src = STATION.GAS_URL + (STATION.GAS_URL.indexOf('?') > -1 ? '&' : '?') + 'action=' + action + '&callback=' + name;
+  document.head.appendChild(s);
+}
+/* 抽一封真實的匿名心事：先問試算表，沒有就用留言牆上村民真的寫過的信。
+   一封真信都沒有時，就老實說沒有，不編故事給村民看。 */
+function pickLetter(cb){
+  stJsonp('letters', function(d){
+    var arr = (d && d.letters) || [];
+    arr = arr.filter(function(m){ return m && m.text; });
+    if (arr.length) { cb(arr[Math.floor(Math.random()*arr.length)]); return; }
+    cb(localLetter());
+  });
+}
+function localLetter(){
+  var pool = S.msgs.filter(function(m){ return m.text && !m.priv; }).map(function(m){
+    return {id:m.id, nick:m.nick, mood:m.mood, text:m.text, date:m.date};
+  });
+  return pool.length ? pool[Math.floor(Math.random()*pool.length)] : null;
+}
+
+/* ---------- 後台：氣象站數據 ---------- */
+function renderStationAdmin(){
+  var d = stLoad(), total = 0, rows = '';
+  for (var k in d.quiz) total += d.quiz[k];
+  Object.keys(CLIMATE).forEach(function(k){
+    var n = d.quiz[k] || 0, pct = total ? Math.round(n/total*100) : 0;
+    rows += '<div class="row" style="padding:11px 14px"><div class="row-top" style="margin:0">' +
+      '<span class="swatch" style="background:' + CLIMATE[k].bg + '"></span>' +
+      '<span style="font-size:14.5px">' + esc(CLIMATE[k].name) + '</span>' +
+      '<span style="font-size:13px;color:var(--muted);margin-left:auto">' + n + ' 次　' + pct + '%</span></div>' +
+      '<div style="height:5px;border-radius:99px;background:rgba(122,90,46,.14);margin-top:8px;overflow:hidden">' +
+      '<i style="display:block;height:100%;width:' + pct + '%;background:var(--brown)"></i></div></div>';
+  });
+  var reps = d.replies.length ? d.replies.map(function(r){
+    return '<div class="row">' +
+      '<div class="row-top"><span style="font-size:12px;color:var(--muted)">回給「' + esc(r.from) + '」的信　' + esc(r.date) + '</span></div>' +
+      '<div class="note-text" style="color:var(--muted);font-size:13px;border-left:3px solid rgba(122,90,46,.2);padding-left:10px;margin-bottom:8px">' + esc(r.letter) + '</div>' +
+      '<div class="note-text">🧶 ' + esc(r.reply) + '</div></div>';
+  }).join('') : '<div class="empty">還沒有村民寫回信。</div>';
+
+  return '<p style="font-size:13px;color:var(--muted);margin:0 0 14px;line-height:1.9">' +
+      '觀測站的判定趨勢與飛鴿回信' + (STATION.GAS_URL ? '會同步送到 Google 試算表，這裡是本機備份。' : '目前存在這支手機裡；填好 STATION.GAS_URL 之後就會同步到 Google 試算表。') + '</p>' +
+    '<div style="font-size:14px;font-weight:500;margin:0 0 10px">心靈氣候判定趨勢（共 ' + total + ' 次觀測）</div>' + rows +
+    '<div style="font-size:14px;font-weight:500;margin:22px 0 10px">飛鴿回信（共 ' + d.replies.length + ' 封，只有你看得到）</div>' + reps;
+}
+
+/* ---------- 氣象站的點擊事件 ---------- */
+document.addEventListener('click', function(e){
+  var el = e.target.closest('[data-act]');
+  if (!el) return;
+  var act = el.getAttribute('data-act');
+  if (act === 'stTab')      { ST.tab = el.getAttribute('data-tab'); renderStTabs(); showStPane(); }
+  else if (act === 'pickOpt'){ pickCurrent(); }
+  else if (act === 'requiz'){ startQuiz(); renderQuiz(); }
+  else if (act === 'goRoom'){ ST.pendingRoom = el.getAttribute('data-key'); closeStation(); }
+  else if (act === 'catchDove'){ catchDove(el); }
+  else if (act === 'sendReply'){ sendReply(); }
+  else if (act === 'flagLetter'){ flagLetter(); }
+});
+$('stSound').addEventListener('click', function(){
+  ST.sound = !ST.sound;
+  this.textContent = ST.sound ? '🔊' : '🔇';
+  persist({stSound:ST.sound});
+  if (ST.sound) sfx('tick');
+});
+
+/* ---------- 瀏覽人次：只記錄真實發生的次數 ----------
+   沒接試算表：算這台裝置真的開過幾次（從 0 開始）。
+   接了試算表：每次開站免登入、非同步送一筆 view 進試算表，
+   再把全站的真實總數讀回來顯示，不放任何預設數字。 */
+(function(){
+  if (!STATION.GAS_URL) return;
+  gasSend({type:'view'});
+  stJsonp('stats', function(d){
+    if (d && typeof d.views === 'number') { S.views = d.views; renderStats(); }
+  });
+})();
+
+/* ---------- 隱形暗門：底部版權文字連點 5 下 ---------- */
+(function(){
+  var el = $('copyLine'); if (!el) return;
+  var hits = 0, timer = null;
+  el.addEventListener('click', function(){
+    hits++; clearTimeout(timer);
+    timer = setTimeout(function(){ hits = 0; }, 2500);
+    if (hits < 5) return;
+    hits = 0;
+    var v = prompt('【OK洞暗門】請輸入長老的單片眼鏡暗號：');
+    if (v === null) return;
+    if (String(v).trim() === STATION.ADMIN_PASS) {
+      if (STATION.SHEET_URL) {
+        window.open(STATION.SHEET_URL, '_blank', 'noopener');
+        toast('暗門開了，正在打開村長的試算表 📄');
+      } else {
+        S.unlocked = true; S.tab = 'station'; openAdmin(); renderWall();
+        toast('暗門開了。（還沒設定試算表網址，先看本機後台）');
+      }
+    } else {
+      toast('長老瞇著眼看了你一下……暗號不對，門沒開。');
+    }
+  });
+})();
+
+/* ============================ PWA ============================ */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('./sw.js').then(function(reg){
+      reg.addEventListener('updatefound', function(){
+        var sw = reg.installing;
+        if (!sw) return;
+        sw.addEventListener('statechange', function(){
+          if (sw.state === 'installed' && navigator.serviceWorker.controller) {
+            toast('村子有新版本了', '重新載入', function(){ sw.postMessage('skipWaiting'); });
+          }
+        });
+      });
+    }).catch(function(){});
+    var refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', function(){
+      if (refreshing) return; refreshing = true; location.reload();
+    });
+  });
+}
+
+/* ---------- 安裝到主畫面 ---------- */
+var deferredPrompt = null;
+var standalone = window.matchMedia('(display-mode: standalone)').matches ||
+                 window.matchMedia('(display-mode: minimal-ui)').matches ||
+                 window.navigator.standalone === true ||
+                 document.referrer.indexOf('android-app://') === 0;
+if (standalone) document.documentElement.setAttribute('data-standalone', '');
+
+function showInstall(){ if (!standalone) $('installBtn').style.display = 'inline-block'; }
+function hideInstall(){ $('installBtn').style.display = 'none'; }
+
+/* Android Chrome / Edge：攔下原生提示，改由「安裝到手機」按鈕觸發 */
+window.addEventListener('beforeinstallprompt', function(e){
+  e.preventDefault(); deferredPrompt = e; showInstall();
+});
+
+/* 沒有原生提示的瀏覽器（iOS Safari、Samsung Internet、Firefox）：顯示手動步驟 */
+setTimeout(function(){ if (!deferredPrompt) showInstall(); }, 2500);
+
+function installHelp(){
+  var ua = navigator.userAgent;
+  var isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+  var isAndroid = /Android/.test(ua);
+  var steps;
+  if (isIOS)
+    steps = ['在 Safari 最下方，點「分享」按鈕（方框加上箭頭）', '往下滑，選「加入主畫面」', '按右上角「新增」'];
+  else if (isAndroid && /SamsungBrowser/.test(ua))
+    steps = ['點瀏覽器右下角的「☰」選單', '選「新增頁面至」→「主畫面」', '按「新增」'];
+  else if (isAndroid && /Firefox|FxiOS/.test(ua))
+    steps = ['點右上角的「⋮」選單', '選「安裝」或「加到主畫面」'];
+  else if (isAndroid)
+    steps = ['點右上角的「⋮」選單', '選「安裝應用程式」或「加到主畫面」', '按「安裝」'];
+  else
+    steps = ['點網址列右側的安裝圖示（⊕ 或小螢幕圖示）', '或從瀏覽器選單選「安裝 心之村」'];
+
+  openInfo('把心之村放進主畫面',
+    '<p style="font-size:15px;line-height:2;color:var(--sub);margin:0 0 18px">' +
+      '裝好之後會像一般 App 一樣有自己的圖示，開啟時沒有網址列，' + (isIOS ? '' : '沒網路也能逛村子。') + '</p>' +
+    '<ol style="margin:0;padding-left:20px;font-size:15.5px;line-height:2.1;color:var(--body)">' +
+      steps.map(function(s){ return '<li style="margin-bottom:6px">' + s + '</li>'; }).join('') +
+    '</ol>');
+}
+
+$('installBtn').addEventListener('click', function(){
+  closeNav();
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(function(r){
+      deferredPrompt = null;
+      if (r && r.outcome === 'accepted') hideInstall();
+    });
+  } else {
+    installHelp();
+  }
+});
+
+window.addEventListener('appinstalled', function(){
+  deferredPrompt = null; hideInstall();
+  toast('心之村已經住進你的手機了 🏡');
+});
+
+window.addEventListener('offline', function(){ toast('目前離線中，村子仍然可以逛。'); });
+</script>
+</body>
+</html>
