@@ -232,7 +232,7 @@ html[data-standalone] #installBtn{display:none !important} /* 已經是 App 就�
 .blk{margin-bottom:18px}
 .blk-l{font-size:17px;font-weight:500;margin-bottom:6px;letter-spacing:2px}
 .blk-line{font-size:15px;line-height:1.95;opacity:.9}
-  .modal-intro{font-size:14.5px;line-height:2.05;opacity:.92;margin-bottom:22px;text-wrap:pretty}
+.modal-intro{font-size:14.5px;line-height:2.05;opacity:.92;margin-bottom:22px;text-wrap:pretty}
 .modal-intro p{margin:0 0 12px}
 .modal-intro p:last-child{margin-bottom:0}
 .modal-art{display:grid;place-items:center}
@@ -264,6 +264,130 @@ html[data-standalone] #installBtn{display:none !important} /* 已經是 App 就�
 .lock{padding:24px 0 8px}
 .lock-row{display:flex;gap:10px;flex-wrap:wrap}
 .lock-row .inp{flex:1;min-width:180px}
+
+/* ================= 情緒小參室 ================= */
+.clinic-scene{
+  position:fixed;inset:0;z-index:75;display:flex;flex-direction:column;color:#f6efe1;
+  background:linear-gradient(180deg,#241a10 0%,#1b1410 60%,#120d09 100%);
+  overscroll-behavior:contain;animation:softIn .26s ease both;
+}
+.clinic-scene[hidden]{display:none}
+.clinic-head{
+  flex:none;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:12px clamp(14px,4vw,26px);padding-top:max(12px,env(safe-area-inset-top));
+}
+.clinic-head h2{font-family:var(--serif);font-size:clamp(18px,4.4vw,24px);letter-spacing:3px;margin:0;font-weight:600}
+.clinic-head small{display:block;font-size:11px;letter-spacing:2px;color:#c9b48c;margin-top:3px}
+.clinic-stage{
+  position:relative;flex:1;margin:0 clamp(14px,4vw,30px) clamp(14px,4vw,26px);border-radius:22px;overflow:hidden;
+  background:
+    linear-gradient(180deg,rgba(70,48,26,.55) 0%,rgba(50,34,20,.7) 48%,rgba(36,26,16,.85) 100%),
+    repeating-linear-gradient(90deg,rgba(255,255,255,.02) 0 2px,transparent 2px 40px);
+  border:6px solid #3a2a18;box-shadow:inset 0 0 60px rgba(0,0,0,.5),0 20px 50px rgba(0,0,0,.4);
+}
+.clinic-floor2{
+  position:absolute;left:0;right:0;top:0;height:34%;border-bottom:5px dashed rgba(230,200,150,.25);
+  display:flex;align-items:center;justify-content:center;text-align:center;padding:12px;
+}
+.clinic-floor2 span{font-size:12.5px;letter-spacing:2px;color:#d9c39a;line-height:2;opacity:.75}
+.clinic-floor1{position:absolute;left:0;right:0;top:34%;bottom:0}
+.clinic-book{
+  position:absolute;left:50%;bottom:14%;transform:translateX(-50%);width:min(46%,220px);aspect-ratio:1.5;
+  cursor:pointer;border:0;background:transparent;padding:0;
+}
+.clinic-book-table{
+  position:absolute;left:50%;bottom:-14%;transform:translateX(-50%);width:132%;height:26%;
+  background:linear-gradient(180deg,#5b3d22,#3a2716);border-radius:8px 8px 40% 40%/8px 8px 60% 60%;
+  box-shadow:0 10px 20px rgba(0,0,0,.4);
+}
+.clinic-book-art{
+  position:absolute;inset:0;border-radius:6px;
+  background:linear-gradient(135deg,#efe3c8,#d9c69c 50%,#efe3c8);
+  box-shadow:0 0 30px 10px rgba(255,224,150,.55),0 14px 30px rgba(0,0,0,.4);
+  animation:bookGlow 2.6s ease-in-out infinite;
+}
+@keyframes bookGlow{0%,100%{box-shadow:0 0 22px 6px rgba(255,224,150,.45),0 14px 30px rgba(0,0,0,.4)}50%{box-shadow:0 0 38px 14px rgba(255,224,150,.8),0 14px 30px rgba(0,0,0,.4)}}
+.clinic-book-art::before{
+  content:"";position:absolute;left:50%;top:6%;bottom:6%;width:2px;background:rgba(120,90,50,.3);transform:translateX(-50%);
+}
+.clinic-book-hint{position:absolute;left:50%;bottom:-30px;transform:translateX(-50%);font-size:12px;letter-spacing:2px;color:#e9d7ae;white-space:nowrap;opacity:.85}
+.clinic-door{
+  position:absolute;right:6%;bottom:8%;width:min(20%,120px);aspect-ratio:.55;cursor:pointer;border:0;padding:0;background:transparent;
+}
+.clinic-door-frame{
+  position:absolute;inset:0;border-radius:50% 50% 6px 6px/60% 60% 6px 6px;
+  background:linear-gradient(160deg,#6b4a26,#3f2a15);box-shadow:0 0 22px 6px rgba(140,220,150,.28),0 10px 24px rgba(0,0,0,.45);
+  border:3px solid rgba(200,230,190,.25);
+}
+.clinic-door-frame::before{
+  content:"";position:absolute;inset:10% 12%;border-radius:50% 50% 4px 4px/60% 60% 4px 4px;
+  background:radial-gradient(circle at 50% 30%,rgba(255,224,150,.9),rgba(255,190,90,.15) 70%,transparent 78%);
+  filter:blur(1px);
+}
+.clinic-door-tag{
+  position:absolute;left:50%;top:-30px;transform:translateX(-50%) rotate(-3deg);
+  background:#efe3c8;color:#4a3a26;font-size:11.5px;letter-spacing:1px;padding:5px 10px;border-radius:4px;
+  box-shadow:0 4px 8px rgba(0,0,0,.3);white-space:nowrap;
+}
+.flash--gold{background:radial-gradient(circle at 78% 82%,#fff6d8,#ffdd8a 40%,#fff 100%)}
+
+/* ---- 翻頁繪本 Modal ---- */
+.flip-overlay{
+  position:fixed;inset:0;z-index:80;background:rgba(10,8,6,.82);backdrop-filter:blur(6px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:clamp(10px,3vw,30px);
+}
+.flip-overlay[hidden]{display:none}
+.flipbook-wrap{position:relative;width:min(920px,94vw);aspect-ratio:1.5;perspective:2600px}
+.flipbook{position:absolute;inset:0;display:flex;border-radius:10px;overflow:visible;box-shadow:0 30px 70px rgba(0,0,0,.5)}
+.flip-base-l,.flip-base-r{flex:1;background:linear-gradient(180deg,#fffdf6,#f3ead4);position:relative;overflow:hidden}
+.flip-base-l{border-radius:10px 0 0 10px}
+.flip-base-r{border-radius:0 10px 10px 0}
+.flip-spine{position:absolute;left:50%;top:0;bottom:0;width:6px;margin-left:-3px;background:linear-gradient(90deg,rgba(0,0,0,.15),rgba(0,0,0,0) 50%,rgba(0,0,0,.15));z-index:5;pointer-events:none}
+.flip-page{
+  position:absolute;top:0;bottom:0;left:50%;width:50%;transform-origin:left center;
+  transform-style:preserve-3d;transition:transform .6s cubic-bezier(.4,.1,.2,1);cursor:pointer;
+}
+.flip-page.flipped{transform:rotateY(-180deg)}
+.flip-face{
+  position:absolute;inset:0;backface-visibility:hidden;background:linear-gradient(180deg,#fffdf6,#f3ead4);
+  padding:clamp(14px,3vw,26px);overflow:auto;
+}
+.flip-face--back{transform:rotateY(180deg);border-radius:10px 0 0 10px}
+.flip-face--front{border-radius:0 10px 10px 0}
+.flip-photos{display:grid;grid-template-columns:1fr 1fr;gap:10px;height:calc(100% - 26px)}
+.flip-photos div{border-radius:8px;overflow:hidden;background:#e7dcc4;display:grid;place-items:center}
+.flip-photos img{width:100%;height:100%;object-fit:cover}
+.video-card{height:calc(100% - 26px);display:flex;flex-direction:column;gap:10px}
+.video-card video{flex:1;width:100%;border-radius:8px;background:#000;object-fit:cover}
+.video-card p{margin:0;font-size:13px;color:#6b5940;line-height:1.8}
+.flip-caption{font-size:12px;color:#8a7457;letter-spacing:1px;margin-bottom:8px}
+.flip-nav{display:flex;gap:16px;margin-top:18px}
+.flip-nav button{
+  border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);color:#f6efe1;
+  font-size:14px;padding:10px 20px;border-radius:999px;cursor:pointer;
+}
+.flip-nav button:disabled{opacity:.35;cursor:default}
+.flip-close{position:absolute;top:-18px;right:-18px;border:0;background:#f6efe1;color:#3a2f22;width:38px;height:38px;min-height:38px;border-radius:50%;font-size:18px;cursor:pointer}
+@media (max-width:820px){
+  .flipbook-wrap{aspect-ratio:1.05}
+  .flip-close{top:-46px;right:0}
+}
+
+/* ---- 加入我們表單 Modal ---- */
+.join-overlay{
+  position:fixed;inset:0;z-index:85;background:rgba(20,30,20,.5);backdrop-filter:blur(3px);
+  display:grid;place-items:center;padding:clamp(14px,4vw,30px);
+}
+.join-overlay[hidden]{display:none}
+.join-sheet{
+  width:min(480px,100%);border-radius:20px;padding:clamp(24px,5vw,34px);position:relative;
+  background:rgba(255,253,248,.72);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border:1px solid rgba(255,255,255,.5);box-shadow:0 30px 70px rgba(0,0,0,.35);animation:riseIn .32s ease both;
+}
+.join-sheet h3{font-family:var(--serif);font-size:22px;margin:0 0 6px;letter-spacing:2px;color:#3a2f22}
+.join-sheet p{font-size:13px;color:#6b5940;margin:0 0 18px;line-height:1.8}
+.join-field{margin-bottom:14px}
+.join-field label{display:block;font-size:12.5px;color:#8a7457;margin-bottom:5px;letter-spacing:1px}
 
 /* ================= 觀心氣象站 ================= */
 .station{
@@ -447,8 +571,10 @@ html[data-standalone] #installBtn{display:none !important} /* 已經是 App 就�
 .toast[hidden]{display:none}
 .toast button{border:0;background:#fbf6ec;color:#3a2f22;font-size:13px;padding:7px 13px;border-radius:999px;cursor:pointer;min-height:34px;white-space:nowrap}
 .sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
-  @media (max-width:768px){
-  .hot{ width:max(2.4%,20px);
+
+@media (max-width:768px){
+  .hot{
+    width:max(2.4%,20px);
     background:rgba(255,232,150,.55);
     box-shadow:0 0 8px 2px rgba(255,214,110,.4);
     z-index:1;
@@ -581,6 +707,56 @@ html[data-standalone] #installBtn{display:none !important} /* 已經是 App 就�
 
 <div class="overlay" id="admin" hidden role="dialog" aria-modal="true" aria-label="村長後台">
   <div class="sheet admin-sheet" id="adminSheet"></div>
+</div>
+
+<!-- 情緒小參室：兩層樓樹屋場景 -->
+<div class="clinic-scene" id="clinicScene" hidden role="dialog" aria-modal="true" aria-label="情緒小參室">
+  <div class="clinic-head">
+    <div>
+      <h2>情緒小參室</h2>
+      <small>村子入口 · 一間開在大樹裡的小屋</small>
+    </div>
+    <button class="st-ico" data-act="closeClinic" type="button" aria-label="離開小參室">×</button>
+  </div>
+  <div class="clinic-stage">
+    <div class="clinic-floor2"><span>觀星閣樓<br />敬請期待</span></div>
+    <div class="clinic-floor1">
+      <button class="clinic-book" id="clinicBook" data-act="openBook" type="button" aria-label="翻開秘典">
+        <div class="clinic-book-table"></div>
+        <div class="clinic-book-art"></div>
+        <div class="clinic-book-hint">✦ 點一下，翻開秘典 ✦</div>
+      </button>
+      <button class="clinic-door" id="clinicDoor" data-act="openDoor" type="button" aria-label="加入我們">
+        <div class="clinic-door-tag">加入我們</div>
+        <div class="clinic-door-frame"></div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 秘典：3D 翻頁繪本 Modal -->
+<div class="flip-overlay" id="flipOverlay" hidden role="dialog" aria-modal="true" aria-label="秘典">
+  <div class="flipbook-wrap">
+    <button class="flip-close" data-act="closeFlip" type="button" aria-label="關閉">×</button>
+    <div class="flipbook" id="flipbook"></div>
+  </div>
+  <div class="flip-nav">
+    <button data-act="flipPrev" id="flipPrevBtn" type="button">← 上一頁</button>
+    <button data-act="flipNext" id="flipNextBtn" type="button">下一頁 →</button>
+  </div>
+</div>
+
+<!-- 加入我們：報名表單 Modal -->
+<div class="join-overlay" id="joinOverlay" hidden role="dialog" aria-modal="true" aria-label="加入我們">
+  <div class="join-sheet" id="joinSheet">
+    <button class="x-btn" style="position:absolute;right:14px;top:14px" data-act="closeJoin" type="button" aria-label="關閉">×</button>
+    <h3>加入我們</h3>
+    <p>推開這道門，代表你想跟心之村的夥伴們，走得更近一點。</p>
+    <div class="join-field"><label for="joinName">怎麼稱呼你</label><input class="inp" id="joinName" /></div>
+    <div class="join-field"><label for="joinContact">聯絡方式（Email 或電話）</label><input class="inp" id="joinContact" /></div>
+    <div class="join-field"><label for="joinMsg">想說的話</label><textarea class="txt" id="joinMsg" style="height:90px"></textarea></div>
+    <button class="btn-main" data-act="submitJoin" type="button">送出</button>
+  </div>
 </div>
 
 <div class="toast" id="toast" hidden><span id="toastText"></span><button type="button" id="toastBtn" hidden></button></div>
@@ -923,6 +1099,196 @@ function openModal(key){
   showOverlay($('modal'));
   pushLayer('modal', closeModalNow);
 }
+function closeModal(){ if (!$('modal').hidden) popLayer(); }
+function closeModalNow(){ S.modalKey = null; hideOverlay($('modal')); }
+
+/* 純文字的說明視窗（例如安裝步驟），共用同一個彈層 */
+function openInfo(title, html){
+  S.lastFocus = document.activeElement;
+  $('modalSheet').setAttribute('style', 'background:#fdfaf3;color:var(--ink);width:min(560px,100%)');
+  $('modalSheet').innerHTML =
+    '<button class="x-btn" data-act="closeModal" aria-label="關閉" type="button">×</button>' +
+    '<div style="padding:clamp(28px,5vw,38px)">' +
+      '<h3 class="modal-h" id="modalTitle" style="font-size:clamp(21px,4.8vw,27px);margin-bottom:16px">' + title + '</h3>' +
+      html +
+    '</div>';
+  showOverlay($('modal'));
+  pushLayer('modal', closeModalNow);
+}
+
+/* ================= 情緒小參室：秘典翻頁書 + 加入我們 ================= */
+/* 相片與影片網址：請替換成校色後的圖片 / Cloudinary 影片連結 */
+var CLINIC_PHOTOS = [
+  /* 照片 1 */ 'https://res.cloudinary.com/dplbydqx/image/upload/v1786684884/IMG_7058_0.jpg',
+  /* 照片 2 */ 'https://res.cloudinary.com/dplbydqx/image/upload/v1786684856/DSC_4247_0.jpg',
+  /* 照片 3 */ 'https://res.cloudinary.com/dplbydqx/image/upload/v1786684847/DSC_4239_0.jpg',
+  /* 照片 4 */ 'https://res.cloudinary.com/dplbydqx/image/upload/v1786684847/DSC_4178_0.jpg',
+  /* 照片 5 */ 'https://res.cloudinary.com/dplbydqx/image/upload/v1786684846/DSC_4101_0.jpg',
+  /* 照片 6 */ 'https://res.cloudinary.com/dplbydqx/image/upload/v1786684845/DSC_4161_0.jpg'
+];
+var CLINIC_VIDEOS = [
+  /* 影片一：青少年篇 */ 'https://res.cloudinary.com/dplbydqx/video/upload/v1786685030/1150813%E9%9D%92%E5%B0%91%E5%B9%B4%E7%AF%87.mp4',
+  /* 影片二：小毛球情緒篇新版 */ 'https://res.cloudinary.com/dplbydqx/video/upload/v1786685329/1150813%E5%B0%8F%E6%AF%9B%E7%90%83%E6%83%85%E7%B7%92%E7%AF%87%E6%96%B0%E7%89%88.mp4',
+  /* 影片三：舊版小毛球 */ 'https://res.cloudinary.com/dplbydqx/video/upload/v1786685046/1150813%E8%88%8A%E7%89%88%E5%B0%8F%E6%AF%9B%E7%90%83.mp4'
+];
+/* 6 個內頁，每 2 個組成一張「葉子」的正反面，共 3 葉 */
+var CLINIC_PAGES = [
+  {kind:'intro'},
+  {kind:'photos', caption:'小參室的日常', photos:CLINIC_PHOTOS},
+  {kind:'video', caption:'影片一', src:CLINIC_VIDEOS[0]},
+  {kind:'video', caption:'影片二', src:CLINIC_VIDEOS[1]},
+  {kind:'video', caption:'影片三', src:CLINIC_VIDEOS[2]},
+  {kind:'closing'}
+];
+function clinicPageHTML(p){
+  if (p.kind === 'cover')
+    return '<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">' +
+      '<div style="font-size:12px;letter-spacing:4px;color:#8a7457;margin-bottom:10px">EMOTION VILLAGE</div>' +
+      '<h3 style="font-family:var(--serif);font-size:24px;margin:0 0 14px;color:#3a2f22;letter-spacing:3px">情緒小參室<br />秘典</h3>' +
+      '<div style="font-size:13px;color:#6b5940;line-height:2">請翻開右頁，看看小參室的日常。</div></div>';
+  if (p.kind === 'intro')
+    return '<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">' +
+      '<div style="font-size:13px;color:#6b5940;line-height:2.2">這裡是一間開在大樹裡的小屋。<br />門永遠是開的，所有帶著情緒來的人，<br />都不用先整理好自己。</div></div>';
+  if (p.kind === 'photos')
+    return '<div class="flip-caption">' + esc(p.caption || '') + '</div><div class="flip-photos">' +
+      (p.photos || []).map(function(src){ return '<div><img src="' + esc(src) + '" alt="小參室照片" loading="lazy" /></div>'; }).join('') + '</div>';
+  if (p.kind === 'video')
+    return '<div class="flip-caption">' + esc(p.caption || '') + '</div><div class="video-card">' +
+      '<video src="' + esc(p.src) + '" controls muted playsinline preload="metadata"></video>' +
+      '<p>點擊播放，了解更多。</p></div>';
+  if (p.kind === 'closing')
+    return '<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">' +
+      '<div style="font-size:14.5px;line-height:2.2;color:#5c4a33">看完這些，如果你也想成為<br />心之村的一份子——</div>' +
+      '<div style="margin-top:14px;font-size:13px;color:#8a7457;letter-spacing:1px">推開小屋右側那扇門，加入我們。</div></div>';
+  if (p.kind === 'theend')
+    return '<div style="height:100%;display:flex;align-items:center;justify-content:center;text-align:center">' +
+      '<div style="font-size:13px;color:#8a7457;letter-spacing:2px;line-height:2">— 秘典的最後一頁 —</div></div>';
+  return '';
+}
+
+var FLIP = {built:false, idx:0, leaves:[]};
+function buildFlipbook(){
+  var fb = $('flipbook'), n = CLINIC_PAGES.length / 2;
+  fb.innerHTML =
+    '<div class="flip-base-l">' + clinicPageHTML({kind:'cover'}) + '</div>' +
+    '<div class="flip-spine"></div>' +
+    '<div class="flip-base-r">' + clinicPageHTML({kind:'theend'}) + '</div>';
+  FLIP.leaves = [];
+  for (var i = 0; i < n; i++) {
+    var leaf = document.createElement('div');
+    leaf.className = 'flip-page';
+    leaf.setAttribute('data-i', i);
+    leaf.innerHTML =
+      '<div class="flip-face flip-face--front">' + clinicPageHTML(CLINIC_PAGES[2*i]) + '</div>' +
+      '<div class="flip-face flip-face--back">' + clinicPageHTML(CLINIC_PAGES[2*i+1]) + '</div>';
+    fb.appendChild(leaf);
+    FLIP.leaves.push(leaf);
+    bindFlipLeaf(leaf, i);
+  }
+}
+function updateFlipView(){
+  FLIP.leaves.forEach(function(leaf, i){
+    var flipped = i < FLIP.idx;
+    leaf.classList.toggle('flipped', flipped);
+    leaf.style.zIndex = flipped ? String(200 + i) : String(100 - i);
+  });
+  $('flipPrevBtn').disabled = FLIP.idx <= 0;
+  $('flipNextBtn').disabled = FLIP.idx >= FLIP.leaves.length;
+}
+function flipTo(target){
+  FLIP.idx = Math.max(0, Math.min(FLIP.leaves.length, target));
+  updateFlipView();
+}
+function bindFlipLeaf(leaf, i){
+  leaf.addEventListener('click', function(){
+    if (i === FLIP.idx) flipTo(FLIP.idx + 1);
+    else if (i === FLIP.idx - 1) flipTo(FLIP.idx - 1);
+  });
+  var down = false, startX = 0;
+  leaf.addEventListener('pointerdown', function(e){
+    if (i !== FLIP.idx && i !== FLIP.idx - 1) return;
+    down = true; startX = e.clientX; leaf.style.transition = 'none';
+    try { leaf.setPointerCapture(e.pointerId); } catch (err) {}
+  });
+  leaf.addEventListener('pointermove', function(e){
+    if (!down) return;
+    var w = ($('flipbook').getBoundingClientRect().width / 2) || 200;
+    var dx = e.clientX - startX, forward = (i === FLIP.idx), deg;
+    if (forward) deg = Math.max(-180, Math.min(0, (dx / w) * -180));
+    else deg = Math.max(-180, Math.min(0, -180 + (dx / w) * 180));
+    leaf.style.transform = 'rotateY(' + deg + 'deg)';
+  });
+  function release(e){
+    if (!down) return;
+    down = false; leaf.style.transition = ''; leaf.style.transform = '';
+    var w = ($('flipbook').getBoundingClientRect().width / 2) || 200;
+    var dx = e.clientX - startX, forward = (i === FLIP.idx);
+    if (forward) { if (dx < -w * 0.35) flipTo(FLIP.idx + 1); else updateFlipView(); }
+    else { if (dx > w * 0.35) flipTo(FLIP.idx - 1); else updateFlipView(); }
+  }
+  leaf.addEventListener('pointerup', release);
+  leaf.addEventListener('pointercancel', release);
+}
+function pauseClinicVideos(){
+  var vids = $('flipbook').querySelectorAll('video');
+  Array.prototype.forEach.call(vids, function(v){ try { v.pause(); } catch (e) {} });
+}
+function openFlipbook(){
+  if (!FLIP.built) { buildFlipbook(); FLIP.built = true; }
+  FLIP.idx = 0; updateFlipView();
+  S.lastFocus = document.activeElement;
+  $('flipOverlay').hidden = false;
+  document.body.style.overflow = 'hidden';
+  pushLayer('flip', closeFlipNow);
+}
+function closeFlip(){ if (!$('flipOverlay').hidden) popLayer(); }
+function closeFlipNow(){
+  $('flipOverlay').hidden = true; pauseClinicVideos();
+  if ($('modal').hidden && $('admin').hidden && $('station').hidden && $('clinicScene').hidden && $('joinOverlay').hidden) document.body.style.overflow = '';
+  if (S.lastFocus && S.lastFocus.focus) S.lastFocus.focus({preventScroll:true});
+}
+
+/* 木門：金白色夢境閃光，淡出後跳出報名表單 */
+function openDoor(){
+  var f = document.createElement('div'); f.className = 'flash flash--gold';
+  document.body.appendChild(f);
+  buzz(16);
+  setTimeout(function(){ if (f.parentNode) f.parentNode.removeChild(f); openJoin(); }, 560);
+}
+function openJoin(){
+  S.lastFocus = document.activeElement;
+  $('joinOverlay').hidden = false;
+  document.body.style.overflow = 'hidden';
+  pushLayer('join', closeJoinNow);
+}
+function closeJoin(){ if (!$('joinOverlay').hidden) popLayer(); }
+function closeJoinNow(){
+  $('joinOverlay').hidden = true;
+  if ($('modal').hidden && $('admin').hidden && $('station').hidden && $('clinicScene').hidden && $('flipOverlay').hidden) document.body.style.overflow = '';
+  if (S.lastFocus && S.lastFocus.focus) S.lastFocus.focus({preventScroll:true});
+}
+function submitJoin(){
+  var name = $('joinName').value.trim(), contact = $('joinContact').value.trim(), msg = $('joinMsg').value.trim();
+  if (!name || !contact) { toast('請留下稱呼和聯絡方式喔。'); return; }
+  gasSend({type:'join', name:name, contact:contact, msg:msg});
+  toast('已經收到，村長會盡快與你聯繫 🌿');
+  $('joinName').value = ''; $('joinContact').value = ''; $('joinMsg').value = '';
+  closeJoin();
+}
+
+/* 情緒小參室場景本身 */
+function openClinicScene(){
+  S.lastFocus = document.activeElement;
+  $('clinicScene').hidden = false;
+  document.body.style.overflow = 'hidden';
+  pushLayer('clinic', closeClinicNow);
+}
+function closeClinic(){ if (!$('clinicScene').hidden) popLayer(); }
+function closeClinicNow(){
+  $('clinicScene').hidden = true;
+  if ($('modal').hidden && $('admin').hidden && $('station').hidden && $('flipOverlay').hidden && $('joinOverlay').hidden) document.body.style.overflow = '';
+  if (S.lastFocus && S.lastFocus.focus) S.lastFocus.focus({preventScroll:true});
+}
 
 /* ---------- 後台 ---------- */
 function renderAdmin(){
@@ -1077,8 +1443,17 @@ document.addEventListener('click', function(e){
     var okey = el.getAttribute('data-key');
     if (el.tagName === 'A') e.preventDefault();
     if (okey === 'weather') { closeNav(); closeModal(); openStation(); }
+    else if (okey === 'clinic') { closeNav(); closeModal(); openClinicScene(); }
     else openModal(okey);
   }
+  else if (act === 'closeClinic'){ closeClinic(); }
+  else if (act === 'openBook'){ openFlipbook(); }
+  else if (act === 'closeFlip'){ closeFlip(); }
+  else if (act === 'flipNext'){ flipTo(FLIP.idx + 1); }
+  else if (act === 'flipPrev'){ flipTo(FLIP.idx - 1); }
+  else if (act === 'openDoor'){ openDoor(); }
+  else if (act === 'closeJoin'){ closeJoin(); }
+  else if (act === 'submitJoin'){ submitJoin(); }
   else if (act === 'closeStation'){ closeStation(); }
   else if (act === 'goPost'){ closeModal(); closeStation(); goPost(); }
   else if (act === 'closeModal'){ closeModal(); }
@@ -1140,9 +1515,14 @@ document.addEventListener('change', function(e){
 ['modal','admin'].forEach(function(id){
   $(id).addEventListener('click', function(e){ if (e.target === this) { id === 'modal' ? closeModal() : closeAdmin(); } });
 });
+$('flipOverlay').addEventListener('click', function(e){ if (e.target === this) closeFlip(); });
+$('joinOverlay').addEventListener('click', function(e){ if (e.target === this) closeJoin(); });
 document.addEventListener('keydown', function(e){
   if (e.key !== 'Escape') return;
-  if (!$('modal').hidden) closeModal();
+  if (!$('joinOverlay').hidden) closeJoin();
+  else if (!$('flipOverlay').hidden) closeFlip();
+  else if (!$('clinicScene').hidden) closeClinic();
+  else if (!$('modal').hidden) closeModal();
   else if (!$('admin').hidden) closeAdmin();
   else if (!$('station').hidden) closeStation();
   else closeNav();
@@ -1953,51 +2333,7 @@ window.addEventListener('appinstalled', function(){
 });
 
 window.addEventListener('offline', function(){ toast('目前離線中，村子仍然可以逛。'); });
-<style>
-  /* 確保所有角色的 X 按鈕都不會被圖片或文字卡住 */
-  .modal-close-btn, .close-btn, .close {
-    cursor: pointer !important;
-    z-index: 999999 !important; /* 確保按鈕在最最上層 */
-    pointer-events: auto !important;
-  }
-</style>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  
-  // 1. 全域點擊監聽：不論你開哪一個角色，點擊 X 或點擊背景都能關閉！
-  document.addEventListener('click', function(event) {
-    
-    // A. 點擊到關閉按鈕（包含帶有 .close-btn 或 .modal-close-btn 或 .close 的元素）
-    const isCloseBtn = event.target.matches('.modal-close-btn, .close-btn, .close') || 
-                       event.target.closest('.modal-close-btn, .close-btn, .close');
-                       
-    if (isCloseBtn) {
-      // 找到目前點擊按鈕所屬的那一個 Modal 並隱藏它
-      const currentModal = event.target.closest('.modal-overlay, .modal, .popup-container');
-      if (currentModal) {
-        currentModal.style.display = 'none';
-      }
-    }
-
-    // B. 防呆：點擊半透明黑底背景時，自動關閉該 Modal
-    const isOverlay = event.target.matches('.modal-overlay, .modal, .popup-container');
-    if (isOverlay) {
-      event.target.style.display = 'none';
-    }
-  });
-
-  // 2. 鍵盤 Esc 鍵支援：按 Esc 一鍵關閉畫面上開啟的任何角色彈窗
-  document.addEventListener('keydown', function(event) {
-    if (event.key === 'Escape' || event.key === 'Esc') {
-      const allModals = document.querySelectorAll('.modal-overlay, .modal, .popup-container');
-      allModals.forEach(function(modal) {
-        modal.style.display = 'none';
-      });
-    }
-  });
-
-});
 </script>
 </body>
 </html>
+
