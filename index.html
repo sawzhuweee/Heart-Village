@@ -728,7 +728,8 @@ var V = {
   rain: './picture/rain.png',
   thunder:IMGV + '/Buddhism/thunder.png',
   breeze: IMGV + '/Buddhism/wind.png',
-  earth:  IMGV + '/Buddhism/dust.png'
+  earth: './picture/earth.png',
+  okcave:'./picture/okcave.png'
 };
 function charImg(k, w) {
   if (typeof V[k] === 'string' && V[k].startsWith('./picture/')) {
@@ -812,7 +813,7 @@ var PLACES = {
 };
 
 /* OK洞：兩頁式內容，第二頁附外部連結（點擊下一頁切換） */
-var OKCAVE = {place:'山的另一邊', heading:'OK洞', bg:'#3a2f26', fg:'#f4ead8', img:'star'};
+var OKCAVE = {place:'山的另一邊', heading:'OK洞', bg:'#3a2f26', fg:'#f4ead8', img:'okcave'};
 var OKCAVE_PAGES = [
   {paras:[
     '這裡是心之村最隱密、也最真實的角落。',
@@ -1153,7 +1154,7 @@ var CLINIC_VIDEOS = [
   /* 影片二：小毛球情緒篇新版 */ 'https://res.cloudinary.com/dplbydqx/video/upload/v1786685329/1150813%E5%B0%8F%E6%AF%9B%E7%90%83%E6%83%85%E7%B7%92%E7%AF%87%E6%96%B0%E7%89%88.mp4',
   /* 影片三：舊版小毛球 */ 'https://res.cloudinary.com/dplbydqx/video/upload/v1786685046/1150813%E8%88%8A%E7%89%88%E5%B0%8F%E6%AF%9B%E7%90%83.mp4'
 ];
-/* 依序展示：開場白 → 6 張照片 → 3 支影片 → 結語，共 11 張投影圖卡 */
+/* 依序展示：開場白 → 27 張照片 → 3 支影片 → 結語，共 11 張投影圖卡 */
 var CLINIC_LETTER_PARAS = [
   '每個人的心裡，那裡有時候會下起暴雨，有時候會起濃霧，甚至有時候會燃起無名的大火。真正的累，往往不是因為情緒太強烈，而是我們總在試著推開它、逃避它。於是，心之村的誕生，就是為了在你的心靈荒野中，點亮一盞永不熄滅的燈。',
   '村裡的八位夥伴，是你內心投射出的八種化身——憤怒是保護你的訊號，悲傷是清理傷口的淨水，焦慮則是提醒你回到當下的警鐘。它們不是障礙，而是你覺察自我的起點。',
@@ -1189,7 +1190,7 @@ function clinicItemHTML(p){
   if (p.kind === 'closing')
     return '<div style="text-align:center;padding:18px 4px">' +
       '<div style="font-size:14.5px;line-height:2.2;color:#5c4a33">看完這些，如果你也想成為<br />心之村的一份子——</div>' +
-      '<div style="margin-top:14px;font-size:13px;color:#8a7457;letter-spacing:1px">推開小屋右側那扇門，加入我們。</div></div>';
+      '<div style="margin-top:14px;font-size:13px;color:#8a7457;letter-spacing:1px">推開小屋右側那扇門或加入我們。</div></div>';
   return '';
 }
 
