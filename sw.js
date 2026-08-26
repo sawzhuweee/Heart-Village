@@ -1,5 +1,5 @@
 /* 心之村 Service Worker — 改動網站內容後，把 VERSION 加一，使用者就會拿到新版 */
-const VERSION = 'v12';
+const VERSION = 'v13';
 const SHELL = 'village-shell-' + VERSION;
 const RUNTIME = 'village-runtime-' + VERSION;
 
