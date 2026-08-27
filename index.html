@@ -1150,8 +1150,8 @@ var CLINIC_PHOTOS = [
   /* 照片 27 */ 'https://res.cloudinary.com/dplbydqx/image/upload/v1786944745/LINE_ALBUM_2026816_260817_6.jpg'
 ];
 var CLINIC_VIDEOS = [
-  /* 影片一：青少年篇 */ 'https://res.cloudinary.com/dplbydqx/video/upload/v1786888593/808491781.480343.mp4',
-  /* 影片二：小毛球情緒篇新版 */ 'https://res.cloudinary.com/dplbydqx/video/upload/v1786685329/1150813%E5%B0%8F%E6%AF%9B%E7%90%83%E6%83%85%E7%B7%92%E7%AF%87%E6%96%B0%E7%89%88.mp4',
+  /* 影片一：青年篇 */ 'https://res.cloudinary.com/dplbydqx/video/upload/v1787814697/%E9%9D%92%E5%B0%91%E5%B9%B4%E7%AF%87_OK.mp4',
+  /* 影片二：小朋友篇 */ 'https://res.cloudinary.com/dplbydqx/video/upload/v1787815853/%E5%B0%8F%E6%9C%8B%E5%8F%8B%E7%AF%87_OK_compressed.mp4',
   /* 影片三：舊版小毛球 */ 'https://res.cloudinary.com/dplbydqx/video/upload/v1786685046/1150813%E8%88%8A%E7%89%88%E5%B0%8F%E6%AF%9B%E7%90%83.mp4'
 ];
 /* 依序展示：開場白 → 6 張照片 → 3 支影片 → 結語，共 11 張投影圖卡 */
@@ -1166,8 +1166,8 @@ var CLINIC_LETTER_HIGHLIGHT = '衷心的邀請你，點擊「加入我們」，�
 
 var CLINIC_ITEMS = [{kind:'letter'}, {kind:'intro'}];
 CLINIC_PHOTOS.forEach(function(src, i){ CLINIC_ITEMS.push({kind:'photo', src:src, caption:'小參室的日常 · ' + (i + 1)}); });
-CLINIC_ITEMS.push({kind:'video', src:CLINIC_VIDEOS[0], caption:'影片一 · 青少年篇'});
-CLINIC_ITEMS.push({kind:'video', src:CLINIC_VIDEOS[1], caption:'影片二 · 小毛球情緒篇'});
+CLINIC_ITEMS.push({kind:'video', src:CLINIC_VIDEOS[0], caption:'影片一 · 青年篇'});
+CLINIC_ITEMS.push({kind:'video', src:CLINIC_VIDEOS[1], caption:'影片二 · 小朋友篇'});
 CLINIC_ITEMS.push({kind:'video', src:CLINIC_VIDEOS[2], caption:'影片三 · 舊版小毛球'});
 CLINIC_ITEMS.push({kind:'closing'});
 
