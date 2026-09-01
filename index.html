@@ -907,7 +907,7 @@ function renderMap(){
     var label = s.label;
     if (!label) {
       var c = charByKey(s.key);
-      label = c ? (c.place + ' · ' + c.name) : (PLACES[s.key] ? PLACES[s.key].heading : (s.key === 'okcave' ? okcave.heading : s.key));
+      label = c ? (c.place + ' · ' + c.name) : (PLACES[s.key] ? PLACES[s.key].heading : (s.key === 'okcave' ? OKCAVE.heading : s.key));
     }
     html += '<button class="hot ' + s.cls + '" style="left:' + s.l + '%;top:' + s.t + '%;--d:' + (i * 0.3) + 's" ' +
             'data-act="' + (s.key === '__post' ? 'goPost' : 'open') + '" data-key="' + esc(s.key) + '" ' +
