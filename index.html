@@ -698,7 +698,8 @@ var V = {
   rain: './picture/rain.png',
   thunder:IMGV + '/Buddhism/thunder.png',
   breeze: IMGV + '/Buddhism/wind.png',
-  earth:  './picture/earth.png'
+  earth:  './picture/earth.png',
+  okcave:'/pitcture/okcave.png'
 };
 function charImg(k, w) {
   if (typeof V[k] === 'string' && V[k].startsWith('./picture/')) {
@@ -782,7 +783,7 @@ var PLACES = {
 };
 
 /* OK洞：兩頁式內容，第二頁附外部連結（點擊下一頁切換） */
-var OKCAVE = {place:'山的另一邊', heading:'OK洞', bg:'#3a2f26', fg:'#f4ead8', img:'star'};
+var OKCAVE = {place:'山的另一邊', heading:'OK洞', bg:'#3a2f26', fg:'#f4ead8', img:'okcave'};
 var OKCAVE_PAGES = [
   {paras:[
     '這裡是心之村最隱密、也最真實的角落。',
